@@ -38,25 +38,23 @@ public:
 	void printBuffer();
 	void printSeries();
 
-	uint8_t fillCount;
+	volatile uint8_t fillCount;
 
 private:
 
+	void incrementIndex(uint8_t& counter);
 	void calcNextToggle(uint8_t& time, uint8_t& bits);
 
 	static const uint8_t numbChannels = 6;
 	uint16_t frequencies[numbChannels];
 	int16_t compareValues[numbChannels];
-	volatile int16_t currentCompareValues[numbChannels];
+	int16_t currentCompareValues[numbChannels];
 
 	static const uint8_t eventBufferSize = 10;
 	uint8_t eventBufferBits[eventBufferSize];
 	uint8_t eventBufferTime[eventBufferSize];
 	uint8_t eventBufferReadIndex;
 	uint8_t eventBufferWriteIndex;
-
-
-	volatile uint8_t bitsToFlip;
 
 
 };

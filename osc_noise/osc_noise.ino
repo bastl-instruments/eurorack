@@ -41,10 +41,21 @@ extern MultiChannelOscillator oscil;
 void setup() {
 
 
+	TIMSK0 = 0;
+
 	Serial.begin(115200);
 	Serial.println("start");
 
+
+
 	oscil.init();
+	oscil.printBuffer();
+
+
+
+	oscil.start();
+
+
 
 }
 
@@ -52,8 +63,10 @@ void setup() {
 
 void loop() {
 
+
 	oscil.fillBuffer();
-	Serial.println(oscil.fillCount);
+
+	//Serial.println(oscil.fillCount);
 
 
 

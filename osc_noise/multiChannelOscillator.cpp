@@ -51,31 +51,29 @@ void MultiChannelOscillator::init() {
 	outputPort = 0;
 
 	// calculate first events to be processed in isr
-	uint8_t tmpTime=0;
-	uint8_t bits;
 
-	eventBufferBits[0] = 0;
-	calcNextToggle(tmpTime,bits);
-	eventBufferTime[0] = tmpTime;
-	eventBufferBits[1] = bits;
-
-	fillCount = 1;
-
-	eventBufferReadIndex=eventBufferSize-1;
 	eventBufferWriteIndex=0;
-
+	fillCount = 0;
 	fillBuffer();
 
+	// load ISR
+	eventBufferReadIndex=0;
 
-	// START
-	start();
 	sei();
 
 
 }
 
+inline void MultiChannelOscillator::incrementIndex(uint8_t& counter) {
+	counter++;
+	if (counter == eventBufferSize)  counter = 0;
+}
+
 
 inline void MultiChannelOscillator::calcNextToggle(uint8_t& time, uint8_t& bits) {
+
+	// the last step that as been calculated
+	static uint8_t lastTime = 0;
 
 	uint8_t distanceToNext = -1;
 	uint8_t nextBits = 0;
@@ -85,7 +83,7 @@ inline void MultiChannelOscillator::calcNextToggle(uint8_t& time, uint8_t& bits)
 
 
 		// new relative toggle distances
-		currentCompareValues[index] -= time;
+		currentCompareValues[index] -= lastTime;
 		if (currentCompareValues[index] <= 0) currentCompareValues[index] += compareValues[index];
 
 
@@ -106,6 +104,9 @@ inline void MultiChannelOscillator::calcNextToggle(uint8_t& time, uint8_t& bits)
 	// return
 	time = distanceToNext;
 	bits = nextBits;
+
+	// keep old time step value for next run
+	lastTime = distanceToNext;
 
 }
 void MultiChannelOscillator::printSeries() {
@@ -144,50 +145,54 @@ void MultiChannelOscillator::printSeries() {
 
 void MultiChannelOscillator::fillBuffer() {
 
-	Serial.println(eventBufferTime[0]);
-
 
 	while(fillCount<eventBufferSize-1) {
 
-		uint8_t tmpTime = eventBufferTime[eventBufferWriteIndex];
-		uint8_t bits;
-		calcNextToggle(tmpTime,bits);
+		//bit_set(PIN);
 
-		eventBufferWriteIndex++;
-		if (eventBufferWriteIndex==eventBufferSize) eventBufferWriteIndex = 0;
+		calcNextToggle(eventBufferTime[eventBufferWriteIndex],eventBufferBits[eventBufferWriteIndex]);
 
-		eventBufferTime[eventBufferWriteIndex] = tmpTime;
-		eventBufferBits[eventBufferWriteIndex+1] = bits;
+		incrementIndex(eventBufferWriteIndex);
 
 		fillCount++;
 
+
 	}
 
+	//bit_clear(PIN);
 
 
 }
 
 void MultiChannelOscillator::printBuffer() {
 	for (uint8_t index=0; index<eventBufferSize; index++) {
-		Serial.print(index); Serial.print(" : "); Serial.println(eventBufferBits[index],BIN);
-		Serial.print("    "); Serial.println(eventBufferTime[index]);
+		Serial.print(index); Serial.print(" wait "); Serial.print(eventBufferTime[index]);
+		Serial.print(" then "); Serial.println(eventBufferBits[index],BIN);
 	}
 }
 
 
 void MultiChannelOscillator::isr() {
 
-	bit_toggle(PIN);
+	static uint8_t track5;
+	if (eventBufferBits[eventBufferReadIndex] & (1<<5)) {
+		//if (fillCount == 9) bit_set(PIN);
+		//else bit_clear(PIN);
 
-	eventBufferReadIndex++;
-	if (eventBufferReadIndex == eventBufferSize) eventBufferReadIndex = 0;
+	}
 
-	fillCount--;
-	if (fillCount == 0) stop();
 
-	outputPort = eventBufferBits[eventBufferReadIndex];
+
+	outputPin = eventBufferBits[eventBufferReadIndex];
+
+	incrementIndex(eventBufferReadIndex);
+
 	OCR1A = eventBufferTime[eventBufferReadIndex];
 
+	fillCount--;
+	bit_toggle(PIN);
+	bit_toggle(PIN);
+	if (fillCount == 1) stop();
 
 
 
