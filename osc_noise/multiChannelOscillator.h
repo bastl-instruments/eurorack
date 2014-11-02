@@ -32,7 +32,7 @@ public:
 	void start();
 	void stop();
 
-	void isr();
+	void performToggle();
 	void fillBuffer();
 
 	void printBuffer();

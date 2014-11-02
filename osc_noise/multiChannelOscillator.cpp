@@ -172,16 +172,13 @@ void MultiChannelOscillator::printBuffer() {
 }
 
 
-void MultiChannelOscillator::isr() {
+void MultiChannelOscillator::performToggle() {
 
-	static uint8_t track5;
 	if (eventBufferBits[eventBufferReadIndex] & (1<<5)) {
 		//if (fillCount == 9) bit_set(PIN);
 		//else bit_clear(PIN);
 
 	}
-
-
 
 	outputPin = eventBufferBits[eventBufferReadIndex];
 
@@ -194,8 +191,6 @@ void MultiChannelOscillator::isr() {
 	bit_toggle(PIN);
 	if (fillCount == 1) stop();
 
-
-
 }
 
 
@@ -204,7 +199,7 @@ MultiChannelOscillator oscil;
 //max 64 cycles = 4us
 ISR(TIMER1_COMPA_vect) {
 
-	oscil.isr();
+	oscil.performToggle();
 
 }
 
