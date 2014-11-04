@@ -11,7 +11,7 @@
 
 #define PIN B,4
 
-#define DBG
+//#define DBG
 
 void MultiChannelOscillator::stop() {
 	setLow(TIMSK1,OCIE1A);
@@ -146,15 +146,17 @@ void MultiChannelOscillator::printSeries() {
 void MultiChannelOscillator::fillBuffer() {
 
 
-	while(fillCount<eventBufferSize-1) {
+	while(fillCount<eventBufferSize-2) {
 
 		//bit_set(PIN);
+
+		fillCount++;
 
 		calcNextToggle(eventBufferTime[eventBufferWriteIndex],eventBufferBits[eventBufferWriteIndex]);
 
 		incrementIndex(eventBufferWriteIndex);
 
-		fillCount++;
+
 
 
 	}
@@ -174,12 +176,6 @@ void MultiChannelOscillator::printBuffer() {
 
 void MultiChannelOscillator::performToggle() {
 
-	if (eventBufferBits[eventBufferReadIndex] & (1<<5)) {
-		//if (fillCount == 9) bit_set(PIN);
-		//else bit_clear(PIN);
-
-	}
-
 	outputPin = eventBufferBits[eventBufferReadIndex];
 
 	incrementIndex(eventBufferReadIndex);
@@ -187,10 +183,8 @@ void MultiChannelOscillator::performToggle() {
 	OCR1A = eventBufferTime[eventBufferReadIndex];
 
 	fillCount--;
-	bit_toggle(PIN);
-	bit_toggle(PIN);
-	if (fillCount == 1) stop();
 
+	if (fillCount < 2) stop();
 }
 
 
@@ -198,8 +192,9 @@ MultiChannelOscillator oscil;
 
 //max 64 cycles = 4us
 ISR(TIMER1_COMPA_vect) {
-
+//	bit_set(PIN);
 	oscil.performToggle();
+	//bit_clear(PIN);
 
 }
 

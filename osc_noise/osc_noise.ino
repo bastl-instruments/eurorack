@@ -41,18 +41,15 @@ extern MultiChannelOscillator oscil;
 void setup() {
 
 
-	TIMSK0 = 0;
+	TIMSK0 = 0; // disable millis timer to not disturb our interrupt
+	TIMSK2 = 0;
 
 	Serial.begin(115200);
 	Serial.println("start");
 
 
-
 	oscil.init();
 	oscil.printBuffer();
-
-
-
 	oscil.start();
 
 
