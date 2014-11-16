@@ -8,20 +8,21 @@
 #ifndef MULTICHANNELOSCILLATOR_H_
 #define MULTICHANNELOSCILLATOR_H_
 
+/// *** SETTINGS *** ///
+
+//#define TESTING // switch to test class with stdout
+
+// which port and which pins should be used to toggle
+#define OSCIL_PORT D
+
+
+/// **** CODE *** ///
+
+
 #include <inttypes.h>
 #include <portManipulations.h>
 #include <FiFoBuffer.h>
 #include <avr/io.h>
-
-//#define TESTING // switch to test class with stdout
-#define OSCIL_PORT D
-#define PIN_0 2
-#define PIN_1 3
-#define PIN_2 4
-#define PIN_3 5
-#define PIN_4 6
-#define PIN_5 7
-
 
 // macros for accessing port register
 #define REG_PIN(...) REG_PIN_(__VA_ARGS__)
@@ -48,22 +49,9 @@ class MultiChannelOscillator {
 
 public:
 	MultiChannelOscillator() {
-		frequencies[0] = 153;
-		frequencies[1] = 185;
-		frequencies[2] = 267;
-		frequencies[3] = 327;
-		frequencies[4] = 465;
-		frequencies[5] = 1023;
-
-		channelMappings[0] = 1<<PIN_0;
-		channelMappings[1] = 1<<PIN_1;
-		channelMappings[2] = 1<<PIN_2;
-		channelMappings[3] = 1<<PIN_3;
-		channelMappings[4] = 1<<PIN_4;
-		channelMappings[5] = 1<<PIN_5;
 	};
 
-	void init();
+	void init(uint16_t* frequencies, uint8_t*pinIndices);
 	void start();
 	void stop();
 
@@ -72,7 +60,7 @@ public:
 
 	void printBuffer();
 
-	static const uint8_t eventBufferSize = 10;
+	static const uint8_t eventBufferSize = 5;
 	FiFoBuffer<eventBufferSize,toggleEvent> buffer;
 
 	static const uint8_t numbChannels = 6;
@@ -86,6 +74,7 @@ private:
 
 
 	void queueNextToggle();
+	void calcCompareValues();
 
 };
 

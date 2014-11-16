@@ -53,26 +53,22 @@ void MultiChannelOscillator::start() {
 }
 
 
-void MultiChannelOscillator::init() {
+void MultiChannelOscillator::init(uint16_t* frequencies, uint8_t* pinIndices) {
 
 #ifndef TESTING
 	cli();
 #endif
 
+	// save settings
+	for (uint8_t index=0; index<numbChannels; index++) {
+		this->frequencies[index] = frequencies[index];
+		this->channelMappings[index] = (1<<pinIndices[index]);
+	}
 
 	// calculate time distances for frequencies
-	for (uint8_t index=0; index<numbChannels; index++) {
-		compareValues[index] = (F_CPU / 128) / frequencies[index];
-		currentCompareValues[index] = compareValues[index];
-		#ifdef TESTING
-		printf("Channel %u: %u\n",index,compareValues[index]);
-		#endif
-	}
-#ifdef TESTING
-	printf("\n");
-#endif
+	calcCompareValues();
 
-#ifndef TESTING
+	#ifndef TESTING
 
 	// DEBUG
 	bit_dir_outp(PIN);
@@ -87,19 +83,30 @@ void MultiChannelOscillator::init() {
 		REG_DIR(OSCIL_PORT) |= channelMappings[bit];
 		REG_PORT(OSCIL_PORT) &= ~(channelMappings[bit]);
 	}
-#endif
+	#endif
 
 	// calculate first events to be processed in isr
 	fillBuffer();
 
-#ifndef TESTING
+	#ifndef TESTING
 	sei();
-#endif
+	#endif
 
 
 }
 
-
+void MultiChannelOscillator::calcCompareValues() {
+	for (uint8_t index=0; index<numbChannels; index++) {
+		compareValues[index] = (F_CPU / 128) / frequencies[index];
+		currentCompareValues[index] = compareValues[index];
+		#ifdef TESTING
+		printf("Channel %u: %u\n",index,compareValues[index]);
+		#endif
+	}
+	#ifdef TESTING
+		printf("\n");
+	#endif
+}
 
 
 inline void MultiChannelOscillator::queueNextToggle() {

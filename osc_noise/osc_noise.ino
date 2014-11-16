@@ -36,6 +36,9 @@ int main(void) {
 
 extern MultiChannelOscillator oscil;
 
+uint16_t frequencies[6] = {153,185,267,327,465,1023};
+uint8_t pinIndices[6]  = {2,3,4,5,6,7};
+
 
 
 void setup() {
@@ -48,7 +51,7 @@ void setup() {
 	Serial.println("start");
 
 
-	oscil.init();
+	oscil.init(frequencies,pinIndices);
 	oscil.printBuffer();
 	oscil.start();
 
