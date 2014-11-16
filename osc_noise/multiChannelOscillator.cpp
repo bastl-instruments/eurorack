@@ -8,7 +8,7 @@
 
 #include "multiChannelOscillator.h"
 
-
+#include <util/atomic.h>
 
 
 
@@ -151,7 +151,10 @@ inline void MultiChannelOscillator::queueNextToggle() {
 
 
 	// add event to buffer
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
 	buffer.add(event);
+	}
 
 
 
@@ -169,14 +172,29 @@ void MultiChannelOscillator::fillBuffer() {
 }
 
 void MultiChannelOscillator::printBuffer() {
-	toggleEvent* eventPtr = buffer.getPointer();
+	volatile toggleEvent* eventPtr = buffer.getPointer();
 	for (uint8_t index=0; index<eventBufferSize; index++) {
 		printf("do %u then wait %u\n",eventPtr->bits,eventPtr->time);
 		eventPtr++;
 	}
 }
 
+inline void MultiChannelOscillator::performToggle() {
 
+		toggleEvent event;
+		if (buffer.get(event)) {
+	#ifndef TESTING
+			OCR1A = event.time;
+			REG_PIN(OSCIL_PORT) = event.bits;
+	#else
+			printf("Flipping %u and setting timer to %u\n",event.bits,event.time);
+	#endif
+
+		} else {
+			stop();
+		}
+
+}
 
 
 
@@ -185,10 +203,10 @@ MultiChannelOscillator oscil;
 
 //max 64 cycles = 4us
 ISR(TIMER1_COMPA_vect) {
-	bit_set(PIN);
+	//bit_set(PIN);
 	//sei();
 	oscil.performToggle();
-	bit_clear(PIN);
+	//bit_clear(PIN);
 
 }
 

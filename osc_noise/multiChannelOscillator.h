@@ -67,23 +67,7 @@ public:
 	void start();
 	void stop();
 
-	inline void performToggle() {
-
-
-			toggleEvent event;
-			if (buffer.get(event)) {
-		#ifndef TESTING
-				OCR1A = event.time;
-				REG_PIN(OSCIL_PORT) = event.bits;
-		#else
-				printf("Flipping %u and setting timer to %u\n",event.bits,event.time);
-		#endif
-
-			} else {
-				stop();
-			}
-
-	}
+	void performToggle();
 	void fillBuffer();
 
 	void printBuffer();
