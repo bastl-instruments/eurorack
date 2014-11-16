@@ -191,7 +191,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="osc_noiseHW.cpp|interfaceTest.ino|main-SD.cpp|Release_old|test.cpp|UI.cpp|MEM.cpp|examples|midi.cpp|renderAudio.cpp|externalRAM.cpp|AudioHacker.cpp|all.cpp|Fat16/examples|sekvoj|DRUM.cpp|testEEPROM.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="test|bak|test.cpp|UI.cpp|MEM.cpp|interfaceTest.ino|examples|midi.cpp|renderAudio.cpp|externalRAM.cpp|AudioHacker.cpp|all.cpp|sekvoj|Fat16/examples|Release_old|main-SD.cpp|osc_noiseHW.cpp|testEEPROM.cpp|DRUM.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

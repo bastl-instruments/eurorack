@@ -7,36 +7,72 @@
 
 
 #include "multiChannelOscillator.h"
-#include <util/delay.h>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ifndef TESTING
+#include <Arduino.h>
+#define DBG
 #define PIN B,4
+#endif
 
-//#define DBG
+#ifdef TESTING
+#define F_CPU 16000000L
+#include <stdio.h>
+volatile uint8_t pinRegister = 0;
+#endif
+
+
 
 void MultiChannelOscillator::stop() {
+#ifndef TESTING
 	setLow(TIMSK1,OCIE1A);
+#else
+	printf("stopped\n");
+#endif
 }
 
 void MultiChannelOscillator::start() {
+	toggleEvent event;
+	buffer.get(event);
+	#ifndef TESTING
+	OCR1A = event.time;
 	setHigh(TIMSK1,OCIE1A);
-	OCR1A = eventBufferTime[eventBufferReadIndex];
+	#endif
 }
 
 
 void MultiChannelOscillator::init() {
 
+#ifndef TESTING
 	cli();
+#endif
 
+
+	// calculate time distances for frequencies
 	for (uint8_t index=0; index<numbChannels; index++) {
-
 		compareValues[index] = (F_CPU / 128) / frequencies[index];
 		currentCompareValues[index] = compareValues[index];
-		#ifdef DBG
-		Serial.print(index);
-		Serial.print(": ");
-		Serial.println(compareValues[index]);
+		#ifdef TESTING
+		printf("Channel %u: %u\n",index,compareValues[index]);
 		#endif
 	}
+#ifdef TESTING
+	printf("\n");
+#endif
+
+#ifndef TESTING
 
 	// DEBUG
 	bit_dir_outp(PIN);
@@ -47,40 +83,43 @@ void MultiChannelOscillator::init() {
 	TCCR1B |= (1<<CS10) | (1<<CS11); 	// prescaler = 64
 
 	// INIT
-	outputDir = B00111111;
-	outputPort = 0;
+	for (uint8_t bit=0; bit<numbChannels; bit++) {
+		REG_DIR(OSCIL_PORT) |= channelMappings[bit];
+		REG_PORT(OSCIL_PORT) &= ~(channelMappings[bit]);
+	}
+#endif
 
 	// calculate first events to be processed in isr
-
-	eventBufferWriteIndex=0;
-	fillCount = 0;
 	fillBuffer();
 
-	// load ISR
-	eventBufferReadIndex=0;
-
+#ifndef TESTING
 	sei();
+#endif
 
 
 }
 
-inline void MultiChannelOscillator::incrementIndex(uint8_t& counter) {
-	counter++;
-	if (counter == eventBufferSize)  counter = 0;
-}
 
 
-inline void MultiChannelOscillator::calcNextToggle(uint8_t& time, uint8_t& bits) {
+
+inline void MultiChannelOscillator::queueNextToggle() {
 
 	// the last step that as been calculated
 	static uint8_t lastTime = 0;
+	static uint8_t lastPins = 0;
 
+	// add pin action that has been calculated in previous call
+	toggleEvent event;
+	event.bits = lastPins;
+
+
+	// get new time and pins
 	uint8_t distanceToNext = -1;
-	uint8_t nextBits = 0;
+
+
 
 
 	for (uint8_t index=0; index<numbChannels; index++) {
-
 
 		// new relative toggle distances
 		currentCompareValues[index] -= lastTime;
@@ -89,56 +128,31 @@ inline void MultiChannelOscillator::calcNextToggle(uint8_t& time, uint8_t& bits)
 
 		// find nearest and bits to flip at next position
 		if (currentCompareValues[index] < distanceToNext) {
-			nextBits = (1<<index);
+			lastPins = channelMappings[index];
 			distanceToNext = currentCompareValues[index];
 		}
 
 		if (currentCompareValues[index] == distanceToNext) {
-			nextBits |= (1<<index);
+			lastPins |= channelMappings[index];
 		}
 
 
 	}
 
+	// correct time it takes to call ISR and function it calls
+	//if (distanceToNext != 0) distanceToNext-=1;
 
-	// return
-	time = distanceToNext;
-	bits = nextBits;
+	// store calculated time and keep it for next run
+	event.time = distanceToNext;
+	if (event.time>2) event.time--;
 
-	// keep old time step value for next run
+
 	lastTime = distanceToNext;
 
-}
-void MultiChannelOscillator::printSeries() {
 
-	// stop isr
-	TIMSK1 = 0;
+	// add event to buffer
+	buffer.add(event);
 
-	const uint16_t steps = 100;
-	uint32_t totalTime = 0;
-	uint16_t numbFlips=0;
-
-	// load first
-	uint8_t timeStep = compareValues[numbChannels-1];
-	uint8_t bits = (1<<(numbChannels-1));
-
-	// iterate through steps
-	for (uint16_t index = 0; index<steps; index++) {
-
-		totalTime += timeStep;
-		numbFlips++;
-
-		Serial.print("Time: "); Serial.println(timeStep);
-		Serial.print("Flip: "); Serial.println(bits,BIN);
-		Serial.println();
-
-		calcNextToggle(timeStep,bits);
-	}
-
-	Serial.print(numbFlips); Serial.print (" Flips in "); Serial.print(totalTime); Serial.println(" ISR intervalls");
-
-
-	TIMSK1 = (1<<OCIE1A);
 
 
 }
@@ -146,57 +160,37 @@ void MultiChannelOscillator::printSeries() {
 void MultiChannelOscillator::fillBuffer() {
 
 
-	while(fillCount<eventBufferSize-2) {
-
+	while(!buffer.isFull()) {
 		//bit_set(PIN);
-
-		fillCount++;
-
-		calcNextToggle(eventBufferTime[eventBufferWriteIndex],eventBufferBits[eventBufferWriteIndex]);
-
-		incrementIndex(eventBufferWriteIndex);
-
-
-
-
+		queueNextToggle();
 	}
-
 	//bit_clear(PIN);
-
 
 }
 
 void MultiChannelOscillator::printBuffer() {
+	toggleEvent* eventPtr = buffer.getPointer();
 	for (uint8_t index=0; index<eventBufferSize; index++) {
-		Serial.print(index); Serial.print(" wait "); Serial.print(eventBufferTime[index]);
-		Serial.print(" then "); Serial.println(eventBufferBits[index],BIN);
+		printf("do %u then wait %u\n",eventPtr->bits,eventPtr->time);
+		eventPtr++;
 	}
 }
 
 
-void MultiChannelOscillator::performToggle() {
-
-	outputPin = eventBufferBits[eventBufferReadIndex];
-
-	incrementIndex(eventBufferReadIndex);
-
-	OCR1A = eventBufferTime[eventBufferReadIndex];
-
-	fillCount--;
-
-	if (fillCount < 2) stop();
-}
 
 
+
+#ifndef TESTING
 MultiChannelOscillator oscil;
 
 //max 64 cycles = 4us
 ISR(TIMER1_COMPA_vect) {
-//	bit_set(PIN);
+	bit_set(PIN);
+	//sei();
 	oscil.performToggle();
-	//bit_clear(PIN);
+	bit_clear(PIN);
 
 }
 
-
+#endif
 
