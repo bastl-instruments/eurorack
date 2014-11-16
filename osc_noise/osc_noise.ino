@@ -1,18 +1,3 @@
-/*
- * LITTLE NERD
- * eurorack module by Bastl Instruments
- * www.bastl-instruments.com
- * Vaclav Pelousek
- * licensed under cc-by-sa
- *
- *TODO
- *finish visual testing
- *do audioble testing
- *implement production code = testing + eeprom reset
- *implement midi ?
- *
- */
-
 #ifdef EXTERNAL_IDE
 
 #include <Arduino.h>
@@ -31,10 +16,14 @@ int main(void) {
 
 #endif
 
+//////////////////////////////////////////////////
+
 #include <portManipulations.h>
 #include "multiChannelOscillator.h"
+#include "osc_noiseHW.h"
 
 extern MultiChannelOscillator oscil;
+extern osc_noiseHW hardware;
 
 uint16_t frequencies[6] = {153,185,267,327,465,1023};
 uint8_t pinIndices[6]  = {2,3,4,5,6,7};
@@ -55,6 +44,8 @@ void setup() {
 	oscil.printBuffer();
 	oscil.start();
 
+	hardware.init();
+
 
 
 }
@@ -65,10 +56,6 @@ void loop() {
 
 
 	oscil.fillBuffer();
-
-	//Serial.println(oscil.fillCount);
-
-
 
 
 
