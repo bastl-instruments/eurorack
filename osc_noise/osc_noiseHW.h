@@ -23,7 +23,7 @@ public:
 private:
 	static const uint8_t numbKnobs = 3;
 	uint8_t knobStates[numbKnobs];
-	uint8_t knobSatesOld[numbKnobs];
+	uint8_t knobStatesOld[numbKnobs];
 	uint8_t knobFreezeBits;
 
 	static const uint8_t numbCVs = 2;
