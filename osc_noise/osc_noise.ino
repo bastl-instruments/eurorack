@@ -21,12 +21,14 @@ int main(void) {
 #include <portManipulations.h>
 #include "multiChannelOscillator.h"
 #include "osc_noiseHW.h"
+#include "digitalNoise.h"
 
 
 #define DEBUG
 
 extern MultiChannelOscillator oscil;
 extern osc_noiseHW hardware;
+digitalNoise digiNoise;
 
 const uint8_t numbMetallicChannels = 6;
 
@@ -34,14 +36,13 @@ uint16_t minFrequencies[numbMetallicChannels] = {153,185,267,327,465,1023};
 uint16_t frequencies[numbMetallicChannels] = {153,185,267,327,465,1023};
 uint8_t pinIndices[numbMetallicChannels]  = {2,3,4,5,6,7};
 
-uint16_t testFrequencies[numbMetallicChannels] = {7000,5000,50,327,465,1000};
+
 
 
 
 void setup() {
 
 
-	TIMSK0 = 0; // disable millis timer to not disturb our interrupt
 	TIMSK2 = 0;
 
 	#ifdef DEBUG
@@ -52,8 +53,11 @@ void setup() {
 
 	oscil.init(pinIndices);
 	oscil.setFrequencies(minFrequencies);
-	oscil.printBuffer();
+
 	oscil.start();
+
+	digiNoise.init();
+	digiNoise.setTopFreq(1000);
 
 	hardware.init();
 
@@ -72,8 +76,10 @@ void loop() {
 
 	oscil.fillBuffer();
 
+	digiNoise.checkForBitFlip();
 
-	static uint8_t metallicFreq;
+	// calculate metallic noise frequencies
+	static uint8_t metallicFreq = 0;
 	if (hardware.getKnobValue(1) != metallicFreq) {
 		metallicFreq = hardware.getKnobValue(1);
 
@@ -82,10 +88,17 @@ void loop() {
 		}
 
 		oscil.setFrequencies(frequencies);
-
 	}
 
+	// calculate digital noise top frequency
+	static uint8_t noiseFreq = 0;
+	if (hardware.getKnobValue(0) != noiseFreq) {
+		noiseFreq = hardware.getKnobValue(0);
 
+		digiNoise.setTopFreq((noiseFreq<<6)+62);
+	}
+
+	digiNoise.checkForBitFlip();
 
 
 

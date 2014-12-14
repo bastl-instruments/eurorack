@@ -38,7 +38,6 @@ volatile uint8_t pinRegister = 0;
 void MultiChannelOscillator::stop() {
 #ifndef TESTING
 	setLow(TIMSK1,OCIE1A);
-	while(1);
 #else
 	printf("stopped\n");
 #endif
