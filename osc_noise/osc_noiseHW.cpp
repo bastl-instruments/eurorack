@@ -14,7 +14,6 @@ osc_noiseHW hardware;
 
 void osc_noiseHW::init() {
 
-
 	fastAnalogRead::init();
 
 	currentAnalogChannel = 0;
@@ -33,7 +32,7 @@ void osc_noiseHW::update(){
 		if (currentAnalogChannel < numbKnobs) {
 
 			// frozen
-			if (knobFreezeBits & (1<<currentAnalogChannel)) {
+			/*if (knobFreezeBits & (1<<currentAnalogChannel)) {
 				uint8_t move = abs(reading - knobStatesOld[currentAnalogChannel]);
 				if ((move > KNOB_UNFREEZE_THRES) || (reading == knobStatesOld[currentAnalogChannel])) {
 					setLow(knobFreezeBits,currentAnalogChannel);
@@ -42,9 +41,12 @@ void osc_noiseHW::update(){
 				knobStatesOld[currentAnalogChannel] = reading;
 
 			// not frozen
-			} else {
+			} else {*/
+
+
+
 				knobStates[currentAnalogChannel] = reading;
-			}
+			//}
 
 		// CV
 		} else {

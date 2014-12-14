@@ -61,7 +61,7 @@ public:
 
 	void printBuffer();
 
-	static const uint8_t eventBufferSize = 200;
+	static const uint8_t eventBufferSize = 100;
 	FiFoBuffer<eventBufferSize,toggleEvent> buffer;
 
 	static const uint8_t numbChannels = 6;

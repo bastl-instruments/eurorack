@@ -62,7 +62,7 @@ void MultiChannelOscillator::setFrequencies(uint16_t* frequencies) {
 
 	// save settings
 	for (uint8_t index=0; index<numbChannels; index++) {
-		this->frequencies[index] = frequencies[index]*2;
+		this->frequencies[index] = frequencies[index];
 	}
 
 	// calculate time distances for frequencies
@@ -110,8 +110,11 @@ void MultiChannelOscillator::init(uint8_t* pinIndices) {
 
 void MultiChannelOscillator::calcCompareValues() {
 	for (uint8_t index=0; index<numbChannels; index++) {
-		compareValues[index] = (F_CPU / 128) / frequencies[index];
-		currentCompareValues[index] = compareValues[index];
+		//ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		{
+			compareValues[index] = (F_CPU / 128) / frequencies[index];
+			currentCompareValues[index] = compareValues[index];
+		}
 		#ifdef TESTING
 		printf("Channel %u: %u\n",index,compareValues[index]);
 		#endif
@@ -182,21 +185,20 @@ inline void MultiChannelOscillator::queueNextToggle() {
 
 void MultiChannelOscillator::fillBuffer() {
 
-
 	while(!buffer.isFull()) {
-		//bit_set(PIN);
 		queueNextToggle();
 	}
-	//bit_clear(PIN);
 
 }
 
 void MultiChannelOscillator::printBuffer() {
+	#ifdef TESTING
 	volatile toggleEvent* eventPtr = buffer.getPointer();
 	for (uint8_t index=0; index<eventBufferSize; index++) {
 		printf("do %u then wait %u\n",eventPtr->bits,eventPtr->time);
 		eventPtr++;
 	}
+	#endif
 }
 
 inline void MultiChannelOscillator::performToggle() {
@@ -211,6 +213,7 @@ inline void MultiChannelOscillator::performToggle() {
 	#endif
 
 		} else {
+			//Serial.println("BUFFER EMPTY!");
 			stop();
 		}
 
