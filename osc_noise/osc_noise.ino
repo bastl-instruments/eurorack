@@ -40,19 +40,11 @@ void setup() {
 	Serial.println("start");
 
 
-
-
 	oscil.init(frequencies,pinIndices);
-
-
 	oscil.printBuffer();
-
-
 	oscil.start();
 
 	hardware.init();
-
-
 
 
 

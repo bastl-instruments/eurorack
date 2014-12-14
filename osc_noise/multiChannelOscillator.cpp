@@ -179,13 +179,11 @@ void MultiChannelOscillator::fillBuffer() {
 }
 
 void MultiChannelOscillator::printBuffer() {
-	#ifdef TESTING
 	volatile toggleEvent* eventPtr = buffer.getPointer();
 	for (uint8_t index=0; index<eventBufferSize; index++) {
 		printf("do %u then wait %u\n",eventPtr->bits,eventPtr->time);
 		eventPtr++;
 	}
-	#endif
 }
 
 inline void MultiChannelOscillator::performToggle() {
