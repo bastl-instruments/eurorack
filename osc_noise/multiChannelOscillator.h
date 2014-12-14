@@ -38,7 +38,7 @@
 
 
 struct toggleEvent {
-	uint8_t time;
+	uint16_t time;
 	uint8_t bits;
 };
 
@@ -51,7 +51,8 @@ public:
 	MultiChannelOscillator() {
 	};
 
-	void init(uint16_t* frequencies, uint8_t*pinIndices);
+	void init(uint8_t* pinIndices);
+	void setFrequencies(uint16_t* frequencies);
 	void start();
 	void stop();
 
@@ -60,7 +61,7 @@ public:
 
 	void printBuffer();
 
-	static const uint8_t eventBufferSize = 5;
+	static const uint8_t eventBufferSize = 200;
 	FiFoBuffer<eventBufferSize,toggleEvent> buffer;
 
 	static const uint8_t numbChannels = 6;

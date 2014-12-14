@@ -38,12 +38,18 @@ volatile uint8_t pinRegister = 0;
 void MultiChannelOscillator::stop() {
 #ifndef TESTING
 	setLow(TIMSK1,OCIE1A);
+	while(1);
 #else
 	printf("stopped\n");
 #endif
 }
 
 void MultiChannelOscillator::start() {
+
+	// first, fill Buffer in case it was started from empty buffer
+	fillBuffer();
+
+	// get next event, set it to timer and start interrupt
 	toggleEvent event;
 	buffer.get(event);
 	#ifndef TESTING
@@ -52,21 +58,30 @@ void MultiChannelOscillator::start() {
 	#endif
 }
 
-
-void MultiChannelOscillator::init(uint16_t* frequencies, uint8_t* pinIndices) {
-
-#ifndef TESTING
-	cli();
-#endif
+void MultiChannelOscillator::setFrequencies(uint16_t* frequencies) {
 
 	// save settings
 	for (uint8_t index=0; index<numbChannels; index++) {
-		this->frequencies[index] = frequencies[index];
-		this->channelMappings[index] = (1<<pinIndices[index]);
+		this->frequencies[index] = frequencies[index]*2;
 	}
 
 	// calculate time distances for frequencies
 	calcCompareValues();
+
+}
+
+
+void MultiChannelOscillator::init(uint8_t* pinIndices) {
+
+	#ifndef TESTING
+		cli();
+	#endif
+
+	// save pin Indices
+	for (uint8_t index=0; index<numbChannels; index++) {
+		this->channelMappings[index] = (1<<pinIndices[index]);
+	}
+
 
 	#ifndef TESTING
 
@@ -85,8 +100,6 @@ void MultiChannelOscillator::init(uint16_t* frequencies, uint8_t* pinIndices) {
 	}
 	#endif
 
-	// calculate first events to be processed in isr
-	fillBuffer();
 
 	#ifndef TESTING
 	sei();
@@ -112,7 +125,7 @@ void MultiChannelOscillator::calcCompareValues() {
 inline void MultiChannelOscillator::queueNextToggle() {
 
 	// the last step that as been calculated
-	static uint8_t lastTime = 0;
+	static uint16_t lastTime = 0;
 	static uint8_t lastPins = 0;
 
 	// add pin action that has been calculated in previous call
@@ -121,7 +134,7 @@ inline void MultiChannelOscillator::queueNextToggle() {
 
 
 	// get new time and pins
-	uint8_t distanceToNext = -1;
+	uint16_t distanceToNext = -1;
 
 
 

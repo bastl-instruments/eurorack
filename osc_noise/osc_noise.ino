@@ -36,11 +36,13 @@ void setup() {
 	TIMSK0 = 0; // disable millis timer to not disturb our interrupt
 	TIMSK2 = 0;
 
-	Serial.begin(115200);
-	Serial.println("start");
+	//Serial.begin(115200);
+	//Serial.println("start");
 
 
-	oscil.init(frequencies,pinIndices);
+	oscil.init(pinIndices);
+	oscil.setFrequencies(frequencies);
+
 	oscil.printBuffer();
 	oscil.start();
 
@@ -54,7 +56,7 @@ void setup() {
 
 void loop() {
 
-
+	hardware.update();
 	oscil.fillBuffer();
 
 
