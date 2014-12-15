@@ -17,6 +17,7 @@ public:
 
 	uint8_t getKnobValue(uint8_t number);
 	uint8_t getCVValue(uint8_t number);
+	bool getSwitchState();
 
 private:
 	static const uint8_t numbKnobs = 3;
@@ -27,7 +28,7 @@ private:
 
 	uint8_t currentAnalogChannel;
 
-
+	bool switchState;
 
 };
 

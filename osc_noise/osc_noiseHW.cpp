@@ -3,7 +3,8 @@
 #include <fastAnalogRead.h>
 
 
-#define PIN B,5
+#define DEBUGPIN B,5
+#define SWITCHPIN B,4
 
 osc_noiseHW hardware;
 
@@ -15,6 +16,8 @@ void osc_noiseHW::init() {
 	currentAnalogChannel = 0;
 	fastAnalogRead::connectChannel(currentAnalogChannel);
 	fastAnalogRead::startConversion();
+
+	bit_dir_outp(SWITCHPIN);
 
 }
 
@@ -40,6 +43,10 @@ void osc_noiseHW::update(){
 		fastAnalogRead::connectChannel(currentAnalogChannel);
 		fastAnalogRead::startConversion();
 	}
+
+	// read cv routing switch
+	if (bit_read_in(SWITCHPIN)) switchState = true;
+	else						switchState = false;
 }
 
 
@@ -55,6 +62,10 @@ uint8_t osc_noiseHW::getKnobValue(uint8_t number) {
 uint8_t osc_noiseHW::getCVValue(uint8_t number) {
 	if (number < numbCVs) return CVStates[number];
 	else				  return 0;
+}
+
+bool osc_noiseHW::getSwitchState() {
+	return switchState;
 }
 
 
