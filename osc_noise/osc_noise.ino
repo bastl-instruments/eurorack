@@ -24,17 +24,19 @@ int main(void) {
 #include "digitalNoise.h"
 
 
-#define DEBUG
+//#define DEBUG
 
 extern MultiChannelOscillator oscil;
 extern osc_noiseHW hardware;
 digitalNoise digiNoise;
 
 const uint8_t numbMetallicChannels = 6;
+const uint8_t numbCowbellChannels = 2;
 
-uint16_t minFrequencies[numbMetallicChannels] = {153,185,267,327,465,1023};
-uint16_t frequencies[numbMetallicChannels] = {153,185,267,327,465,1023};
-uint8_t pinIndices[numbMetallicChannels]  = {2,3,4,5,6,7};
+uint16_t minFrequencies[numbMetallicChannels + numbCowbellChannels] = {153,185,267,327,465,1023,587,845};
+uint8_t pinIndices[numbMetallicChannels + numbCowbellChannels]  = {2,3,4,5,6,7,0,1};
+uint16_t frequencies[numbMetallicChannels + numbCowbellChannels];
+
 
 
 
@@ -62,8 +64,6 @@ void setup() {
 	hardware.init();
 
 
-
-
 }
 
 
@@ -76,15 +76,23 @@ void loop() {
 
 	oscil.fillBuffer();
 
+
+
 	digiNoise.checkForBitFlip();
 
-	// calculate metallic noise frequencies
+	// calculate metallic noise frequencies and cowbell
 	static uint8_t metallicFreq = 0;
-	if (hardware.getKnobValue(1) != metallicFreq) {
+	static uint8_t cowbellFreq = 0;
+	if ((hardware.getKnobValue(1) != metallicFreq) || (hardware.getKnobValue(2) != cowbellFreq)){
 		metallicFreq = hardware.getKnobValue(1);
+		cowbellFreq = hardware.getKnobValue(2);
 
-		for (uint8_t index=0; index<numbMetallicChannels; index++) {
-			frequencies[index] = minFrequencies[index]/2 + ((minFrequencies[index]*metallicFreq)>>7);
+		uint8_t index=0;
+		for (; index<numbMetallicChannels; index++) {
+			frequencies[index] = minFrequencies[index]/2 + (((uint32_t)minFrequencies[index]*metallicFreq)>>7);
+		}
+		for (; index<numbMetallicChannels+numbCowbellChannels; index++) {
+			frequencies[index] = minFrequencies[index]/2 + (((uint32_t)minFrequencies[index]*cowbellFreq)>>7);
 		}
 
 		oscil.setFrequencies(frequencies);

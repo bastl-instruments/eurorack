@@ -64,7 +64,7 @@ public:
 	static const uint8_t eventBufferSize = 100;
 	FiFoBuffer<eventBufferSize,toggleEvent> buffer;
 
-	static const uint8_t numbChannels = 6;
+	static const uint8_t numbChannels = 8;
 	uint8_t channelMappings[numbChannels];
 	uint16_t frequencies[numbChannels];
 	int16_t compareValues[numbChannels];

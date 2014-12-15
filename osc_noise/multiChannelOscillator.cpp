@@ -109,11 +109,10 @@ void MultiChannelOscillator::init(uint8_t* pinIndices) {
 
 void MultiChannelOscillator::calcCompareValues() {
 	for (uint8_t index=0; index<numbChannels; index++) {
-		//ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-		{
-			compareValues[index] = (F_CPU / 128) / frequencies[index];
-			currentCompareValues[index] = compareValues[index];
-		}
+
+		compareValues[index] = (F_CPU / 128) / frequencies[index];
+		currentCompareValues[index] = compareValues[index];
+
 		#ifdef TESTING
 		printf("Channel %u: %u\n",index,compareValues[index]);
 		#endif
