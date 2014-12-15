@@ -17,7 +17,8 @@ void osc_noiseHW::init() {
 	fastAnalogRead::connectChannel(currentAnalogChannel);
 	fastAnalogRead::startConversion();
 
-	bit_dir_outp(SWITCHPIN);
+	bit_dir_inp(SWITCHPIN);
+	bit_set(SWITCHPIN); // enable pullup
 
 }
 
