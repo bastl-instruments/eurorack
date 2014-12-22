@@ -29,12 +29,13 @@ int main(void) {
 }
 
 #endif
-
+#include <avr/pgmspace.h>
 #include <portManipulations.h>
 #include "littleNerdHW.h"
 #include "eventDelay.h"
 #include "eventMemory.h"
 #include "euclid.h"
+#include "eepromMemory.h"
 
 
 extern littleNerdHW hardware;
@@ -42,6 +43,9 @@ eventDelay dly;
 euclid euclidian[6];
 //StepMultiplier mult[6];
 eventMemory memory;
+
+#define bitWr(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
+#define bitRd(value, bit) (((value) >> (bit)) & 0x01)
 
 /*
 void stepperStep() {
@@ -108,6 +112,81 @@ uint16_t counterLeft[6];
 bool flop[6];
 uint8_t currentPreset=0;
 uint8_t parameter[6][2]={{0,0},{0,0},{0,0},{0,0},{0,0},{0,20}};
+bool lock=false;
+
+PROGMEM const uint8_t clearTo[]={ 180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,  180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,  180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,  180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,  180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,  180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,   };
+
+void save(uint8_t _preset){
+	if(!lock){
+	uint16_t presetOffset=_preset*32;
+	for(int i=0;i<6;i++){
+		for(int j=0;j<2;j++){
+			EEPROM.write(presetOffset+j+i*2,parameter[i][j]);
+		}
+		EEPROM.write(presetOffset+12+i,channelMode[i]);
+
+	}
+	}
+}
+void load(uint8_t _preset){
+	uint16_t presetOffset=_preset*32;
+		for(int i=0;i<6;i++){
+			for(int j=0;j<2;j++){
+				parameter[i][j]=EEPROM.read(presetOffset+j+i*2);
+			}
+			channelMode[i]=EEPROM.read(presetOffset+12+i);
+		}
+		EEPROM.write(999,_preset);
+}
+
+void factoryClearMemory(){
+	Serial.print("factory clear");
+	for(int k=0;k<6;k++){
+		load(k);
+	for(int i=0;i<6;i++){
+		for(int j=0;j<2;j++){
+					parameter[i][j]=pgm_read_word_near(clearTo+j+i*2);
+				}
+				channelMode[i]=pgm_read_word_near(clearTo+12+i);
+			}
+	save(k);
+	}
+}
+void printEEPROM(){
+	Serial.print("clearTo[]={ ");
+	for(int k=0;k<6;k++){
+
+	load(k);
+	for(int i=0;i<6;i++){
+			for(int j=0;j<2;j++){
+						Serial.print(parameter[i][j]);
+						Serial.print(", ");
+					}
+			Serial.print(" ");
+	}
+	for(int i=0;i<6;i++){
+			Serial.print(channelMode[i]);
+			Serial.print(",  ");
+				}
+
+}
+	Serial.print(" }; ");
+//	EEPROM.write(1000,0);
+	//		EEPROM.write(1001,0);
+		//	EEPROM.write(1002,0);
+}
+void shouldIClearMemory(){
+	if(EEPROM.read(1000)!=5 || EEPROM.read(1001)!=6 || EEPROM.read(1002)!=7){
+		factoryClearMemory();
+		EEPROM.write(999,0);
+		EEPROM.write(1000,5);
+		EEPROM.write(1001,6);
+		EEPROM.write(1002,7);
+
+	}
+
+}
+
 
 void resetEverything(){
 	//uint32_t _time=hardware.getElapsedBastlCycles();
@@ -162,26 +241,7 @@ void setAndRecordTrigger(uint8_t _ch, littleNerdHW::TriggerState type, uint16_t 
 
 }
 
-void save(uint8_t _preset){
-	uint16_t presetOffset=_preset*32;
-	for(int i=0;i<6;i++){
-		for(int j=0;j<2;j++){
-			EEPROM.write(presetOffset+j+i*2,parameter[i][j]);
-		}
-		EEPROM.write(presetOffset+12+i,channelMode[i]);
 
-	}
-
-}
-void load(uint8_t _preset){
-	uint16_t presetOffset=_preset*32;
-		for(int i=0;i<6;i++){
-			for(int j=0;j<2;j++){
-				parameter[i][j]=EEPROM.read(presetOffset+j+i*2);
-			}
-			channelMode[i]=EEPROM.read(presetOffset+12+i);
-		}
-}
 
 #define NUMBER_OF_MODES 8
 
@@ -238,8 +298,8 @@ bool rainbow;
 void buttonCall(uint8_t v) {
 	//Serial.println(v);d
 	if(v==EDIT){
-		if(hardware.getButtonState(EDIT) == IHWLayer::DOWN) {
-			if(hardware.getButtonState(MODE) == IHWLayer::DOWN){
+		if(hardware.getButtonState(EDIT)) {
+			if(hardware.getButtonState(MODE)){
 				//bothTime=hardware.getElapsedBastlCycles();
 				// looping
 
@@ -259,7 +319,7 @@ void buttonCall(uint8_t v) {
 
 			if(rainbow) save(currentPreset), rainbow=false,bothTime=hardware.getElapsedBastlCycles(), selectedChannel=255,hardware.setColor(BLACK);
 		}
-		if(hardware.getButtonState(EDIT) == IHWLayer::UP) {
+		if(!hardware.getButtonState(EDIT) ) {
 			editMode=false;
 			for(int i=0;i<6;i++) hardware.freezeKnob(i,parameter[i][0]);
 			//showNumber(selectedChannel);
@@ -270,12 +330,14 @@ void buttonCall(uint8_t v) {
 	}
 	if(v==MODE){
 		//if(hardware.getButtonState(MODE) == IHWLayer::DOWN && hardware.getButtonState(EDIT) == IHWLayer::DOWN) bothTime=hardware.getElapsedBastlCycles();
-		if(hardware.getButtonState(MODE) == IHWLayer::UP){
+		if(!hardware.getButtonState(MODE)){
 			if(editMode){
 				if(selectedChannel!=255){
 					//resetChannel(selectedChannel); // něco takovýho tu musí být ale
+					if(!lock){
 					if(channelMode[selectedChannel]<NUMBER_OF_MODES-1) channelMode[selectedChannel]++;
 					else channelMode[selectedChannel]=0;
+					}
 
 					hardware.setColor(channelMode[selectedChannel]);
 					//Serial.println(channelMode[selectedChannel]);
@@ -287,7 +349,7 @@ void buttonCall(uint8_t v) {
 			}
 		}
 
-		if(hardware.getButtonState(MODE) == IHWLayer::DOWN){
+		if(hardware.getButtonState(MODE)){
 			if(rainbow) load(currentPreset), rainbow=false,bothTime=hardware.getElapsedBastlCycles(), selectedChannel=255,hardware.setColor(BLACK);
 		}
 
@@ -613,14 +675,22 @@ void multCall(unsigned char _id){
 	//Serial.println(_id);
 }
 */
+const uint8_t lockPin=6;
+
 void setup() {
 	Serial.begin(38400);
-	//	Serial.println("start");
+		Serial.println("start");
+
 
 	hardware.init(&buttonCall,&clockCall);
 	dly.init(&eventNow);
 	memory.init(&recEventNow);
+	shouldIClearMemory();
+	currentPreset=EEPROM.read(999);
 	load(currentPreset);
+	printEEPROM();
+	pinMode(lockPin,INPUT_PULLUP);
+	if(!digitalRead(lockPin)) lock=true;
 /*
 	for(int i=0;i<6;i++){
 		mult[i].init(hardware.getBastlCyclesPerSecond(),i);
@@ -640,7 +710,7 @@ uint8_t color;
 uint8_t selectedChannel2;
 void loop() {
 	uint32_t _time=hardware.getElapsedBastlCycles();
-	if(hardware.getButtonState(EDIT)==IHWLayer::DOWN && hardware.getButtonState(MODE)==IHWLayer::DOWN) {
+	if(hardware.getButtonState(EDIT) && hardware.getButtonState(MODE)) {
 		if(_time-bothTime>LONG_TIME) rainbow=true, memory.stopLoop();
 	}
 	else bothTime=_time;
@@ -675,7 +745,7 @@ void loop() {
 		if(editMode) {
 			if(!hardware.knobFreezed(i)) {
 				if(i==selectedChannel) renderNumberDisplay(i,1, selectedChannel);
-				parameter[i][1]=hardware.getKnobValue(i);
+				if(!lock) parameter[i][1]=hardware.getKnobValue(i);
 			}
 			if(hardware.knobMoved(i)){
 				selectedChannel=i;
@@ -696,7 +766,7 @@ void loop() {
 						}
 					}
 
-				parameter[i][0]=hardware.getKnobValue(i);
+				if(!lock) parameter[i][0]=hardware.getKnobValue(i);
 			}
 			//if(!show) hardware.setColor(BLACK);
 		}

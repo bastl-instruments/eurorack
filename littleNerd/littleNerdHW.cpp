@@ -11,7 +11,7 @@
 #include <shiftRegisterFast.h>
 #include <avr/pgmspace.h>
 #include <fastAnalogRead.h>
-#define PIN B,5
+//#define PIN B,5
 #define KNOB_MOVED_TOLERANCE 1
 //using namespace fastAnalogRead;
 
@@ -99,7 +99,7 @@ void littleNerdHW::printLEDStates() {
 }
 
 
-void littleNerdHW::setLED(uint8_t number, IHWLayer::LedState state) {
+void littleNerdHW::setLED(uint8_t number, bool state) {
 
 }
 
@@ -159,14 +159,15 @@ void littleNerdHW::printButtonStates() {
 	}
 }
 
-IHWLayer::ButtonState littleNerdHW::getButtonState(uint8_t number) {
-
+bool littleNerdHW::getButtonState(uint8_t number) {
+	return buttonStates[number];
+	/*
 	if (buttonStates[number] ) {
 		return IHWLayer::UP;
 	} else {
 		return IHWLayer::DOWN;
 	}
-
+*/
 }
 
 
@@ -274,7 +275,7 @@ uint16_t littleNerdHW::getBastlCyclesPerSecond() {
 ISR(TIMER2_COMPA_vect) { //56us :)
 
 
-	bit_set(PIN);
+//	bit_set(PIN);
 	hardware.incrementBastlCycles();
 	hardware.isr_updateClockIn();
 	hardware.isr_updateKnobs();
@@ -282,7 +283,7 @@ ISR(TIMER2_COMPA_vect) { //56us :)
 	hardware.isr_updateButtons();      // ~1ms
 	//hardware.isr_updateNextLEDRow();   // ~84us
 
-	bit_clear(PIN);
+//	bit_clear(PIN);
 
 
 }

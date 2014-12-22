@@ -4,8 +4,8 @@
 #ifndef LITTLENERDHW_H_
 #define LITTLENERDHW_H_
 
-#include <IHWLayer.h>
-#include <Arduino.h>
+//#include <IHWLayer.h>
+//#include <Arduino.h>
 #include <avr/pgmspace.h>
 
 #define BLACK_BITS 0
@@ -32,7 +32,7 @@
 
 
 
-class littleNerdHW : public IHWLayer {
+class littleNerdHW { //: public IHWLayer
 
 
 public:
@@ -59,7 +59,7 @@ public:
 	/***LEDS***/
 
 	// disabled
-	virtual void setLED(uint8_t number, IHWLayer::LedState state);
+	virtual void setLED(uint8_t number, bool state);
 
 	// disabled
 	virtual void setLED(uint8_t number, uint8_t number2, uint8_t number3 = 0) {}
@@ -74,7 +74,9 @@ public:
 	/***BUTTONS***/
 
 	// the the state of a button identified by its id
-	virtual IHWLayer::ButtonState getButtonState(uint8_t number);
+	//virtual IHWLayer::ButtonState getButtonState(uint8_t number);
+//	virtual IHWLayer::ButtonState
+	bool getButtonState(uint8_t number);
 
 	// print the read button states to serial terminal
 	void printButtonStates();
