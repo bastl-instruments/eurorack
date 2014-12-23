@@ -176,7 +176,7 @@
 								<option id="de.innot.avreclipse.cpplinker.option.gcsections.561881908" name="Remove unused sections (-Wl,--gc-sections)" superClass="de.innot.avreclipse.cpplinker.option.gcsections" value="true" valueType="boolean"/>
 								<option id="de.innot.avreclipse.cpplinker.option.otherlinkargs.264913754" name="Other Arguments" superClass="de.innot.avreclipse.cpplinker.option.otherlinkargs" value="" valueType="string"/>
 								<option id="de.innot.avreclipse.cpplinker.option.nostart.397993670" name="No startup or default libs (-nostdlib)" superClass="de.innot.avreclipse.cpplinker.option.nostart" value="false" valueType="boolean"/>
-								<option id="de.innot.avreclipse.cpplinker.option.nosyms.34872661" name="Omit Symbols (-s)" superClass="de.innot.avreclipse.cpplinker.option.nosyms" value="false" valueType="boolean"/>
+								<option id="de.innot.avreclipse.cpplinker.option.nosyms.34872661" name="Omit Symbols (-s)" superClass="de.innot.avreclipse.cpplinker.option.nosyms" value="true" valueType="boolean"/>
 								<inputType id="de.innot.avreclipse.tool.cpplinker.input.681937003" name="OBJ Files" superClass="de.innot.avreclipse.tool.cpplinker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
