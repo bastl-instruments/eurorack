@@ -17,17 +17,21 @@ void digitalNoise::init() {
 	TCCR0B = 0;
 	TIMSK0 = 0;
 
+	freq=0;
 }
 
 
 void digitalNoise::setTopFreq(uint16_t freq) {
+
+	if (this->freq == freq) return;
+
+	// map frequency to compare value (which defines division ratio from clock)
 	uint16_t totalCompare = F_CPU/freq/2;
 
+	// find out and set the prescaler that is needed to reach this compare value
 	uint16_t minimumPrescaler = totalCompare>>8;
 
-
 	uint16_t prescaler = 1;
-
 	if (minimumPrescaler>=1) prescaler = 8;
 	if (minimumPrescaler>=8) prescaler = 64;
 	if (minimumPrescaler>=64) prescaler = 256;
@@ -42,6 +46,7 @@ void digitalNoise::setTopFreq(uint16_t freq) {
 	default: break;
 	}
 
+	// set the timer compare value
 	OCR0A = totalCompare/prescaler;
 }
 

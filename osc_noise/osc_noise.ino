@@ -80,31 +80,23 @@ void loop() {
 
 	digiNoise.checkForBitFlip();
 
-	// calculate metallic noise frequencies and cowbell
-	static uint8_t metallicFreq = 0;
-	static uint8_t cowbellFreq = 0;
-	if ((hardware.getKnobValue(1) != metallicFreq) || (hardware.getKnobValue(2) != cowbellFreq)){
-		metallicFreq = hardware.getKnobValue(1);
-		cowbellFreq = hardware.getKnobValue(2);
-
-		uint8_t index=0;
-		for (; index<numbMetallicChannels; index++) {
-			frequencies[index] = minFrequencies[index]/2 + (((uint32_t)minFrequencies[index]*metallicFreq)>>7);
-		}
-		for (; index<numbMetallicChannels+numbCowbellChannels; index++) {
-			frequencies[index] = minFrequencies[index]/2 + (((uint32_t)minFrequencies[index]*cowbellFreq)>>7);
-		}
-
-		oscil.setFrequencies(frequencies);
+	// set metallic frequencies
+	uint8_t index=0;
+	for (; index<numbMetallicChannels; index++) {
+		frequencies[index] = minFrequencies[index]/2 + (((uint32_t)minFrequencies[index]*hardware.getKnobValue(1))>>7);
 	}
+
+	// set cowbell frequencies
+	for (; index<numbMetallicChannels+numbCowbellChannels; index++) {
+		frequencies[index] = minFrequencies[index]/2 + (((uint32_t)minFrequencies[index]*hardware.getKnobValue(2))>>7);
+	}
+
+	oscil.setFrequencies(frequencies);
+
 
 	// calculate digital noise top frequency
-	static uint8_t noiseFreq = 0;
-	if (hardware.getKnobValue(0) != noiseFreq) {
-		noiseFreq = hardware.getKnobValue(0);
+	digiNoise.setTopFreq((hardware.getKnobValue(0)<<6)+62);
 
-		digiNoise.setTopFreq((noiseFreq<<6)+62);
-	}
 
 	digiNoise.checkForBitFlip();
 

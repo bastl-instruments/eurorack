@@ -11,16 +11,6 @@
 #include <util/atomic.h>
 
 
-
-
-
-
-
-
-
-
-
-
 #ifndef TESTING
 #include <Arduino.h>
 #define DBG
@@ -59,13 +49,18 @@ void MultiChannelOscillator::start() {
 
 void MultiChannelOscillator::setFrequencies(uint16_t* frequencies) {
 
+	bool valuesChanged = false;
+
 	// save settings
 	for (uint8_t index=0; index<numbChannels; index++) {
-		this->frequencies[index] = frequencies[index];
+		if (this->frequencies[index] != frequencies[index]) {
+			this->frequencies[index] = frequencies[index];
+			valuesChanged = true;
+		}
 	}
 
 	// calculate time distances for frequencies
-	calcCompareValues();
+	if (valuesChanged) calcCompareValues();
 
 }
 

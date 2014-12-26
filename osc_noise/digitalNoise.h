@@ -20,6 +20,9 @@ public:
 	void init();
 	void setTopFreq(uint16_t);
 	void checkForBitFlip();
+
+private:
+	uint16_t freq;
 };
 
 
