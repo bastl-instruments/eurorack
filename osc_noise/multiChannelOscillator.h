@@ -22,7 +22,10 @@
 #include <inttypes.h>
 #include <portManipulations.h>
 #include <FiFoBuffer.h>
+
+#ifndef TESTING
 #include <avr/io.h>
+#endif
 
 // macros for accessing port register
 #define REG_PIN(...) REG_PIN_(__VA_ARGS__)
@@ -70,11 +73,12 @@ public:
 	int16_t compareValues[numbChannels];
 	int16_t currentCompareValues[numbChannels];
 
+	void queueNextToggle();
 
 private:
 
 
-	void queueNextToggle();
+
 	void calcCompareValues();
 
 };

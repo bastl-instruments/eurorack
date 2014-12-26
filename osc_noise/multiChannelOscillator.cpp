@@ -8,11 +8,12 @@
 
 #include "multiChannelOscillator.h"
 
-#include <util/atomic.h>
+
 
 
 #ifndef TESTING
 #include <Arduino.h>
+#include <util/atomic.h>
 #define DBG
 #define PIN B,4
 #endif
@@ -21,6 +22,8 @@
 #define F_CPU 16000000L
 #include <stdio.h>
 volatile uint8_t pinRegister = 0;
+#define ATOMIC_BLOCK(v) v
+#define ATOMIC_RESTORESTATE
 #endif
 
 
@@ -194,7 +197,9 @@ void MultiChannelOscillator::printBuffer() {
 	#endif
 }
 
-inline void MultiChannelOscillator::performToggle() {
+
+// INLINE!!!!
+void MultiChannelOscillator::performToggle() {
 
 		toggleEvent event;
 		if (buffer.get(event)) {
@@ -203,6 +208,7 @@ inline void MultiChannelOscillator::performToggle() {
 			REG_PIN(OSCIL_PORT) = event.bits;
 	#else
 			printf("Flipping %u and setting timer to %u\n",event.bits,event.time);
+
 	#endif
 
 		} else {
