@@ -7,8 +7,8 @@
 
 MultiChannelOscillator oscil;
 
-uint16_t frequencies[8] = {153,185,267,327,465,1023,587,845};
-uint16_t frequenciesNew[8] = {150,190,270,330,140,140,140,140};
+uint16_t frequencies[8] =  {153,185,267,327,465,1023,587,845};
+uint16_t frequenciesNew[8] = {154,186,280,360,500,700,900,847};
 uint8_t pinIndices[8]  = {0,1,2,3,4,5,6,7};
 
 
@@ -18,8 +18,8 @@ int main( int argc, const char* argv[] ) {
 	oscil.init(pinIndices);
 	oscil.setFrequencies(frequencies);
 
-	const uint8_t numbEvents = 120;
-	const uint8_t eventsBeforeChange = 40;
+	const uint8_t numbEvents = oscil.eventBufferSize;
+	const uint8_t eventsBeforeChange = 50;
 
 	// get first element in buffer. We now have the space until the head would need to wrap
 	toggleEvent* buffer = oscil.buffer.getPointer();
@@ -29,7 +29,6 @@ int main( int argc, const char* argv[] ) {
 	for (; index<eventsBeforeChange; index++) {
 		oscil.queueNextToggle();
 	}
-	oscil.printBuffer();
 	oscil.setFrequencies(frequenciesNew);
 	for (;index<numbEvents; index++) {
 		oscil.queueNextToggle();
@@ -69,6 +68,7 @@ int main( int argc, const char* argv[] ) {
 	uint8_t maxEvents = 0;
 	for (uint8_t bit=0; bit<8; bit++) {
 		//printf("Bit %u: %u events\n",bit,flipTimesIndices[bit]);
+		if (flipTimesIndices[bit]>0) flipTimesIndices[bit]--;
 		if (maxEvents<flipTimesIndices[bit]) maxEvents= flipTimesIndices[bit];
 	}
 
@@ -77,7 +77,11 @@ int main( int argc, const char* argv[] ) {
 	printf("-------------------------------------------------------------------\n");
 	for (uint8_t i=0; i<=maxEvents; i++) {
 		for (uint8_t bit=0;bit<8; bit++) {
-			printf("%u\t",flipTimes[bit][i]);
+			if (i<=flipTimesIndices[bit]) {
+				printf("%u\t",flipTimes[bit][i]);
+			} else {
+				printf("#\t");
+			}
 		}
 		printf("\n");
 	}
