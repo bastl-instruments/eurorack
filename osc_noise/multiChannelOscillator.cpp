@@ -163,7 +163,7 @@ inline void MultiChannelOscillator::queueNextToggle() {
 
 	// store calculated time and keep it for next run
 	event.time = distanceToNext;
-	if (event.time>2) event.time--;
+	//if (event.time>2) event.time--;
 
 
 	lastTime = distanceToNext;
