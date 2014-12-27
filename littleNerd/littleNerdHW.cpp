@@ -124,8 +124,8 @@ void littleNerdHW::setColor(unsigned char _COLOR){
 void littleNerdHW::isr_updateButtons() {
 
 
-	newButtonStates[0]=bit_read_in(BUTTON_PIN_1);
-	newButtonStates[1]=bit_read_in(BUTTON_PIN_2);
+	newButtonStates[0]=!bit_read_in(BUTTON_PIN_1);
+	newButtonStates[1]=!bit_read_in(BUTTON_PIN_2);
 
 	compareButtonStates();
 

@@ -101,8 +101,8 @@ uint8_t bitShifter[8]={0,3,3,5,0,3,0,0};
 
 #define DEFAULT_TRIGGER_LENGTH 20 // around 10ms
 
-#define EDIT 1
-#define MODE 0
+#define EDIT 0
+#define MODE 1
 boolean editMode;
 uint8_t selectedChannel=255;
 uint8_t channelMode[6]={0,0,FLOP_DIVIDER,0,DIVIDER,OSC};
@@ -114,8 +114,7 @@ uint8_t currentPreset=0;
 uint8_t parameter[6][2]={{0,0},{0,0},{0,0},{0,0},{0,0},{0,20}};
 bool lock=false;
 
-PROGMEM const uint8_t clearTo[]={ 180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,  180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,  180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,  180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,  180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,  180, 0,  255, 0,  0, 200,  18, 18,  163, 19,  17, 36,  31,  190,  207,  239,  216,  224,   };
-
+PROGMEM const uint8_t clearTo[]={ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,   };
 void save(uint8_t _preset){
 	if(!lock){
 	uint16_t presetOffset=_preset*32;
@@ -681,17 +680,19 @@ void setup() {
 	Serial.begin(38400);
 		Serial.println("start");
 
+	pinMode(lockPin,INPUT_PULLUP);
+	if(!digitalRead(lockPin)) lock=true;//, Serial.print("lock");
 
 	hardware.init(&buttonCall,&clockCall);
 	dly.init(&eventNow);
 	memory.init(&recEventNow);
 	shouldIClearMemory();
+	//EEPROM.write(999,0);
 	currentPreset=EEPROM.read(999);
 	load(currentPreset);
-	printEEPROM();
-	pinMode(lockPin,INPUT_PULLUP);
-	if(!digitalRead(lockPin)) lock=true;
-/*
+	//printEEPROM();
+	//factoryClearMemory();
+	/*
 	for(int i=0;i<6;i++){
 		mult[i].init(hardware.getBastlCyclesPerSecond(),i);
 		mult[i].setStepCallback(&multCall);
