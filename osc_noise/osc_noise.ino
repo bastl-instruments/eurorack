@@ -88,7 +88,7 @@ void loop() {
 
 	// set cowbell frequencies
 	for (; index<numbMetallicChannels+numbCowbellChannels; index++) {
-		frequencies[index] = minFrequencies[index]/2 + (((uint32_t)minFrequencies[index]*hardware.getKnobValue(2))>>7);
+		frequencies[index] = minFrequencies[index]/16 + (((uint32_t)minFrequencies[index]*hardware.getKnobValue(2))>>7); //changed here
 	}
 
 	oscil.setFrequencies(frequencies);
