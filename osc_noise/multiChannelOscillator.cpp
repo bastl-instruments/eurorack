@@ -52,6 +52,8 @@ void MultiChannelOscillator::start() {
 
 void MultiChannelOscillator::setFrequencies(uint16_t* frequencies) {
 
+
+
 	bool valuesChanged = false;
 
 	// save settings
@@ -107,19 +109,19 @@ void MultiChannelOscillator::init(uint8_t* pinIndices) {
 
 void MultiChannelOscillator::calcCompareValues() {
 
-	bit_set(PIN);
+
 
 	for (uint8_t index=0; index<numbChannels; index++) {
 
 		compareValues[index] = (F_CPU / 128) / frequencies[index];
-		currentCompareValues[index] = compareValues[index];
+		//currentCompareValues[index] = compareValues[index];
 
 		#ifdef TESTING
 		printf("Channel %u: %u\n",index,compareValues[index]);
 		#endif
 	}
 
-	bit_clear(PIN);
+
 
 	#ifdef TESTING
 		printf("\n");
