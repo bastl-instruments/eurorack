@@ -8,7 +8,7 @@
 MultiChannelOscillator oscil;
 
 uint16_t frequencies[8] =  {153,185,267,327,465,1023,587,845};
-uint16_t frequenciesNew[8] = {154,186,280,360,500,700,900,847};
+uint16_t frequenciesNew[8] = {300,432,498,700,900,2000,587,845};
 uint8_t pinIndices[8]  = {0,1,2,3,4,5,6,7};
 
 

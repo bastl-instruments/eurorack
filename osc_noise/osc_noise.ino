@@ -87,6 +87,9 @@ void loop() {
 		frequencies[index] = minFrequencies[index]/8 + (((uint32_t)minFrequencies[index]*hardware.getKnobValue(1))>>6);
 	}
 
+
+
+
 	// set cowbell frequencies
 	uint16_t freq=hardware.getKnobValue(2)+(hardware.getCVValue(1)>>1);
 	for (; index<numbMetallicChannels+numbCowbellChannels; index++) {
@@ -97,7 +100,7 @@ void loop() {
 
 
 	// calculate digital noise top frequency
-	 freq=hardware.getKnobValue(0)+(hardware.getCVValue(0)>>1);
+	freq=hardware.getKnobValue(0)+(hardware.getCVValue(0)>>1);
 
 	digiNoise.setTopFreq((freq<<6)+62);
 

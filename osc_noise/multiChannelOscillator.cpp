@@ -52,8 +52,6 @@ void MultiChannelOscillator::start() {
 
 void MultiChannelOscillator::setFrequencies(uint16_t* frequencies) {
 
-
-
 	bool valuesChanged = false;
 
 	// save settings
@@ -207,14 +205,15 @@ void MultiChannelOscillator::printBuffer() {
 
 
 // INLINE!!!!
-void MultiChannelOscillator::performToggle() {
+inline void MultiChannelOscillator::performToggle() {
 
 		toggleEvent event;
 		if (buffer.get(event)) {
-	#ifndef TESTING
+			if (event.time>1) event.time-=1;
+			#ifndef TESTING
 			OCR1A = event.time;
 			REG_PIN(OSCIL_PORT) = event.bits;
-	#else
+			#else
 			printf("Flipping %u and setting timer to %u\n",event.bits,event.time);
 
 	#endif
