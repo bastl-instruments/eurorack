@@ -51,6 +51,8 @@ void digitalNoise::setTopFreq(uint16_t freq) {
 }
 
 void digitalNoise::checkForBitFlip() {
+
+
 	if (TIFR0 & (1<<OCF0A)) {
 		if (bastlRandom::byte()>127) bit_toggle(DIGINOISE_PIN);
 		TIFR0 |= (1<<OCF0A);

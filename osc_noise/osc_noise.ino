@@ -74,6 +74,8 @@ void loop() {
 	// get new CV and knob values
 	hardware.update();
 
+	digiNoise.checkForBitFlip();
+
 	oscil.fillBuffer();
 
 
@@ -84,7 +86,8 @@ void loop() {
 	uint8_t index=0;
 
 	for (; index<numbMetallicChannels; index++) {
-		frequencies[index] = minFrequencies[index]/8 + (((uint32_t)minFrequencies[index]*hardware.getKnobValue(1))>>6);
+		frequencies[index] = minFrequencies[index]/8 + (((uint32_t)minFrequencies[index]*hardware.getKnobValue(1))>>7);
+		digiNoise.checkForBitFlip();
 	}
 
 
@@ -93,16 +96,20 @@ void loop() {
 	// set cowbell frequencies
 	uint16_t freq=hardware.getKnobValue(2)+(hardware.getCVValue(1)>>1);
 	for (; index<numbMetallicChannels+numbCowbellChannels; index++) {
-		frequencies[index] = minFrequencies[index]/16 + (((uint32_t)minFrequencies[index]*freq)>>7); //changed here
+		frequencies[index] = minFrequencies[index]/16 + (((uint32_t)minFrequencies[index]*freq)>>8); //changed here
+		digiNoise.checkForBitFlip();
 	}
 
+	digiNoise.checkForBitFlip();
 	oscil.setFrequencies(frequencies);
+	digiNoise.checkForBitFlip();
 
 
 	// calculate digital noise top frequency
 	freq=hardware.getKnobValue(0)+(hardware.getCVValue(0)>>1);
 
-	digiNoise.setTopFreq((freq<<6)+62);
+	digiNoise.checkForBitFlip();
+	digiNoise.setTopFreq((freq<<5)+62);
 
 
 	digiNoise.checkForBitFlip();
