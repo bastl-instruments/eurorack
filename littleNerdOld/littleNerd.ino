@@ -6,8 +6,10 @@
  * licensed under cc-by-sa
  *
  *TODO
-flop divider visual
-euclidian visual
+ *finish visual testing
+ *do audioble testing
+ *implement production code = testing + eeprom reset
+ *implement midi ?
  *
  */
 
@@ -31,7 +33,7 @@ int main(void) {
 #include <portManipulations.h>
 #include "littleNerdHW.h"
 #include "eventDelay.h"
-//#include "eventMemory.h"
+#include "eventMemory.h"
 #include "euclid.h"
 #include "eepromMemory.h"
 
@@ -40,7 +42,7 @@ extern littleNerdHW hardware;
 eventDelay dly;
 euclid euclidian[6];
 //StepMultiplier mult[6];
-//eventMemory memory;
+eventMemory memory;
 
 #define bitWr(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 #define bitRd(value, bit) (((value) >> (bit)) & 0x01)
@@ -95,9 +97,9 @@ void test(uint8_t v) {
 #define OSC 6
 #define PROBABILITY 7
 
-uint8_t bitShifter[8]={0,4,4,5,4,4,0,0};
+uint8_t bitShifter[8]={0,3,3,5,0,3,0,0};
 
-#define DEFAULT_TRIGGER_LENGTH 10 // around 10ms
+#define DEFAULT_TRIGGER_LENGTH 20 // around 10ms
 
 #define EDIT 0
 #define MODE 1
@@ -111,8 +113,6 @@ bool flop[6];
 uint8_t currentPreset=0;
 uint8_t parameter[6][2]={{0,0},{0,0},{0,0},{0,0},{0,0},{0,20}};
 bool lock=false;
-uint8_t defaultValue1[8]={0,127,32,32,16,31,127,184};
-uint8_t defaultValue2[8]={0,16,0,0,200,255,127,0};
 
 PROGMEM const uint8_t clearTo[]={ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,   };
 void save(uint8_t _preset){
@@ -143,12 +143,10 @@ void factoryClearMemory(){
 	for(int k=0;k<6;k++){
 		load(k);
 	for(int i=0;i<6;i++){
-		parameter[i][0]=defaultValue1[i];//pgm_read_word_near(clearTo+j+i*2);
-		parameter[i][1]=defaultValue2[i];//pgm_read_word_near(clearTo+j+i*2);
 		for(int j=0;j<2;j++){
 					parameter[i][j]=pgm_read_word_near(clearTo+j+i*2);
 				}
-				channelMode[i]=1;//pgm_read_word_near(clearTo+12+i);
+				channelMode[i]=pgm_read_word_near(clearTo+12+i);
 			}
 	save(k);
 	}
@@ -221,7 +219,6 @@ void resetChannel(uint8_t i){
 void setAndRecordTrigger(uint8_t _ch, littleNerdHW::TriggerState type, uint16_t cycles){
 
 	hardware.setTrigger(_ch,type,cycles);
-	/*
 	if(memory.recording()){
 	if(cycles == DEFAULT_TRIGGER_LENGTH ){
 		memory.createEvent(_ch,2,cycles,hardware.getElapsedBastlCycles());
@@ -238,7 +235,7 @@ void setAndRecordTrigger(uint8_t _ch, littleNerdHW::TriggerState type, uint16_t 
 		memory.createEvent(_ch,3,cycles,hardware.getElapsedBastlCycles());
 	}
 	}
-*/
+
 }
 
 
@@ -251,109 +248,117 @@ uint32_t selectMomentTime;
 uint8_t lastSelectedChannel;
 #define WAIT_BEFORE_RENDER_DISPLAY 1000
 void renderNumberDisplay(uint8_t i, uint8_t index, uint8_t _ch){
-
 	if(hardware.getElapsedBastlCycles()-selectMomentTime>WAIT_BEFORE_RENDER_DISPLAY){
 
 
 	if(hardware.getElapsedBastlCycles()-showTime>100){
 		//if(index==0) hardware.setColor(BLACK);
 	show=false;
-
+	if(channelMode[i]==DIVIDER || channelMode[i]==FLOP_DIVIDER || channelMode[i]==MULTIPLIER ||channelMode[i]==EUCLID){
 		if(index==0){ // only for EUCLID - needs to map the fills because maximum is the number of steps
-
-			if(channelMode[i]==MULTIPLIER || channelMode[i]==GROOVE ){
-				if((parameter[i][index]>>bitShifter[channelMode[_ch]])!=(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])){
-					if((((hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
-					else hardware.setColor(BLACK);
-					//Serial.println(i);
-					showTime=hardware.getElapsedBastlCycles();
-					show=true;
-				}
-				else hardware.setColor(channelMode[_ch]);
+			if(myMap(parameter[_ch][0]>>3,31,parameter[_ch][1]>>3)!=myMap(hardware.getKnobValue(i)>>3,31,parameter[_ch][1]>>3)){
+						if(((myMap(hardware.getKnobValue(i)>>3,31,parameter[_ch][1]>>3)+1) % 4) == 0) hardware.setColor(WHITE);
+						else hardware.setColor(channelMode[_ch]);
+						showTime=hardware.getElapsedBastlCycles();
+						show=true;
 			}
-			else if(channelMode[_ch]==EUCLID){
-				if(myMap(parameter[_ch][0]>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])!=myMap(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])){
-							if(((myMap(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
-							else hardware.setColor(BLACK);
-							showTime=hardware.getElapsedBastlCycles();
-							show=true;
-				}
-				else hardware.setColor(channelMode[_ch]);
-			}
-			//hardware.setColor(BLACK);
+			else hardware.setColor(BLACK);
 		}
-
 		else{
-			if(channelMode[i]==DIVIDER || channelMode[i]==FLOP_DIVIDER ||channelMode[i]==EUCLID){
-				if((parameter[i][index]>>bitShifter[channelMode[_ch]])!=(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])){
-					if((((hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
+		if((parameter[i][index]>>bitShifter[channelMode[_ch]])!=(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])){
+			if((((hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
 
-					else hardware.setColor(BLACK);
+			else hardware.setColor(BLACK);
 
 
-					//Serial.println(i);
-					showTime=hardware.getElapsedBastlCycles();
-					show=true;
-				}
-				else hardware.setColor(channelMode[_ch]);
-			}
+			//Serial.println(i);
+			showTime=hardware.getElapsedBastlCycles();
+			show=true;
 		}
+		else hardware.setColor(channelMode[_ch]);
+		}
+
+
+
 	}
 
+
+	}
+	else {
+
+
+		if(channelMode[i]==DIVIDER || channelMode[i]==FLOP_DIVIDER || channelMode[i]==MULTIPLIER || channelMode[i]==EUCLID){
+		if((((hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
+		else if(index==0) hardware.setColor(channelMode[_ch]);
+		else hardware.setColor(BLACK);
+		}
+
+
+	}
 	}
 }
 uint32_t bothTime;
 uint8_t col;
 bool rainbow;
-
-void resetParamToDefault(){
-	parameter[selectedChannel][0]=defaultValue1[channelMode[selectedChannel]];
-	parameter[selectedChannel][1]=defaultValue2[channelMode[selectedChannel]];
-}
 void buttonCall(uint8_t v) {
 	//Serial.println(v);d
 	if(v==EDIT){
 		if(hardware.getButtonState(EDIT)) {
+			if(hardware.getButtonState(MODE)){
+				//bothTime=hardware.getElapsedBastlCycles();
+				// looping
+
+					if(!memory.recording() && !memory.looping()){
+						memory.startRecording(hardware.getElapsedBastlCycles());
+						for(int i=0;i<6;i++){
+							memory.setInitialState(i,hardware.getTriggerState(i));
+						}
+					}
+					else if(memory.recording()) memory.loopRecorded(hardware.getElapsedBastlCycles());
+					else if(memory.looping()) memory.stopLoop();
+					hardware.setColor(BLACK);
+
+			}
 			editMode=true;
 			for(int i=0;i<6;i++) hardware.freezeKnob(i,parameter[i][1]);
-			//??
+
 			if(rainbow) save(currentPreset), rainbow=false,bothTime=hardware.getElapsedBastlCycles(), selectedChannel=255,hardware.setColor(BLACK);
 		}
 		if(!hardware.getButtonState(EDIT) ) {
 			editMode=false;
 			for(int i=0;i<6;i++) hardware.freezeKnob(i,parameter[i][0]);
 			//showNumber(selectedChannel);
-		//	hardware.setColor(BLACK);
-		//	selectedChannel=255;
-			if(rainbow) save(currentPreset), rainbow=false,bothTime=hardware.getElapsedBastlCycles(), selectedChannel=255,hardware.setColor(BLACK);
+			hardware.setColor(BLACK);
+			selectedChannel=255;
 
 		}
 	}
 	if(v==MODE){
 		//if(hardware.getButtonState(MODE) == IHWLayer::DOWN && hardware.getButtonState(EDIT) == IHWLayer::DOWN) bothTime=hardware.getElapsedBastlCycles();
 		if(!hardware.getButtonState(MODE)){
-			if(rainbow) save(currentPreset), rainbow=false,bothTime=hardware.getElapsedBastlCycles(), selectedChannel=255,hardware.setColor(BLACK);
-
-			else if(!editMode){
+			if(editMode){
 				if(selectedChannel!=255){
 					//resetChannel(selectedChannel); // něco takovýho tu musí být ale
 					if(!lock){
-						if(channelMode[selectedChannel]<NUMBER_OF_MODES-1) channelMode[selectedChannel]++;
-						else channelMode[selectedChannel]=1;
-						resetParamToDefault();
-						hardware.freezeKnob(selectedChannel,parameter[selectedChannel][0]);
+					if(channelMode[selectedChannel]<NUMBER_OF_MODES-1) channelMode[selectedChannel]++;
+					else channelMode[selectedChannel]=0;
 					}
 
 					hardware.setColor(channelMode[selectedChannel]);
 					//Serial.println(channelMode[selectedChannel]);
 				}
 			}
-				/*
 			else{
 				if(!memory.recording() && !memory.looping()) resetEverything(),hardware.setColor(BLACK); // RESET
+
 			}
-			*/
 		}
+
+		if(hardware.getButtonState(MODE)){
+			if(rainbow) load(currentPreset), rainbow=false,bothTime=hardware.getElapsedBastlCycles(), selectedChannel=255,hardware.setColor(BLACK);
+		}
+
+
 	}
 }
 
@@ -366,7 +371,7 @@ uint8_t divider;
 uint32_t offset[6];
 
 void renderMultiplier(uint8_t _ch){
-	uint8_t multiplication=(parameter[_ch][0]>>5)+1;
+	uint8_t multiplication=(parameter[_ch][1]>>5)+1;
 
 	if (counterLeft[_ch] != 0) {
 
@@ -417,13 +422,12 @@ void clockInChannel(uint8_t _ch){
 	case DIVIDER: // TESTED
 
 		counter[_ch]++;
-		divider=(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1;
+		divider=(parameter[_ch][1]>>3)+1;
 		if(counter[_ch]%divider==0){
 			counter[_ch]=0; // ?
 			lastClockInTime[_ch]=clockInTime[_ch];
 			clockInTime[_ch]=hardware.getElapsedBastlCycles();
-			if(divider==1) offset[_ch]=(parameter[_ch][0]<<2);
-			else offset[_ch]=myMap(parameter[_ch][0],255,(clockInTime[_ch]-lastClockInTime[_ch]));
+			offset[_ch]=myMap(parameter[_ch][0],255,(clockInTime[_ch]-lastClockInTime[_ch]));
 			dly.createEvent(_ch,STANDART_TRIGGER,hardware.getElapsedBastlCycles()+offset[_ch]);
 
 			//setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
@@ -435,33 +439,27 @@ void clockInChannel(uint8_t _ch){
 
 	case FLOP_DIVIDER: // TESTED
 
-		//setAndRecordTrigger(_ch,littleNerdHW::ON,(parameter[_ch][0]<<4)+1);
 		counter[_ch]++;
-		divider=myMap(parameter[_ch][1],255,9);
-		if(divider==0){
-			setAndRecordTrigger(_ch,littleNerdHW::ON,(parameter[_ch][0]<<4)+1);
-		}
-		else{
-			if(counter[_ch]%divider==0){
-				counter[_ch]=0; // ?
-				lastClockInTime[_ch]=clockInTime[_ch];
-				clockInTime[_ch]=hardware.getElapsedBastlCycles();
+		divider=(parameter[_ch][1]>>3)+1;
+		if(counter[_ch]%divider==0){
+			counter[_ch]=0; // ?
+			lastClockInTime[_ch]=clockInTime[_ch];
+			clockInTime[_ch]=hardware.getElapsedBastlCycles();
 
-				flop[_ch]=!flop[_ch];
-				if(flop[_ch]) {
-					offset[_ch]=myMap(parameter[_ch][0],255,(clockInTime[_ch]-lastClockInTime[_ch]));
-					dly.createEvent(_ch,TRIGGER_ON,hardware.getElapsedBastlCycles()+offset[_ch]);
-				}
-				else dly.createEvent(_ch,TRIGGER_OFF,hardware.getElapsedBastlCycles()+offset[_ch]);
-
+			flop[_ch]=!flop[_ch];
+			if(flop[_ch]) {
+				offset[_ch]=myMap(parameter[_ch][0],255,(clockInTime[_ch]-lastClockInTime[_ch]));
+				dly.createEvent(_ch,TRIGGER_ON,hardware.getElapsedBastlCycles()+offset[_ch]);
 			}
+			else dly.createEvent(_ch,TRIGGER_OFF,hardware.getElapsedBastlCycles()+offset[_ch]);
+
 		}
+
 		break;
 
 
 	case MULTIPLIER:{ //
-
-		uint8_t multiplication=(parameter[_ch][0]>>bitShifter[channelMode[_ch]])+1; //
+		uint8_t multiplication=(parameter[_ch][1]>>5)+1; //
 
 		if (flop[_ch]) {
 			clockInTime[_ch] = hardware.getElapsedBastlCycles() - channelTime[_ch];
@@ -470,49 +468,53 @@ void clockInChannel(uint8_t _ch){
 		lastChannelTime[_ch] = hardware.getElapsedBastlCycles();
 
 
-		//if(parameter[_ch][0]==0){ // clock multiplier // need to do full scale testing
-		counter[_ch] += counterLeft[_ch];
-		counterLeft[_ch] = ((multiplication) - 1);
+		if(parameter[_ch][0]==0){ // clock multiplier // need to do full scale testing
+			counter[_ch] += counterLeft[_ch];
+			counterLeft[_ch] = ((multiplication) - 1);
 
-		counter[_ch]++;
-		renderMultiplier(_ch);
-		flop[_ch] = true;
-	//	}
-
-
-		}
-		break;
-	case OSC: //TESTED !
-		if(parameter[_ch][1]==255) {
-			//channelTime[_ch]=0; // reset
-			lastClockInTime[_ch]=clockInTime[_ch];
-			clockInTime[_ch]=hardware.getElapsedBastlCycles();
-		}
-		break;
-	case PROBABILITY: //  TESTED !
-		if(parameter[_ch][1]==255){ // PROBABILITY
-			lastClockInTime[_ch]=clockInTime[_ch];
-			clockInTime[_ch]=hardware.getElapsedBastlCycles();
-			offset[_ch]=myMap(parameter[_ch][0],255,(clockInTime[_ch]-lastClockInTime[_ch]));
 			counter[_ch]++;
-			if(counter[_ch]%2==1) dly.createEvent(_ch,STANDART_TRIGGER,hardware.getElapsedBastlCycles()+offset[_ch]);
-			else setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
+			renderMultiplier(_ch);
+			flop[_ch] = true;
 		}
 
-		else{ //GROOVE
-			if(random(255)<=parameter[_ch][0]) setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
-		}
-
-		break;
-	case GROOVE:{
-	//	else { // trigger repeater TESTED !
-		uint8_t multiplication=(parameter[_ch][0]>>bitShifter[channelMode[_ch]])+1;
-		for(int i=0;i<multiplication;i++){
-			dly.createEvent(_ch,STANDART_TRIGGER,hardware.getElapsedBastlCycles()+i*(((255-parameter[_ch][1])<<1)+DEFAULT_TRIGGER_LENGTH*2)); // naladit
+		else { // trigger repeater TESTED !
+			for(int i=0;i<multiplication;i++){
+				dly.createEvent(_ch,STANDART_TRIGGER,hardware.getElapsedBastlCycles()+i*((parameter[_ch][0]<<2)+DEFAULT_TRIGGER_LENGTH*2)); // naladit
 			}
 		}
-		// TESTED !
-		/*
+	}
+		break;
+	case OSC: //TESTED !
+		if(parameter[_ch][1]==255) channelTime[_ch]=0; // reset
+		break;
+	case PROBABILITY: //  TESTED !
+		if(parameter[_ch][1]==0){ // PROBABILITY
+			if(random(255)<=parameter[_ch][0]) setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
+		}
+		else if(parameter[_ch][1]==255){ // PHASER
+			lastClockInTime[_ch]=clockInTime[_ch];
+			clockInTime[_ch]=hardware.getElapsedBastlCycles();
+		}
+		else{ // RANDOM PATTERN
+			if(euclidian[_ch].getCurrentStep()) setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
+
+/*
+					Serial.print(" fills: ");
+					Serial.print(euclidian[_ch].getNumberOfFills());
+					Serial.print(" channel: ");
+					Serial.print(_ch);
+					Serial.print(" step no.: ");
+					Serial.print(euclidian[_ch].getStepNumber());
+					Serial.print(" step value: ");
+					Serial.print(euclidian[_ch].getCurrentStep());
+					Serial.println();
+*/
+			euclidian[_ch].doStep();
+		}
+
+		break;
+	case GROOVE: // TESTED !
+
 		if(parameter[_ch][1]==0){ // SIMPLE DELAY
 			dly.createEvent(_ch,STANDART_TRIGGER,hardware.getElapsedBastlCycles()+(parameter[_ch][0]<<2)); //naladit
 		}
@@ -527,11 +529,10 @@ void clockInChannel(uint8_t _ch){
 		if(counter[_ch]%2==1) dly.createEvent(_ch,STANDART_TRIGGER,hardware.getElapsedBastlCycles()+offset[_ch]);
 		else setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
 		}
-		*/
 		break;
 	case EUCLID:{ // TESTED ! - DODELAT ZOBRAZOVANI MIMO EDIT MOD
-		uint8_t fills=myMap(parameter[_ch][0]>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]]);
-		euclidian[_ch].generateSequence(fills+1,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1);
+		uint8_t fills=myMap(parameter[_ch][0]>>3,31,parameter[_ch][1]>>3);
+		euclidian[_ch].generateSequence(fills+1,(parameter[_ch][1]>>3)+1);
 		if(euclidian[_ch].getCurrentStep()) setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
 		/*
 		Serial.print(" steps: ");
@@ -561,9 +562,13 @@ void clockInChannel(uint8_t _ch){
 void renderOsc(uint8_t _ch){
 	uint16_t period=0;
 	uint16_t duty=0;
-	if(parameter[_ch][1]==255){ // PHASER
+	if(channelMode[_ch]==PROBABILITY){ // PHASER
 		period=clockInTime[_ch]-lastClockInTime[_ch];
 		period+=parameter[_ch][0];  // naladit phaser
+		duty=period/2;
+	}
+	else if(parameter[_ch][1]==255){ // RESETING OSC
+		period=(257-parameter[_ch][0])<<3; //naladit
 		duty=period/2;
 	}
 	else{
@@ -585,12 +590,15 @@ void renderOsc(uint8_t _ch){
 void renderChannel(uint8_t _ch){
 	switch(channelMode[_ch]){
 	case MULTIPLIER:
-		renderMultiplier(_ch);
+		if(parameter[_ch][0]==0) renderMultiplier(_ch);
 		break;
 	case OSC:
 		renderOsc(_ch);
 		break;
 	case PROBABILITY:
+		if(parameter[_ch][1]==255){
+			renderOsc(_ch);
+		}
 		/*
 		else if(parameter[_ch][1]!=0){
 			if(hardware.knobMoved(_ch)) euclidian[_ch].generateRandomSequence((parameter[_ch][0]>>4)+1,16);//,Serial.println("R");
@@ -683,7 +691,7 @@ void setup() {
 
 	hardware.init(&buttonCall,&clockCall);
 	dly.init(&eventNow);
-	//memory.init(&recEventNow);
+	memory.init(&recEventNow);
 	shouldIClearMemory();
 	//EEPROM.write(999,0);
 	currentPreset=EEPROM.read(999);
@@ -711,26 +719,37 @@ uint8_t selectedChannel2;
 void loop() {
 	uint32_t _time=hardware.getElapsedBastlCycles();
 	if(hardware.getButtonState(EDIT) && hardware.getButtonState(MODE)) {
-		if(_time-bothTime>LONG_TIME) rainbow=true;//, memory.stopLoop();
+		if(_time-bothTime>LONG_TIME) rainbow=true, memory.stopLoop();
 	}
 	else bothTime=_time;
 
 	if(rainbow){
-		if(_time-timeNow>300){
+		if(_time-timeNow>500){
 			timeNow = _time;
 			if(color<7) color++;
 			else color=0;
 			hardware.setColor(color);
 		}
 		for(int i=0;i<6;i++){
-			if(hardware.knobMoved(i)) save(currentPreset),currentPreset=i,load(currentPreset), rainbow=false, bothTime=_time, selectedChannel=255,hardware.setColor(BLACK);
+			if(hardware.knobMoved(i)) currentPreset=i,load(currentPreset), rainbow=false, bothTime=_time, selectedChannel=255,hardware.setColor(BLACK);
 		}
 	}
+//	else{
+
+	if(memory.looping()){
+		memory.update(_time);
+		if(_time-timeNow>(memory.getloopLength()/32)){
+					timeNow = _time;
+					if(color==RED) color=BLACK;
+					else color=RED;
+					if(!rainbow) hardware.setColor(color);
+		}
+	}
+	else{
 
 	dly.update(_time);
 	lastSelectedChannel=selectedChannel;
 	for(int i=0;i<6;i++){
-		if(i!=3){
 		renderChannel(i);
 		if(editMode) {
 			if(!hardware.knobFreezed(i)) {
@@ -748,22 +767,34 @@ void loop() {
 
 
 			if(!hardware.knobFreezed(i)){
-				if(selectedChannel==i && !rainbow) renderNumberDisplay(i,0,selectedChannel) ;
+				if(hardware.knobMoved(i)) selectedChannel2=i;
+				if(channelMode[i]==EUCLID) if(selectedChannel2==i && !rainbow) renderNumberDisplay(i,0,i) ;
+
+				if(channelMode[i]==PROBABILITY && parameter[i][1]!=0 && parameter[i][1]!=255){
+					if((parameter[i][0]>>4)!=(hardware.getKnobValue(i)>>4)){
+							euclidian[i].generateRandomSequence((hardware.getKnobValue(i)>>4)+1,16);
+						}
+					}
+
 				if(!lock) parameter[i][0]=hardware.getKnobValue(i);
 			}
-			if(hardware.knobMoved(i)){
-				selectedChannel=i;
-				if(lastSelectedChannel!=selectedChannel) selectMomentTime=hardware.getElapsedBastlCycles();
-				if(!show && !rainbow) hardware.setColor(channelMode[selectedChannel]);//, Serial.println(i);
-			}
-
 			//if(!show) hardware.setColor(BLACK);
-		}
 		}
 
 	}
 	probability=hardware.getKnobValue(3);
+	if(memory.recording()){
+		selectedChannel2=255;
+	if(_time-timeNow>500){
+						timeNow = _time;
+						if(color==RED) color=BLACK;
+						else color=RED;
+						if(!rainbow) hardware.setColor(color);
+			}
+	}
 
+	}
+//	}
 
 }
 
