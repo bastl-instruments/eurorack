@@ -30,7 +30,12 @@ void dummy() {
 }
 
 
+#define DEBUG
+
 void setup() {
+	#ifdef DEBUG
+	Serial.begin(115200);
+	#endif
 	hardware.init(&dummy);
 	LFO.init();
 	LFO.setBastlCyclesPerPeriod(800);
@@ -46,6 +51,9 @@ void loop() {
 		_time=hardware.getElapsedBastlCyclesLong();
 		testTime++;
 		uint8_t out=LFO.getValue(testTime);
+		#ifdef DEBUG
+		Serial.print(testTime); Serial.print(" "); Serial.println(out);
+		#endif
 		hardware.setDAC(0,out);
 		hardware.isr_updateDAC();
 	}
