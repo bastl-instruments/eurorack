@@ -60,7 +60,7 @@ int main(void) {
 interpolatingBuffer buffer[6];
 //Line <float> line[6];
 ADSR envelope[6];
-lfoExtended LFO[6];
+lfoExtended LFO;//[6];
 simpleSerialDecoder com;
 
 /* channel TYPES
@@ -468,7 +468,7 @@ void channelValueCall(uint8_t channel, uint8_t value, uint8_t number){
 }
 uint16_t syncStepNumber;
 void clockInCall(){
-
+/*
 	clockInDuration=hardware.getElapsedBastlCyclesLong()-lastTime;
 	lastTime=hardware.getElapsedBastlCyclesLong();
 	//if(currentStepNumber<255) currentStepNumber++;
@@ -496,7 +496,7 @@ void clockInCall(){
 		}
 		else if(channelSync[i]){
 			if(syncFast[i]){
-				LFO[i].setToStep(0,hardware.getElapsedBastlCyclesLong());
+				//LFO[i].setToStep(0,hardware.getElapsedBastlCyclesLong());
 				buffer[i].sync();
 				envelope[i].sync();
 				reflectValueChange(i,0);
@@ -504,14 +504,14 @@ void clockInCall(){
 			else{
 				if(syncStepNumber%syncFactor[i]==0){
 					buffer[i].sync();
-					LFO[i].setToStep(0,hardware.getElapsedBastlCyclesLong());
+					//LFO[i].setToStep(0,hardware.getElapsedBastlCyclesLong());
 					envelope[i].sync();
 					reflectValueChange(i,0);
 				}
 			}
 		}
 	}
-
+*/
 	//com.sendClock(1);
 }
 
@@ -544,8 +544,8 @@ void setup() {
 		envelope[i].setSustainLevel(0.5);
 		envelope[i].setTargetRatioA(0.5);
 		envelope[i].setTargetRatioDR(0.01);
-		LFO[i].init();
-		LFO[i].setBastlCyclesPerPeriod(500);
+	//	LFO[i].init();
+	//	LFO[i].setBastlCyclesPerPeriod(500);
 		//LFO[i].setFreq(100);
 		buffer[i].init(i);
 	}
@@ -622,8 +622,8 @@ void renderOutput(){
 				*/
 
 				// LFO[i].setBastlCyclesPerPeriod(curveMap(255-channelValue[i][0],LFOMAP_POINTS,LFOMap));
-				 LFO[i].setBastlCyclesPerPeriod(channelValue[i][0]<<4);
-				 out=LFO[i].getValue(testTime);
+			//	 LFO[i].setBastlCyclesPerPeriod(channelValue[i][0]<<4);
+			//	 out=LFO[i].getValue(testTime);
 				hardware.setDAC(i,out);
 				break;
 			case ADSR_MODE:
@@ -667,16 +667,32 @@ void loop() {
 	}
 	else
 	*/
+	/*
+
 	if(hardware.getElapsedBastlCyclesLong()!=_time){
-		testTime++;
 		_time=hardware.getElapsedBastlCyclesLong();
-	//	bit_set(PIN);
-		com.update();
-		renderOutput();
+		testTime++;
+		for(int i=0;i<6;i++){
+			 LFO[i].setBastlCyclesPerPeriod(800*(i+1));
+				 out=LFO[i].getValue(testTime);
+				hardware.setDAC(i,out);
+			}
 		updateHW();
-	//	bit_clear(PIN);
-	//	bit_clear(PIN_2);
 	}
+	*/
+	uint8_t out;
+	if(hardware.getElapsedBastlCyclesLong()!=_time){
+			_time=hardware.getElapsedBastlCyclesLong();
+			testTime++;
+			//for(int i=0;i<6;i++){
+				 LFO.setBastlCyclesPerPeriod(800);
+					 out=LFO.getValue(testTime);
+					hardware.setDAC(0,out);
+			//	}
+			updateHW();
+		}
+
+	//renderOutput();
 
 	/*
 	for(int i=0;i<6;i++){

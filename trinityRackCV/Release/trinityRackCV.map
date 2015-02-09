@@ -7,7 +7,7 @@ Archive member included because of file (symbol)
 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
                               ./trinityRackCV.o (_ZN19interpolatingBuffer4initEh)
 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
-                              ./trinityRackCV.o (_ZN11lfoExtended4initEv)
+                              ./trinityRackCV.o (_ZN11lfoExtended23setBastlCyclesPerPeriodEj)
 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(random.o)
                               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o) (_ZN11bastlRandom5rangeEhh)
 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
@@ -135,7 +135,7 @@ Archive member included because of file (symbol)
 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodqi4.o)
                               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o) (__udivmodqi4)
 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
-                              ./trinityRackCV.o (__udivmodhi4)
+                              ./trinityRackCV_HW.o (__udivmodhi4)
 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodhi4.o)
                               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o) (__divmodhi4)
 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
@@ -180,10 +180,15 @@ Discarded input sections
                 0x00000000      0x16c ./trinityRackCV.o
  .text._Z10doMultStepv
                 0x00000000       0xae ./trinityRackCV.o
+ .text._Z12renderOutputv
+                0x00000000      0x594 ./trinityRackCV.o
  .bss.time      0x00000000        0x4 ./trinityRackCV.o
+ .bss.syncStepNumber
+                0x00000000        0x2 ./trinityRackCV.o
  .bss.randomLfo
                 0x00000000        0x6 ./trinityRackCV.o
  .bss.wshape    0x00000000        0x1 ./trinityRackCV.o
+ .bss.lastTime  0x00000000        0x4 ./trinityRackCV.o
  .bss.multiplication
                 0x00000000        0x1 ./trinityRackCV.o
  .bss.counterLeft
@@ -191,6 +196,9 @@ Discarded input sections
  .bss.offset    0x00000000       0x18 ./trinityRackCV.o
  .bss.divider   0x00000000        0x1 ./trinityRackCV.o
  .data.LFOMap   0x00000000       0x14 ./trinityRackCV.o
+ .bss.syncFast  0x00000000        0x6 ./trinityRackCV.o
+ .bss.syncFactor
+                0x00000000        0xc ./trinityRackCV.o
  .bss.currentPreset
                 0x00000000        0x1 ./trinityRackCV.o
  .bss.flop      0x00000000        0x1 ./trinityRackCV.o
@@ -203,6 +211,7 @@ Discarded input sections
                 0x00000000        0x4 ./trinityRackCV.o
  .bss.clockInTime
                 0x00000000        0x4 ./trinityRackCV.o
+ .bss.gate      0x00000000        0x6 ./trinityRackCV.o
  .bss.gateTime  0x00000000        0x4 ./trinityRackCV.o
  .group         0x00000000        0x8 ./trinityRackCV_HW.o
  .group         0x00000000        0x8 ./trinityRackCV_HW.o
@@ -224,6 +233,8 @@ Discarded input sections
  .bss           0x00000000        0x0 ./trinityRackCV_HW.o
  .text._ZN14fastAnalogRead19isConversionRunningEv
                 0x00000000        0xe ./trinityRackCV_HW.o
+ .text._ZN16trinityRackCV_HW10getCVValueEh
+                0x00000000        0xa ./trinityRackCV_HW.o
  .text._ZN16trinityRackCV_HW7CVMovedEh
                 0x00000000       0x14 ./trinityRackCV_HW.o
  .text._ZN16trinityRackCV_HW13getClockStateEv
@@ -235,8 +246,14 @@ Discarded input sections
  .bss.SPI       0x00000000        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(SPI.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
+ .text._ZN4ADSR4syncEv
+                0x00000000        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
+ .text._ZN19interpolatingBuffer4syncEv
+                0x00000000        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
+ .text._ZN19interpolatingBuffer7setStepEh
+                0x00000000      0x1a0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
  .text._ZN19interpolatingBuffer12rotateBufferEv
                 0x00000000       0x24 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
  .text._ZN19interpolatingBuffer13addRandomStepEv
@@ -247,8 +264,15 @@ Discarded input sections
                 0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
  .text._ZN19interpolatingBuffer6updateEv
                 0x00000000      0x10c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
+ .text._ZN19interpolatingBuffer22calculateSmoothAverageEv
+                0x00000000       0x2c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
+ .text._ZN19interpolatingBuffer15getCurrentValueEv
+                0x00000000       0xb2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
+ .bss.linear    0x00000000       0x30 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
+ .text._ZN11lfoExtended4initEv
+                0x00000000       0x2a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
  .text._ZN11lfoExtended11setWaveformE16LFOBasicWaveform
                 0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
  .text._ZN11lfoExtended6setXOREh
@@ -259,13 +283,19 @@ Discarded input sections
                 0x00000000        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
  .text._ZN11lfoExtended12setThresholdEh16LFOThresholdType
                 0x00000000        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
+ .text._ZN11lfoExtended9setToStepEhh
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(random.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(random.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
  .text._ZN19simpleSerialDecoder9sendClockEh
                 0x00000000        0xc /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+ .text._ZN19simpleSerialDecoder8sendStepEh
+                0x00000000        0xc /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
  .text._ZN19simpleSerialDecoder8sendGateEh
+                0x00000000        0xc /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+ .text._ZN19simpleSerialDecoder11sendTriggerEh
                 0x00000000        0xc /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
  .text._ZN19simpleSerialDecoder9sendStartEh
                 0x00000000        0xc /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
@@ -279,6 +309,8 @@ Discarded input sections
                 0x00000000        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
  .text._ZN19simpleSerialDecoder15sendChannelGateEhh
                 0x00000000        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+ .text._ZN19simpleSerialDecoder13sendChannelCVEhh
+                0x00000000        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
  .text._ZN19simpleSerialDecoder26sendChannelInterpolateFromEhh
                 0x00000000        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
  .text._ZN19simpleSerialDecoder24sendChannelInterpolateToEhh
@@ -289,8 +321,18 @@ Discarded input sections
                 0x00000000        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
  .text._ZN19simpleSerialDecoder16sendChannelValueEhhh
                 0x00000000       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+ .text._ZN19simpleSerialDecoder6updateEv
+                0x00000000      0x1aa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
+ .text._ZN20simpleSerialProtocol14recieveMessageEv
+                0x00000000       0x72 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
+ .text._ZN20simpleSerialProtocol14getMessageTypeEv
+                0x00000000        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
+ .text._ZN20simpleSerialProtocol15getMessageValueEv
+                0x00000000        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
+ .text._ZN20simpleSerialProtocol4syncEv
+                0x00000000        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
  .group         0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
  .group         0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
@@ -649,8 +691,12 @@ Discarded input sections
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exp.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
+ .text.avr-libc.fplib
+                0x00000000        0xa /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
+ .text.avr-libc.fplib
+                0x00000000       0x58 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_cmp.o)
@@ -673,6 +719,8 @@ Discarded input sections
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
+ .text.avr-libc.fplib
+                0x00000000        0x8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(inverse.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(inverse.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ldexp.o)
@@ -736,6 +784,8 @@ Discarded input sections
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodhi4.o)
  .text.libgcc.mul
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodhi4.o)
+ .text.libgcc.div
+                0x00000000       0x28 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodhi4.o)
  .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodhi4.o)
  .text.libgcc.prologue
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodhi4.o)
@@ -997,7 +1047,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x2f92
+.text           0x00000000     0x21f8
  *(.vectors)
  .vectors       0x00000000       0x68 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
                 0x00000000                __vectors
@@ -1074,545 +1124,480 @@ END GROUP
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x0000018a        0x8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+ .init9         0x0000018a        0x6 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
  *(.init9)
  *(.text)
- .text          0x00000192        0x2 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
-                0x00000192                __vector_20
-                0x00000192                __vector_1
-                0x00000192                __vector_24
-                0x00000192                __vector_12
-                0x00000192                __bad_interrupt
-                0x00000192                __vector_6
-                0x00000192                __vector_3
-                0x00000192                __vector_23
-                0x00000192                __vector_25
-                0x00000192                __vector_11
-                0x00000192                __vector_13
-                0x00000192                __vector_17
-                0x00000192                __vector_5
-                0x00000192                __vector_4
-                0x00000192                __vector_9
-                0x00000192                __vector_2
-                0x00000192                __vector_21
-                0x00000192                __vector_15
-                0x00000192                __vector_8
-                0x00000192                __vector_14
-                0x00000192                __vector_10
-                0x00000192                __vector_22
-                0x00000194                . = ALIGN (0x2)
+ .text          0x00000190        0x2 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+                0x00000190                __vector_20
+                0x00000190                __vector_1
+                0x00000190                __vector_24
+                0x00000190                __vector_12
+                0x00000190                __bad_interrupt
+                0x00000190                __vector_6
+                0x00000190                __vector_3
+                0x00000190                __vector_23
+                0x00000190                __vector_25
+                0x00000190                __vector_11
+                0x00000190                __vector_13
+                0x00000190                __vector_17
+                0x00000190                __vector_5
+                0x00000190                __vector_4
+                0x00000190                __vector_9
+                0x00000190                __vector_2
+                0x00000190                __vector_21
+                0x00000190                __vector_15
+                0x00000190                __vector_8
+                0x00000190                __vector_14
+                0x00000190                __vector_10
+                0x00000190                __vector_22
+                0x00000192                . = ALIGN (0x2)
  *(.text.*)
  .text._Z9clockCallh
-                0x00000194        0x2 ./trinityRackCV.o
-                0x00000194                _Z9clockCallh
+                0x00000192        0x2 ./trinityRackCV.o
+                0x00000192                _Z9clockCallh
  .text._Z8stepCallh
-                0x00000196        0x2 ./trinityRackCV.o
-                0x00000196                _Z8stepCallh
+                0x00000194        0x2 ./trinityRackCV.o
+                0x00000194                _Z8stepCallh
  .text._Z8gateCallh
-                0x00000198        0x2 ./trinityRackCV.o
-                0x00000198                _Z8gateCallh
+                0x00000196        0x2 ./trinityRackCV.o
+                0x00000196                _Z8gateCallh
  .text._Z9startCallh
-                0x0000019a        0x2 ./trinityRackCV.o
-                0x0000019a                _Z9startCallh
+                0x00000198        0x2 ./trinityRackCV.o
+                0x00000198                _Z9startCallh
  .text._Z8stopCallh
-                0x0000019c        0x2 ./trinityRackCV.o
-                0x0000019c                _Z8stopCallh
+                0x0000019a        0x2 ./trinityRackCV.o
+                0x0000019a                _Z8stopCallh
  .text._Z11restartCallh
-                0x0000019e        0x2 ./trinityRackCV.o
-                0x0000019e                _Z11restartCallh
+                0x0000019c        0x2 ./trinityRackCV.o
+                0x0000019c                _Z11restartCallh
  .text._Z18channelTriggerCallhh
-                0x000001a0        0x2 ./trinityRackCV.o
-                0x000001a0                _Z18channelTriggerCallhh
+                0x0000019e        0x2 ./trinityRackCV.o
+                0x0000019e                _Z18channelTriggerCallhh
  .text._Z26channelInterpolateFromCallhh
-                0x000001a2       0x14 ./trinityRackCV.o
-                0x000001a2                _Z26channelInterpolateFromCallhh
+                0x000001a0       0x14 ./trinityRackCV.o
+                0x000001a0                _Z26channelInterpolateFromCallhh
  .text._Z24channelInterpolateToCallhh
-                0x000001b6       0x42 ./trinityRackCV.o
-                0x000001b6                _Z24channelInterpolateToCallhh
+                0x000001b4       0x42 ./trinityRackCV.o
+                0x000001b4                _Z24channelInterpolateToCallhh
+ .text._Z11clockInCallv
+                0x000001f6        0x2 ./trinityRackCV.o
+                0x000001f6                _Z11clockInCallv
  .text._Z13channelCVCallhh
-                0x000001f8        0xc ./trinityRackCV.o
+                0x000001f8        0xa ./trinityRackCV.o
                 0x000001f8                _Z13channelCVCallhh
  .text._Z21channeInterpolateCallhh
-                0x00000204       0x52 ./trinityRackCV.o
-                0x00000204                _Z21channeInterpolateCallhh
+                0x00000202       0x52 ./trinityRackCV.o
+                0x00000202                _Z21channeInterpolateCallhh
  .text._Z11triggerCallh
-                0x00000256       0x4a ./trinityRackCV.o
-                0x00000256                _Z11triggerCallh
+                0x00000254       0x48 ./trinityRackCV.o
+                0x00000254                _Z11triggerCallh
  .text._Z10selectCallh
-                0x000002a0        0xc ./trinityRackCV.o
-                0x000002a0                _Z10selectCallh
+                0x0000029c        0xc ./trinityRackCV.o
+                0x0000029c                _Z10selectCallh
  .text._Z15channelGateCallhh
-                0x000002ac       0x12 ./trinityRackCV.o
-                0x000002ac                _Z15channelGateCallhh
+                0x000002a8       0x12 ./trinityRackCV.o
+                0x000002a8                _Z15channelGateCallhh
  .text._Z8curveMaphhPj
-                0x000002be      0x146 ./trinityRackCV.o
-                0x000002be                _Z8curveMaphhPj
+                0x000002ba      0x146 ./trinityRackCV.o
+                0x000002ba                _Z8curveMaphhPj
  .text._Z17reflectModeChangeh
-                0x00000404       0x40 ./trinityRackCV.o
-                0x00000404                _Z17reflectModeChangeh
+                0x00000400       0x40 ./trinityRackCV.o
+                0x00000400                _Z17reflectModeChangeh
  .text._Z15channelModeCallhh
-                0x00000444        0xc ./trinityRackCV.o
-                0x00000444                _Z15channelModeCallhh
+                0x00000440        0xc ./trinityRackCV.o
+                0x00000440                _Z15channelModeCallhh
  .text._Z18reflectValueChangehh
-                0x00000450      0x384 ./trinityRackCV.o
-                0x00000450                _Z18reflectValueChangehh
- .text._Z11clockInCallv
-                0x000007d4      0x1fa ./trinityRackCV.o
-                0x000007d4                _Z11clockInCallv
+                0x0000044c      0x37e ./trinityRackCV.o
+                0x0000044c                _Z18reflectValueChangehh
  .text._Z16channelValueCallhhh
-                0x000009ce       0x14 ./trinityRackCV.o
-                0x000009ce                _Z16channelValueCallhhh
- .text.setup    0x000009e2      0x1b0 ./trinityRackCV.o
-                0x000009e2                setup
- .text._Z12renderOutputv
-                0x00000b92      0x5a6 ./trinityRackCV.o
-                0x00000b92                _Z12renderOutputv
+                0x000007ca       0x14 ./trinityRackCV.o
+                0x000007ca                _Z16channelValueCallhhh
+ .text.setup    0x000007de      0x168 ./trinityRackCV.o
+                0x000007de                setup
  .text._Z8updateHWv
-                0x00001138       0x12 ./trinityRackCV.o
-                0x00001138                _Z8updateHWv
- .text.loop     0x0000114a       0x5a ./trinityRackCV.o
-                0x0000114a                loop
+                0x00000946       0x12 ./trinityRackCV.o
+                0x00000946                _Z8updateHWv
+ .text.loop     0x00000958       0x72 ./trinityRackCV.o
+                0x00000958                loop
  .text.startup.main
-                0x000011a4        0xa ./trinityRackCV.o
-                0x000011a4                main
+                0x000009ca        0x8 ./trinityRackCV.o
+                0x000009ca                main
  .text.startup._GLOBAL__sub_I_main
-                0x000011ae       0x1e ./trinityRackCV.o
+                0x000009d2       0x1e ./trinityRackCV.o
  .text.exit._GLOBAL__sub_D_main
-                0x000011cc       0x1e ./trinityRackCV.o
+                0x000009f0       0x1e ./trinityRackCV.o
  .text._ZN16trinityRackCV_HW21getElapsedBastlCyclesEv
-                0x000011ea       0x14 ./trinityRackCV_HW.o
-                0x000011ea                _ZN16trinityRackCV_HW21getElapsedBastlCyclesEv
+                0x00000a0e       0x14 ./trinityRackCV_HW.o
+                0x00000a0e                _ZN16trinityRackCV_HW21getElapsedBastlCyclesEv
  .text._ZN16trinityRackCV_HW14getButtonStateEh
-                0x000011fe        0x6 ./trinityRackCV_HW.o
-                0x000011fe                _ZN16trinityRackCV_HW14getButtonStateEh
+                0x00000a22        0x6 ./trinityRackCV_HW.o
+                0x00000a22                _ZN16trinityRackCV_HW14getButtonStateEh
  .text._ZN16trinityRackCV_HW6setLEDEhN6ILEDHW8LedStateE
-                0x00001204        0x2 ./trinityRackCV_HW.o
-                0x00001204                _ZN16trinityRackCV_HW6setLEDEhN6ILEDHW8LedStateE
+                0x00000a28        0x2 ./trinityRackCV_HW.o
+                0x00000a28                _ZN16trinityRackCV_HW6setLEDEhN6ILEDHW8LedStateE
  .text._ZN16trinityRackCV_HW12getKnobValueEh
-                0x00001206        0x4 ./trinityRackCV_HW.o
-                0x00001206                _ZN16trinityRackCV_HW12getKnobValueEh
+                0x00000a2a        0x4 ./trinityRackCV_HW.o
+                0x00000a2a                _ZN16trinityRackCV_HW12getKnobValueEh
  .text._ZN16trinityRackCV_HW10freezeKnobEhh
-                0x0000120a        0x2 ./trinityRackCV_HW.o
-                0x0000120a                _ZN16trinityRackCV_HW10freezeKnobEhh
+                0x00000a2e        0x2 ./trinityRackCV_HW.o
+                0x00000a2e                _ZN16trinityRackCV_HW10freezeKnobEhh
  .text._ZN16trinityRackCV_HW10setKnobLEDEhh
-                0x0000120c        0x2 ./trinityRackCV_HW.o
-                0x0000120c                _ZN16trinityRackCV_HW10setKnobLEDEhh
+                0x00000a30        0x2 ./trinityRackCV_HW.o
+                0x00000a30                _ZN16trinityRackCV_HW10setKnobLEDEhh
  .text._ZN16trinityRackCV_HW18setKnobLEDTrackingEhb
-                0x0000120e        0x2 ./trinityRackCV_HW.o
-                0x0000120e                _ZN16trinityRackCV_HW18setKnobLEDTrackingEhb
+                0x00000a32        0x2 ./trinityRackCV_HW.o
+                0x00000a32                _ZN16trinityRackCV_HW18setKnobLEDTrackingEhb
  .text._ZN16trinityRackCV_HW8readSRAMEl
-                0x00001210        0x4 ./trinityRackCV_HW.o
-                0x00001210                _ZN16trinityRackCV_HW8readSRAMEl
+                0x00000a34        0x4 ./trinityRackCV_HW.o
+                0x00000a34                _ZN16trinityRackCV_HW8readSRAMEl
  .text._ZN16trinityRackCV_HW8readSRAMElPhj
-                0x00001214        0x2 ./trinityRackCV_HW.o
-                0x00001214                _ZN16trinityRackCV_HW8readSRAMElPhj
+                0x00000a38        0x2 ./trinityRackCV_HW.o
+                0x00000a38                _ZN16trinityRackCV_HW8readSRAMElPhj
  .text._ZN16trinityRackCV_HW9writeSRAMElh
-                0x00001216        0x2 ./trinityRackCV_HW.o
-                0x00001216                _ZN16trinityRackCV_HW9writeSRAMElh
+                0x00000a3a        0x2 ./trinityRackCV_HW.o
+                0x00000a3a                _ZN16trinityRackCV_HW9writeSRAMElh
  .text._ZN16trinityRackCV_HW9writeSRAMElPhj
-                0x00001218        0x2 ./trinityRackCV_HW.o
-                0x00001218                _ZN16trinityRackCV_HW9writeSRAMElPhj
+                0x00000a3c        0x2 ./trinityRackCV_HW.o
+                0x00000a3c                _ZN16trinityRackCV_HW9writeSRAMElPhj
  .text._ZN16trinityRackCV_HW11writeEEPROMEjPhj
-                0x0000121a        0x4 ./trinityRackCV_HW.o
-                0x0000121a                _ZN16trinityRackCV_HW11writeEEPROMEjPhj
+                0x00000a3e        0x4 ./trinityRackCV_HW.o
+                0x00000a3e                _ZN16trinityRackCV_HW11writeEEPROMEjPhj
  .text._ZN16trinityRackCV_HW10readEEPROMEjPhj
-                0x0000121e        0x2 ./trinityRackCV_HW.o
-                0x0000121e                _ZN16trinityRackCV_HW10readEEPROMEjPhj
+                0x00000a42        0x2 ./trinityRackCV_HW.o
+                0x00000a42                _ZN16trinityRackCV_HW10readEEPROMEjPhj
  .text._ZN16trinityRackCV_HW12giveSomeTimeEv
-                0x00001220        0x2 ./trinityRackCV_HW.o
-                0x00001220                _ZN16trinityRackCV_HW12giveSomeTimeEv
+                0x00000a44        0x2 ./trinityRackCV_HW.o
+                0x00000a44                _ZN16trinityRackCV_HW12giveSomeTimeEv
  .text._ZN16trinityRackCV_HW11giveAllTimeEv
-                0x00001222        0x2 ./trinityRackCV_HW.o
-                0x00001222                _ZN16trinityRackCV_HW11giveAllTimeEv
+                0x00000a46        0x2 ./trinityRackCV_HW.o
+                0x00000a46                _ZN16trinityRackCV_HW11giveAllTimeEv
  .text._ZN16trinityRackCV_HW23getBastlCyclesPerSecondEv
-                0x00001224       0x12 ./trinityRackCV_HW.o
-                0x00001224                _ZN16trinityRackCV_HW23getBastlCyclesPerSecondEv
+                0x00000a48       0x12 ./trinityRackCV_HW.o
+                0x00000a48                _ZN16trinityRackCV_HW23getBastlCyclesPerSecondEv
  .text._ZN14fastAnalogRead4initEv
-                0x00001236       0x16 ./trinityRackCV_HW.o
-                0x00001236                _ZN14fastAnalogRead4initEv
+                0x00000a5a       0x16 ./trinityRackCV_HW.o
+                0x00000a5a                _ZN14fastAnalogRead4initEv
  .text._ZN14fastAnalogRead14connectChannelEh
-                0x0000124c       0x24 ./trinityRackCV_HW.o
-                0x0000124c                _ZN14fastAnalogRead14connectChannelEh
+                0x00000a70       0x24 ./trinityRackCV_HW.o
+                0x00000a70                _ZN14fastAnalogRead14connectChannelEh
  .text._ZN14fastAnalogRead15startConversionEv
-                0x00001270        0xc ./trinityRackCV_HW.o
-                0x00001270                _ZN14fastAnalogRead15startConversionEv
+                0x00000a94        0xc ./trinityRackCV_HW.o
+                0x00000a94                _ZN14fastAnalogRead15startConversionEv
  .text._ZN14fastAnalogRead20isConversionFinishedEv
-                0x0000127c        0xa ./trinityRackCV_HW.o
-                0x0000127c                _ZN14fastAnalogRead20isConversionFinishedEv
+                0x00000aa0        0xa ./trinityRackCV_HW.o
+                0x00000aa0                _ZN14fastAnalogRead20isConversionFinishedEv
  .text._ZN14fastAnalogRead19getConversionResultEv
-                0x00001286       0x16 ./trinityRackCV_HW.o
-                0x00001286                _ZN14fastAnalogRead19getConversionResultEv
+                0x00000aaa       0x16 ./trinityRackCV_HW.o
+                0x00000aaa                _ZN14fastAnalogRead19getConversionResultEv
  .text._ZN16trinityRackCV_HW6setDACEhh
-                0x0000129c        0xa ./trinityRackCV_HW.o
-                0x0000129c                _ZN16trinityRackCV_HW6setDACEhh
- .text._ZN16trinityRackCV_HW10getCVValueEh
-                0x000012a6        0xa ./trinityRackCV_HW.o
-                0x000012a6                _ZN16trinityRackCV_HW10getCVValueEh
+                0x00000ac0        0xa ./trinityRackCV_HW.o
+                0x00000ac0                _ZN16trinityRackCV_HW6setDACEhh
  .text._ZN16trinityRackCV_HW13isr_updateADCEv
-                0x000012b0       0x9e ./trinityRackCV_HW.o
-                0x000012b0                _ZN16trinityRackCV_HW13isr_updateADCEv
+                0x00000aca       0x9e ./trinityRackCV_HW.o
+                0x00000aca                _ZN16trinityRackCV_HW13isr_updateADCEv
  .text._ZN16trinityRackCV_HW13isr_updateDACEv
-                0x0000134e       0x4e ./trinityRackCV_HW.o
-                0x0000134e                _ZN16trinityRackCV_HW13isr_updateDACEv
+                0x00000b68       0x4e ./trinityRackCV_HW.o
+                0x00000b68                _ZN16trinityRackCV_HW13isr_updateDACEv
  .text._ZN16trinityRackCV_HW8zeroDACsEv
-                0x0000139c       0x2e ./trinityRackCV_HW.o
-                0x0000139c                _ZN16trinityRackCV_HW8zeroDACsEv
+                0x00000bb6       0x2e ./trinityRackCV_HW.o
+                0x00000bb6                _ZN16trinityRackCV_HW8zeroDACsEv
  .text._ZN16trinityRackCV_HW7DACInitEv
-                0x000013ca       0x20 ./trinityRackCV_HW.o
-                0x000013ca                _ZN16trinityRackCV_HW7DACInitEv
+                0x00000be4       0x20 ./trinityRackCV_HW.o
+                0x00000be4                _ZN16trinityRackCV_HW7DACInitEv
  .text._ZN16trinityRackCV_HW4initEPFvvE
-                0x000013ea       0x56 ./trinityRackCV_HW.o
-                0x000013ea                _ZN16trinityRackCV_HW4initEPFvvE
+                0x00000c04       0x56 ./trinityRackCV_HW.o
+                0x00000c04                _ZN16trinityRackCV_HW4initEPFvvE
  .text._ZN16trinityRackCV_HW17isr_updateClockInEv
-                0x00001440       0x30 ./trinityRackCV_HW.o
-                0x00001440                _ZN16trinityRackCV_HW17isr_updateClockInEv
+                0x00000c5a       0x30 ./trinityRackCV_HW.o
+                0x00000c5a                _ZN16trinityRackCV_HW17isr_updateClockInEv
  .text.__vector_7
-                0x00001470       0x46 ./trinityRackCV_HW.o
-                0x00001470                __vector_7
+                0x00000c8a       0x46 ./trinityRackCV_HW.o
+                0x00000c8a                __vector_7
  .text.startup._GLOBAL__sub_I__ZN14fastAnalogRead4initEv
-                0x000014b6        0xe ./trinityRackCV_HW.o
+                0x00000cd0        0xe ./trinityRackCV_HW.o
  .text._ZN8SPIClass5beginEv
-                0x000014c4       0x2c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(SPI.o)
-                0x000014c4                _ZN8SPIClass5beginEv
+                0x00000cde       0x24 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(SPI.o)
+                0x00000cde                _ZN8SPIClass5beginEv
  .text._ZN8SPIClass11setBitOrderEh
-                0x000014f0       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(SPI.o)
-                0x000014f0                _ZN8SPIClass11setBitOrderEh
+                0x00000d02       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(SPI.o)
+                0x00000d02                _ZN8SPIClass11setBitOrderEh
  .text._ZN8SPIClass11setDataModeEh
-                0x00001502        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(SPI.o)
-                0x00001502                _ZN8SPIClass11setDataModeEh
+                0x00000d14        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(SPI.o)
+                0x00000d14                _ZN8SPIClass11setDataModeEh
  .text._ZN8SPIClass15setClockDividerEh
-                0x0000150c       0x1c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(SPI.o)
-                0x0000150c                _ZN8SPIClass15setClockDividerEh
+                0x00000d1e       0x1c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(SPI.o)
+                0x00000d1e                _ZN8SPIClass15setClockDividerEh
  .text._ZN4ADSRD2Ev
-                0x00001528        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                0x00001528                _ZN4ADSRD2Ev
-                0x00001528                _ZN4ADSRD1Ev
- .text._ZN4ADSR4syncEv
-                0x0000152a        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                0x0000152a                _ZN4ADSR4syncEv
+                0x00000d3a        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
+                0x00000d3a                _ZN4ADSRD2Ev
+                0x00000d3a                _ZN4ADSRD1Ev
  .text._ZN4ADSR8calcCoefEff
-                0x0000152c       0x5a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                0x0000152c                _ZN4ADSR8calcCoefEff
+                0x00000d3c       0x52 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
+                0x00000d3c                _ZN4ADSR8calcCoefEff
  .text._ZN4ADSR14setReleaseRateEf
-                0x00001586       0x6e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                0x00001586                _ZN4ADSR14setReleaseRateEf
+                0x00000d8e       0x6c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
+                0x00000d8e                _ZN4ADSR14setReleaseRateEf
  .text._ZN4ADSR12setDecayRateEf
-                0x000015f4       0x8e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                0x000015f4                _ZN4ADSR12setDecayRateEf
+                0x00000dfa       0x8a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
+                0x00000dfa                _ZN4ADSR12setDecayRateEf
  .text._ZN4ADSR13setAttackRateEf
-                0x00001682       0x8e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                0x00001682                _ZN4ADSR13setAttackRateEf
+                0x00000e84       0x8a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
+                0x00000e84                _ZN4ADSR13setAttackRateEf
  .text._ZN4ADSR15setSustainLevelEf
-                0x00001710       0x60 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                0x00001710                _ZN4ADSR15setSustainLevelEf
+                0x00000f0e       0x5c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
+                0x00000f0e                _ZN4ADSR15setSustainLevelEf
  .text._ZN4ADSRC2Ev
-                0x00001770       0xf8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                0x00001770                _ZN4ADSRC1Ev
-                0x00001770                _ZN4ADSRC2Ev
+                0x00000f6a       0xf2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
+                0x00000f6a                _ZN4ADSRC1Ev
+                0x00000f6a                _ZN4ADSRC2Ev
  .text._ZN4ADSR15setTargetRatioAEf
-                0x00001868       0x84 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                0x00001868                _ZN4ADSR15setTargetRatioAEf
+                0x0000105c       0x80 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
+                0x0000105c                _ZN4ADSR15setTargetRatioAEf
  .text._ZN4ADSR16setTargetRatioDREf
-                0x000018ec       0xc0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                0x000018ec                _ZN4ADSR16setTargetRatioDREf
+                0x000010dc       0xbc /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
+                0x000010dc                _ZN4ADSR16setTargetRatioDREf
  .text._ZN19interpolatingBuffer4initEh
-                0x000019ac        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
-                0x000019ac                _ZN19interpolatingBuffer4initEh
- .text._ZN19interpolatingBuffer4syncEv
-                0x000019b2        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
-                0x000019b2                _ZN19interpolatingBuffer4syncEv
- .text._ZN19interpolatingBuffer7setStepEh
-                0x000019b4      0x18a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
-                0x000019b4                _ZN19interpolatingBuffer7setStepEh
- .text._ZN19interpolatingBuffer22calculateSmoothAverageEv
-                0x00001b3e       0x2c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
-                0x00001b3e                _ZN19interpolatingBuffer22calculateSmoothAverageEv
- .text._ZN19interpolatingBuffer15getCurrentValueEv
-                0x00001b6a       0xac /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
-                0x00001b6a                _ZN19interpolatingBuffer15getCurrentValueEv
- .text._ZN11lfoExtended4initEv
-                0x00001c16       0x2a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
-                0x00001c16                _ZN11lfoExtended4initEv
+                0x00001198        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
+                0x00001198                _ZN19interpolatingBuffer4initEh
  .text._ZN11lfoExtended23setBastlCyclesPerPeriodEj
-                0x00001c40        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
-                0x00001c40                _ZN11lfoExtended23setBastlCyclesPerPeriodEj
- .text._ZN11lfoExtended9setToStepEhh
-                0x00001c48       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
-                0x00001c48                _ZN11lfoExtended9setToStepEhh
+                0x0000119e        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
+                0x0000119e                _ZN11lfoExtended23setBastlCyclesPerPeriodEj
  .text._ZN11lfoExtended8getValueEj
-                0x00001c70      0x10e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
-                0x00001c70                _ZN11lfoExtended8getValueEj
+                0x000011a6      0x10a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
+                0x000011a6                _ZN11lfoExtended8getValueEj
  .text._ZN11bastlRandom4byteEv
-                0x00001d7e       0x42 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(random.o)
-                0x00001d7e                _ZN11bastlRandom4byteEv
+                0x000012b0       0x42 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(random.o)
+                0x000012b0                _ZN11bastlRandom4byteEv
  .text._ZN11bastlRandom5rangeEhh
-                0x00001dc0       0x3e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(random.o)
-                0x00001dc0                _ZN11bastlRandom5rangeEhh
+                0x000012f2       0x3e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(random.o)
+                0x000012f2                _ZN11bastlRandom5rangeEhh
  .text._ZN19simpleSerialDecoder4initEj
-                0x00001dfe        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001dfe                _ZN19simpleSerialDecoder4initEj
+                0x00001330        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x00001330                _ZN19simpleSerialDecoder4initEj
  .text._ZN19simpleSerialDecoder15sendPairMessageEv
-                0x00001e04        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001e04                _ZN19simpleSerialDecoder15sendPairMessageEv
- .text._ZN19simpleSerialDecoder8sendStepEh
-                0x00001e0a        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001e0a                _ZN19simpleSerialDecoder8sendStepEh
- .text._ZN19simpleSerialDecoder11sendTriggerEh
-                0x00001e14        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001e14                _ZN19simpleSerialDecoder11sendTriggerEh
- .text._ZN19simpleSerialDecoder13sendChannelCVEhh
-                0x00001e1e        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001e1e                _ZN19simpleSerialDecoder13sendChannelCVEhh
- .text._ZN19simpleSerialDecoder6updateEv
-                0x00001e26      0x1a0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001e26                _ZN19simpleSerialDecoder6updateEv
+                0x00001336        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x00001336                _ZN19simpleSerialDecoder15sendPairMessageEv
  .text._ZN19simpleSerialDecoder19attachClockCallbackEPFvhE
-                0x00001fc6        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001fc6                _ZN19simpleSerialDecoder19attachClockCallbackEPFvhE
+                0x0000133c        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x0000133c                _ZN19simpleSerialDecoder19attachClockCallbackEPFvhE
  .text._ZN19simpleSerialDecoder18attachStepCallbackEPFvhE
-                0x00001fce        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001fce                _ZN19simpleSerialDecoder18attachStepCallbackEPFvhE
+                0x00001344        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x00001344                _ZN19simpleSerialDecoder18attachStepCallbackEPFvhE
  .text._ZN19simpleSerialDecoder18attachGateCallbackEPFvhE
-                0x00001fd6        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001fd6                _ZN19simpleSerialDecoder18attachGateCallbackEPFvhE
+                0x0000134c        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x0000134c                _ZN19simpleSerialDecoder18attachGateCallbackEPFvhE
  .text._ZN19simpleSerialDecoder21attachTriggerCallbackEPFvhE
-                0x00001fde        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001fde                _ZN19simpleSerialDecoder21attachTriggerCallbackEPFvhE
+                0x00001354        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x00001354                _ZN19simpleSerialDecoder21attachTriggerCallbackEPFvhE
  .text._ZN19simpleSerialDecoder19attachStartCallbackEPFvhE
-                0x00001fe6        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001fe6                _ZN19simpleSerialDecoder19attachStartCallbackEPFvhE
+                0x0000135c        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x0000135c                _ZN19simpleSerialDecoder19attachStartCallbackEPFvhE
  .text._ZN19simpleSerialDecoder18attachStopCallbackEPFvhE
-                0x00001fee        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001fee                _ZN19simpleSerialDecoder18attachStopCallbackEPFvhE
+                0x00001364        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x00001364                _ZN19simpleSerialDecoder18attachStopCallbackEPFvhE
  .text._ZN19simpleSerialDecoder21attachRestartCallbackEPFvhE
-                0x00001ff6        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001ff6                _ZN19simpleSerialDecoder21attachRestartCallbackEPFvhE
+                0x0000136c        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x0000136c                _ZN19simpleSerialDecoder21attachRestartCallbackEPFvhE
  .text._ZN19simpleSerialDecoder20attachSelectCallbackEPFvhE
-                0x00001ffe        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00001ffe                _ZN19simpleSerialDecoder20attachSelectCallbackEPFvhE
+                0x00001374        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x00001374                _ZN19simpleSerialDecoder20attachSelectCallbackEPFvhE
  .text._ZN19simpleSerialDecoder28attachChannelTriggerCallbackEPFvhhE
-                0x00002006        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00002006                _ZN19simpleSerialDecoder28attachChannelTriggerCallbackEPFvhhE
+                0x0000137c        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x0000137c                _ZN19simpleSerialDecoder28attachChannelTriggerCallbackEPFvhhE
  .text._ZN19simpleSerialDecoder25attachChannelGateCallbackEPFvhhE
-                0x0000200e        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x0000200e                _ZN19simpleSerialDecoder25attachChannelGateCallbackEPFvhhE
+                0x00001384        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x00001384                _ZN19simpleSerialDecoder25attachChannelGateCallbackEPFvhhE
  .text._ZN19simpleSerialDecoder23attachChannelCVCallbackEPFvhhE
-                0x00002016        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00002016                _ZN19simpleSerialDecoder23attachChannelCVCallbackEPFvhhE
+                0x0000138c        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x0000138c                _ZN19simpleSerialDecoder23attachChannelCVCallbackEPFvhhE
  .text._ZN19simpleSerialDecoder36attachChannelInterpolateFromCallbackEPFvhhE
-                0x0000201e        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x0000201e                _ZN19simpleSerialDecoder36attachChannelInterpolateFromCallbackEPFvhhE
+                0x00001394        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x00001394                _ZN19simpleSerialDecoder36attachChannelInterpolateFromCallbackEPFvhhE
  .text._ZN19simpleSerialDecoder34attachChannelInterpolateToCallbackEPFvhhE
-                0x00002026        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00002026                _ZN19simpleSerialDecoder34attachChannelInterpolateToCallbackEPFvhhE
+                0x0000139c        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x0000139c                _ZN19simpleSerialDecoder34attachChannelInterpolateToCallbackEPFvhhE
  .text._ZN19simpleSerialDecoder32attachChannelInterpolateCallbackEPFvhhE
-                0x0000202e        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x0000202e                _ZN19simpleSerialDecoder32attachChannelInterpolateCallbackEPFvhhE
+                0x000013a4        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x000013a4                _ZN19simpleSerialDecoder32attachChannelInterpolateCallbackEPFvhhE
  .text._ZN19simpleSerialDecoder25attachChannelModeCallbackEPFvhhE
-                0x00002036        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x00002036                _ZN19simpleSerialDecoder25attachChannelModeCallbackEPFvhhE
+                0x000013ac        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x000013ac                _ZN19simpleSerialDecoder25attachChannelModeCallbackEPFvhhE
  .text._ZN19simpleSerialDecoder26attachChannelValueCallbackEPFvhhhE
-                0x0000203e        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x0000203e                _ZN19simpleSerialDecoder26attachChannelValueCallbackEPFvhhhE
+                0x000013b4        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x000013b4                _ZN19simpleSerialDecoder26attachChannelValueCallbackEPFvhhhE
  .text._ZN20simpleSerialProtocol4initEj
-                0x00002046        0xc /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
-                0x00002046                _ZN20simpleSerialProtocol4initEj
+                0x000013bc        0xc /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
+                0x000013bc                _ZN20simpleSerialProtocol4initEj
  .text._ZN20simpleSerialProtocol15transferMessageEhh
-                0x00002052       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
-                0x00002052                _ZN20simpleSerialProtocol15transferMessageEhh
- .text._ZN20simpleSerialProtocol14recieveMessageEv
-                0x00002074       0x6a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
-                0x00002074                _ZN20simpleSerialProtocol14recieveMessageEv
- .text._ZN20simpleSerialProtocol14getMessageTypeEv
-                0x000020de        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
-                0x000020de                _ZN20simpleSerialProtocol14getMessageTypeEv
- .text._ZN20simpleSerialProtocol15getMessageValueEv
-                0x000020e4        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
-                0x000020e4                _ZN20simpleSerialProtocol15getMessageValueEv
+                0x000013c8       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
+                0x000013c8                _ZN20simpleSerialProtocol15transferMessageEhh
  .text._ZN20simpleSerialProtocol11pairMessageEv
-                0x000020ea        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
-                0x000020ea                _ZN20simpleSerialProtocol11pairMessageEv
- .text._ZN20simpleSerialProtocol4syncEv
-                0x000020f0        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
-                0x000020f0                _ZN20simpleSerialProtocol4syncEv
+                0x000013ea        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
+                0x000013ea                _ZN20simpleSerialProtocol11pairMessageEv
  .text._ZN14HardwareSerial9availableEv
-                0x000020fa       0x26 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x000020fa                _ZN14HardwareSerial9availableEv
+                0x000013f0       0x26 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x000013f0                _ZN14HardwareSerial9availableEv
  .text._ZN14HardwareSerial4peekEv
-                0x00002120       0x38 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00002120                _ZN14HardwareSerial4peekEv
+                0x00001416       0x38 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00001416                _ZN14HardwareSerial4peekEv
  .text._ZN14HardwareSerial4readEv
-                0x00002158       0x48 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00002158                _ZN14HardwareSerial4readEv
+                0x0000144e       0x48 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x0000144e                _ZN14HardwareSerial4readEv
  .text._ZN14HardwareSerial5flushEv
-                0x000021a0       0x16 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x000021a0                _ZN14HardwareSerial5flushEv
+                0x00001496       0x16 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00001496                _ZN14HardwareSerial5flushEv
  .text._ZN14HardwareSerial5writeEh
-                0x000021b6       0x7a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x000021b6                _ZN14HardwareSerial5writeEh
+                0x000014ac       0x7a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x000014ac                _ZN14HardwareSerial5writeEh
  .text.__vector_18
-                0x00002230       0x74 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00002230                __vector_18
+                0x00001526       0x74 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00001526                __vector_18
  .text.__vector_19
-                0x000022a4       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x000022a4                __vector_19
+                0x0000159a       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x0000159a                __vector_19
  .text._ZN14HardwareSerial5beginEm
-                0x0000231a       0xfe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x0000231a                _ZN14HardwareSerial5beginEm
+                0x00001610       0xfe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00001610                _ZN14HardwareSerial5beginEm
  .text.startup._GLOBAL__sub_I_rx_buffer
-                0x00002418       0xac /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x0000170e       0xac /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
  .text._ZN5Print5writeEPKhj
-                0x000024c4       0x50 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
-                0x000024c4                _ZN5Print5writeEPKhj
+                0x000017ba       0x50 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                0x000017ba                _ZN5Print5writeEPKhj
  .text._Z3maplllll
-                0x00002514       0x8a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
-                0x00002514                _Z3maplllll
+                0x0000180a       0x8a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+                0x0000180a                _Z3maplllll
  .text.__vector_16
-                0x0000259e       0x94 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x0000259e                __vector_16
- .text.init     0x00002632       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x00002632                init
+                0x00001894       0x94 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x00001894                __vector_16
+ .text.init     0x00001928       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x00001928                init
  .text.turnOffPWM
-                0x000026a8       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
- .text.pinMode  0x000026fc       0x70 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
-                0x000026fc                pinMode
+                0x0000199e       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+ .text.pinMode  0x000019f2       0x70 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x000019f2                pinMode
  .text.digitalWrite
-                0x0000276c       0x6c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
-                0x0000276c                digitalWrite
+                0x00001a62       0x6c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x00001a62                digitalWrite
  .text.avr-libc
-                0x000027d8        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
-                0x000027d8                exit
+                0x00001ace        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
+                0x00001ace                exit
  .text.avr-libc.fplib
-                0x000027dc        0xa /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
-                0x000027dc                __subsf3
-                0x000027de                __addsf3
+                0x00001ad2        0xa /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
+                0x00001ad2                __subsf3
+                0x00001ad4                __addsf3
  .text.avr-libc.fplib
-                0x000027e6       0xc0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
-                0x00002800                __addsf3x
+                0x00001adc       0xc0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+                0x00001af6                __addsf3x
  .text.avr-libc.fplib
-                0x000028a6        0x8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
-                0x000028a6                __lesf2
-                0x000028a6                __nesf2
-                0x000028a6                __eqsf2
-                0x000028a6                __cmpsf2
-                0x000028a6                __ltsf2
+                0x00001b9c        0x8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+                0x00001b9c                __lesf2
+                0x00001b9c                __nesf2
+                0x00001b9c                __eqsf2
+                0x00001b9c                __cmpsf2
+                0x00001b9c                __ltsf2
  .text.avr-libc.fplib
-                0x000028ae        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
-                0x000028ae                __divsf3
+                0x00001ba4        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
+                0x00001ba4                __divsf3
  .text.avr-libc.fplib
-                0x000028b2       0xcc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
-                0x000028c8                __divsf3x
-                0x000028cc                __divsf3_pse
+                0x00001ba8       0xcc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+                0x00001bbe                __divsf3x
+                0x00001bc2                __divsf3_pse
  .text.avr-libc.fplib
-                0x0000297e       0x62 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exp.o)
-                0x00002988                exp
+                0x00001c74       0x62 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exp.o)
+                0x00001c7e                exp
  .text.avr-libc.fplib
-                0x000029e0        0xa /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
-                0x000029e0                __fixsfsi
+                0x00001cd6       0x7a /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
+                0x00001cd6                __floatunsisf
+                0x00001cda                __floatsisf
  .text.avr-libc.fplib
-                0x000029ea       0x58 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
-                0x000029ea                __fixunssfsi
+                0x00001d50       0x48 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_cmp.o)
+                0x00001d50                __fp_cmp
  .text.avr-libc.fplib
-                0x00002a42       0x7a /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
-                0x00002a42                __floatunsisf
-                0x00002a46                __floatsisf
+                0x00001d98        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_inf.o)
+                0x00001d98                __fp_inf
  .text.avr-libc.fplib
-                0x00002abc       0x48 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_cmp.o)
-                0x00002abc                __fp_cmp
+                0x00001da4        0x6 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_nan.o)
+                0x00001da4                __fp_nan
  .text.avr-libc.fplib
-                0x00002b04        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_inf.o)
-                0x00002b04                __fp_inf
+                0x00001daa       0x4a /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_powser.o)
+                0x00001daa                __fp_powser
  .text.avr-libc.fplib
-                0x00002b10        0x6 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_nan.o)
-                0x00002b10                __fp_nan
+                0x00001df4        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscA.o)
+                0x00001df4                __fp_pscA
  .text.avr-libc.fplib
-                0x00002b16       0x4a /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_powser.o)
-                0x00002b16                __fp_powser
+                0x00001e02        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscB.o)
+                0x00001e02                __fp_pscB
  .text.avr-libc.fplib
-                0x00002b60        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscA.o)
-                0x00002b60                __fp_pscA
+                0x00001e10       0x22 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_round.o)
+                0x00001e10                __fp_round
  .text.avr-libc.fplib
-                0x00002b6e        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscB.o)
-                0x00002b6e                __fp_pscB
+                0x00001e32       0x44 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_split3.o)
+                0x00001e32                __fp_split3
+                0x00001e42                __fp_splitA
  .text.avr-libc.fplib
-                0x00002b7c       0x22 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_round.o)
-                0x00002b7c                __fp_round
+                0x00001e76        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
+                0x00001e76                __fp_zero
+                0x00001e78                __fp_szero
  .text.avr-libc.fplib
-                0x00002b9e       0x44 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_split3.o)
-                0x00002b9e                __fp_split3
-                0x00002bae                __fp_splitA
+                0x00001e84        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(inverse.o)
+                0x00001e84                inverse
  .text.avr-libc.fplib
-                0x00002be2        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
-                0x00002be2                __fp_zero
-                0x00002be4                __fp_szero
+                0x00001e92       0x6c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ldexp.o)
+                0x00001e96                ldexp
  .text.avr-libc.fplib
-                0x00002bf0        0x8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
-                0x00002bf0                __gtsf2
-                0x00002bf0                __gesf2
+                0x00001efe       0x8a /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(log.o)
+                0x00001f08                log
  .text.avr-libc.fplib
-                0x00002bf8        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(inverse.o)
-                0x00002bf8                inverse
+                0x00001f88       0x66 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(modf.o)
+                0x00001f88                modff
+                0x00001f88                modf
  .text.avr-libc.fplib
-                0x00002c06       0x6c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ldexp.o)
-                0x00002c0a                ldexp
+                0x00001fee        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
+                0x00001fee                __mulsf3
  .text.avr-libc.fplib
-                0x00002c72       0x8a /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(log.o)
-                0x00002c7c                log
+                0x00001ff2       0xc2 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+                0x00002006                __mulsf3x
+                0x0000200a                __mulsf3_pse
  .text.avr-libc.fplib
-                0x00002cfc       0x66 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(modf.o)
-                0x00002cfc                modff
-                0x00002cfc                modf
- .text.avr-libc.fplib
-                0x00002d62        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
-                0x00002d62                __mulsf3
- .text.avr-libc.fplib
-                0x00002d66       0xc2 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
-                0x00002d7a                __mulsf3x
-                0x00002d7e                __mulsf3_pse
- .text.avr-libc.fplib
-                0x00002e28       0x1c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_mpack.o)
-                0x00002e28                __fp_mpack
-                0x00002e2c                __fp_mpack_finite
+                0x000020b4       0x1c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_mpack.o)
+                0x000020b4                __fp_mpack
+                0x000020b8                __fp_mpack_finite
  .text.libgcc.mul
-                0x00002e44       0x1e /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
-                0x00002e44                __mulsi3
+                0x000020d0       0x1e /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+                0x000020d0                __mulsi3
  .text.libgcc.div
-                0x00002e62       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodqi4.o)
-                0x00002e62                __udivmodqi4
+                0x000020ee       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodqi4.o)
+                0x000020ee                __udivmodqi4
  .text.libgcc.div
-                0x00002e7a       0x28 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
-                0x00002e7a                __udivmodhi4
+                0x00002106       0x28 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+                0x00002106                __udivmodhi4
  .text.libgcc.div
-                0x00002ea2       0x26 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodhi4.o)
-                0x00002ea2                __divmodhi4
-                0x00002ea2                _div
+                0x0000212e       0x44 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+                0x0000212e                __udivmodsi4
  .text.libgcc.div
-                0x00002ec8       0x44 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
-                0x00002ec8                __udivmodsi4
- .text.libgcc.div
-                0x00002f0c       0x36 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
-                0x00002f0c                __divmodsi4
+                0x00002172       0x36 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+                0x00002172                __divmodsi4
  .text.libgcc.mul
-                0x00002f42       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
-                0x00002f42                __muluhisi3
- .text.libgcc   0x00002f56        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
-                0x00002f56                __tablejump2__
-                0x00002f5a                __tablejump__
+                0x000021a8       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+                0x000021a8                __muluhisi3
+ .text.libgcc   0x000021bc        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+                0x000021bc                __tablejump2__
+                0x000021c0                __tablejump__
  .text.libgcc.mul
-                0x00002f62       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
-                0x00002f62                __umulhisi3
-                0x00002f7a                . = ALIGN (0x2)
+                0x000021c8       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+                0x000021c8                __umulhisi3
+                0x000021e0                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00002f7a        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
-                0x00002f7a                _exit
+ .fini9         0x000021e0        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+                0x000021e0                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
  *(.fini7)
  *(.fini7)
  *(.fini6)
- .fini6         0x00002f7a       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_dtors.o)
-                0x00002f7a                __do_global_dtors
+ .fini6         0x000021e0       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_dtors.o)
+                0x000021e0                __do_global_dtors
  *(.fini6)
  *(.fini5)
  *(.fini5)
@@ -1625,11 +1610,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00002f8e        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+ .fini0         0x000021f4        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
  *(.fini0)
-                0x00002f92                _etext = .
+                0x000021f8                _etext = .
 
-.data           0x00800100       0x7c load address 0x00002f92
+.data           0x00800100       0x7c load address 0x000021f8
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
@@ -1739,96 +1724,82 @@ END GROUP
                 0x0080017c                _edata = .
                 0x0080017c                PROVIDE (__data_end, .)
 
-.bss            0x0080017c      0x598
+.bss            0x0080017c      0x4e1
                 0x0080017c                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.testTime  0x0080017c        0x2 ./trinityRackCV.o
                 0x0080017c                testTime
- .bss.syncStepNumber
-                0x0080017e        0x2 ./trinityRackCV.o
-                0x0080017e                syncStepNumber
  .bss.channelRecord
-                0x00800180        0x6 ./trinityRackCV.o
-                0x00800180                channelRecord
+                0x0080017e        0x6 ./trinityRackCV.o
+                0x0080017e                channelRecord
  .bss.writeToStep
-                0x00800186        0x6 ./trinityRackCV.o
-                0x00800186                writeToStep
+                0x00800184        0x6 ./trinityRackCV.o
+                0x00800184                writeToStep
  .bss.currentStepNumber
-                0x0080018c        0x1 ./trinityRackCV.o
-                0x0080018c                currentStepNumber
- .bss.lastTime  0x0080018d        0x4 ./trinityRackCV.o
-                0x0080018d                lastTime
+                0x0080018a        0x1 ./trinityRackCV.o
+                0x0080018a                currentStepNumber
  .bss.clockInDuration
-                0x00800191        0x4 ./trinityRackCV.o
-                0x00800191                clockInDuration
+                0x0080018b        0x4 ./trinityRackCV.o
+                0x0080018b                clockInDuration
  .bss.channelValue
-                0x00800195       0x18 ./trinityRackCV.o
-                0x00800195                channelValue
+                0x0080018f       0x18 ./trinityRackCV.o
+                0x0080018f                channelValue
  .bss.channelMode
-                0x008001ad        0x6 ./trinityRackCV.o
-                0x008001ad                channelMode
+                0x008001a7        0x6 ./trinityRackCV.o
+                0x008001a7                channelMode
  .bss.triggerTime
-                0x008001b3       0x18 ./trinityRackCV.o
-                0x008001b3                triggerTime
- .bss.gateOut   0x008001cb        0x6 ./trinityRackCV.o
-                0x008001cb                gateOut
- .bss.syncFast  0x008001d1        0x6 ./trinityRackCV.o
-                0x008001d1                syncFast
- .bss.syncFactor
-                0x008001d7        0xc ./trinityRackCV.o
-                0x008001d7                syncFactor
+                0x008001ad       0x18 ./trinityRackCV.o
+                0x008001ad                triggerTime
+ .bss.gateOut   0x008001c5        0x6 ./trinityRackCV.o
+                0x008001c5                gateOut
  .bss.channelSync
-                0x008001e3        0x6 ./trinityRackCV.o
-                0x008001e3                channelSync
+                0x008001cb        0x6 ./trinityRackCV.o
+                0x008001cb                channelSync
  .bss.selectedChannel
-                0x008001e9        0x1 ./trinityRackCV.o
-                0x008001e9                selectedChannel
- .bss._time     0x008001ea        0x4 ./trinityRackCV.o
-                0x008001ea                _time
- .bss.gate      0x008001ee        0x6 ./trinityRackCV.o
-                0x008001ee                gate
- .bss.com       0x008001f4       0x22 ./trinityRackCV.o
-                0x008001f4                com
- .bss.LFO       0x00800216       0x7e ./trinityRackCV.o
-                0x00800216                LFO
- .bss.envelope  0x00800294      0x180 ./trinityRackCV.o
-                0x00800294                envelope
- .bss.buffer    0x00800414      0x1f2 ./trinityRackCV.o
-                0x00800414                buffer
- .bss.hardware  0x00800606       0x28 ./trinityRackCV_HW.o
-                0x00800606                hardware
- .bss.linear    0x0080062e       0x30 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
-                0x0080062e                linear
- .bss._serial   0x0080065e        0x3 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                0x0080065e                _serial
- .bss.Serial    0x00800661       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00800661                Serial
+                0x008001d1        0x1 ./trinityRackCV.o
+                0x008001d1                selectedChannel
+ .bss._time     0x008001d2        0x4 ./trinityRackCV.o
+                0x008001d2                _time
+ .bss.com       0x008001d6       0x22 ./trinityRackCV.o
+                0x008001d6                com
+ .bss.LFO       0x008001f8       0x15 ./trinityRackCV.o
+                0x008001f8                LFO
+ .bss.envelope  0x0080020d      0x180 ./trinityRackCV.o
+                0x0080020d                envelope
+ .bss.buffer    0x0080038d      0x1f2 ./trinityRackCV.o
+                0x0080038d                buffer
+ .bss.hardware  0x0080057f       0x28 ./trinityRackCV_HW.o
+                0x0080057f                hardware
+ .bss._serial   0x008005a7        0x3 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
+                0x008005a7                _serial
+ .bss.Serial    0x008005aa       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x008005aa                Serial
  .bss.tx_buffer
-                0x00800683       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00800683                tx_buffer
+                0x008005cc       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x008005cc                tx_buffer
  .bss.rx_buffer
-                0x008006c7       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x008006c7                rx_buffer
+                0x00800610       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00800610                rx_buffer
  .bss.timer0_millis
-                0x0080070b        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x0080070b                timer0_millis
+                0x00800654        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x00800654                timer0_millis
  .bss.timer0_overflow_count
-                0x0080070f        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x0080070f                timer0_overflow_count
+                0x00800658        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x00800658                timer0_overflow_count
  .bss.timer0_fract
-                0x00800713        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x0080065c        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
  *(COMMON)
-                0x00800714                PROVIDE (__bss_end, .)
-                0x00002f92                __data_load_start = LOADADDR (.data)
-                0x0000300e                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0080065d                PROVIDE (__bss_end, .)
+                0x000021f8                __data_load_start = LOADADDR (.data)
+                0x00002274                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800714        0x0
-                0x00800714                PROVIDE (__noinit_start, .)
+.noinit         0x0080065d        0x0
+                0x0080065d                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800714                PROVIDE (__noinit_end, .)
-                0x00800714                _end = .
-                0x00800714                PROVIDE (__heap_start, .)
+                0x0080065d                PROVIDE (__noinit_end, .)
+                0x0080065d                _end = .
+                0x0080065d                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -2121,7 +2092,7 @@ END GROUP
 
 .debug_macro
  *(.debug_macro)
-OUTPUT(trinityRackCV.elf elf32-avr)
+OUTPUT(TrinityRackCV.elf elf32-avr)
 LOAD linker stubs
 
 Cross Reference Table
@@ -2144,7 +2115,6 @@ ADSR::setTargetRatioA(float)                      /Users/dasvaclav/Documents/wor
 ADSR::setTargetRatioDR(float)                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
                                                   ./trinityRackCV.o
 ADSR::sync()                                      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
-                                                  ./trinityRackCV.o
 ADSR::~ADSR()                                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
                                                   ./trinityRackCV.o
 ADSR::~ADSR()                                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(expADSR.o)
@@ -2475,7 +2445,6 @@ __udivmodhi4                                      /usr/local/CrossPack-AVR-20131
                                                   /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o)
                                                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
                                                   ./trinityRackCV_HW.o
-                                                  ./trinityRackCV.o
 __udivmodqi4                                      /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodqi4.o)
                                                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
 __udivmodsi4                                      /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
@@ -2599,9 +2568,7 @@ interpolatingBuffer::init(unsigned char)          /Users/dasvaclav/Documents/wor
 interpolatingBuffer::rotateBuffer()               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
 interpolatingBuffer::rotateSmoothBuffer()         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
 interpolatingBuffer::setStep(unsigned char)       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
-                                                  ./trinityRackCV.o
 interpolatingBuffer::sync()                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
-                                                  ./trinityRackCV.o
 interpolatingBuffer::update()                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
 inverse                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(inverse.o)
                                                   /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exp.o)
@@ -2617,14 +2584,12 @@ ldexp                                             /usr/local/CrossPack-AVR-20131
 lfoExtended::getValue(unsigned int)               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
                                                   ./trinityRackCV.o
 lfoExtended::init()                               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
-                                                  ./trinityRackCV.o
 lfoExtended::setBastlCyclesPerPeriod(unsigned int) /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
                                                   ./trinityRackCV.o
 lfoExtended::setFlop(unsigned char)               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
 lfoExtended::setResolution(unsigned char)         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
 lfoExtended::setThreshold(unsigned char, LFOThresholdType) /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
 lfoExtended::setToStep(unsigned char, unsigned char) /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
-                                                  ./trinityRackCV.o
 lfoExtended::setWaveform(LFOBasicWaveform)        /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
 lfoExtended::setXOR(unsigned char)                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(lfoExtended.o)
 linear                                            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(interpolatingBuffer.o)
@@ -2746,12 +2711,10 @@ simpleSerialDecoder::sendRestart(unsigned char)   /Users/dasvaclav/Documents/wor
 simpleSerialDecoder::sendSelect(unsigned char)    /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
 simpleSerialDecoder::sendStart(unsigned char)     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
 simpleSerialDecoder::sendStep(unsigned char)      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                                                  ./trinityRackCV.o
 simpleSerialDecoder::sendStop(unsigned char)      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
 simpleSerialDecoder::sendTrigger(unsigned char)   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
                                                   ./trinityRackCV.o
 simpleSerialDecoder::update()                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
-                                                  ./trinityRackCV.o
 simpleSerialProtocol::getMessageType()            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)
                                                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialDecoder.o)
 simpleSerialProtocol::getMessageValue()           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(simpleSerialProtocol.o)

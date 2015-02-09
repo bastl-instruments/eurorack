@@ -48,56 +48,56 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 LSS += \
-trinityRackCV.lss \
+TrinityRackCV.lss \
 
 FLASH_IMAGE += \
-trinityRackCV.hex \
+TrinityRackCV.hex \
 
 EEPROM_IMAGE += \
-trinityRackCV.eep \
+TrinityRackCV.eep \
 
 SIZEDUMMY += \
 sizedummy \
 
 
 # All Target
-all: trinityRackCV.elf secondary-outputs
+all: TrinityRackCV.elf secondary-outputs
 
 # Tool invocations
-trinityRackCV.elf: $(OBJS) $(USER_OBJS)
+TrinityRackCV.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: AVR C++ Linker'
-	avr-g++ -lc -lm -Wl,-Map,trinityRackCV.map,--cref -mrelax -Wl,--gc-sections -L"/Users/dasvaclav/Documents/workspace/arduino-base/Release" -mmcu=atmega328p -o "trinityRackCV.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lc
+	avr-g++ -lc -lm -Wl,-Map,TrinityRackCV.map,--cref -mrelax -Wl,--gc-sections -L"/Users/dasvaclav/Documents/workspace/arduino-base/Release" -mmcu=atmega328p -o "TrinityRackCV.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lc
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-trinityRackCV.lss: trinityRackCV.elf
+TrinityRackCV.lss: TrinityRackCV.elf
 	@echo 'Invoking: AVR Create Extended Listing'
-	-avr-objdump -h -S trinityRackCV.elf  >"trinityRackCV.lss"
+	-avr-objdump -h -S TrinityRackCV.elf  >"TrinityRackCV.lss"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-trinityRackCV.hex: trinityRackCV.elf
+TrinityRackCV.hex: TrinityRackCV.elf
 	@echo 'Create Flash image (ihex format)'
-	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex trinityRackCV.elf  "trinityRackCV.hex"
+	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex TrinityRackCV.elf  "TrinityRackCV.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-trinityRackCV.eep: trinityRackCV.elf
+TrinityRackCV.eep: TrinityRackCV.elf
 	@echo 'Create eeprom image (ihex format)'
-	-avr-objcopy -j .eeprom --no-change-warnings --change-section-lma .eeprom=0 -O ihex trinityRackCV.elf  "trinityRackCV.eep"
+	-avr-objcopy -j .eeprom --no-change-warnings --change-section-lma .eeprom=0 -O ihex TrinityRackCV.elf  "TrinityRackCV.eep"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-sizedummy: trinityRackCV.elf
+sizedummy: TrinityRackCV.elf
 	@echo 'Invoking: Print Size'
-	-avr-size --format=avr --mcu=atmega328p trinityRackCV.elf
+	-avr-size --format=avr --mcu=atmega328p TrinityRackCV.elf
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(C_UPPER_DEPS)$(S_DEPS)$(LSS)$(C_DEPS)$(FLASH_IMAGE)$(CC_DEPS)$(ELFS)$(C++_DEPS)$(OBJS)$(CXX_DEPS)$(ASM_DEPS)$(EEPROM_IMAGE)$(INO_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(CPP_DEPS) trinityRackCV.elf
+	-$(RM) $(C_UPPER_DEPS)$(S_DEPS)$(LSS)$(C_DEPS)$(FLASH_IMAGE)$(CC_DEPS)$(ELFS)$(C++_DEPS)$(OBJS)$(CXX_DEPS)$(ASM_DEPS)$(EEPROM_IMAGE)$(INO_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(CPP_DEPS) TrinityRackCV.elf
 	-@echo ' '
 
 secondary-outputs: $(LSS) $(FLASH_IMAGE) $(EEPROM_IMAGE) $(SIZEDUMMY)
