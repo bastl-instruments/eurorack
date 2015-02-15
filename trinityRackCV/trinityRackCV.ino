@@ -60,7 +60,7 @@ int main(void) {
 interpolatingBuffer buffer[6];
 //Line <float> line[6];
 ADSR envelope[6];
-lfoExtended LFO;//[6];
+lfoExtended LFO[6];
 simpleSerialDecoder com;
 
 /* channel TYPES
@@ -251,7 +251,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		buffer[channel].setInterpolationAmount(channelValue[channel][1]);
 
 		break;
-	case LFO_MODE:/*
+	case LFO_MODE:
 		rate=channelValue[channel][0];
 		form=channelValue[channel][1];
 		shape=channelValue[channel][2];
@@ -346,7 +346,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 
 		}
 		}
-		*/
+
 		break;
 	case ADSR_MODE:
 		buffer[channel].interpolateMode(false);
@@ -468,7 +468,7 @@ void channelValueCall(uint8_t channel, uint8_t value, uint8_t number){
 }
 uint16_t syncStepNumber;
 void clockInCall(){
-/*
+
 	clockInDuration=hardware.getElapsedBastlCyclesLong()-lastTime;
 	lastTime=hardware.getElapsedBastlCyclesLong();
 	//if(currentStepNumber<255) currentStepNumber++;
@@ -511,7 +511,7 @@ void clockInCall(){
 			}
 		}
 	}
-*/
+
 	//com.sendClock(1);
 }
 
@@ -544,12 +544,13 @@ void setup() {
 		envelope[i].setSustainLevel(0.5);
 		envelope[i].setTargetRatioA(0.5);
 		envelope[i].setTargetRatioDR(0.01);
-	//	LFO[i].init();
-	//	LFO[i].setBastlCyclesPerPeriod(500);
+		LFO[i].init();
+		LFO[i].setBastlCyclesPerPeriod(500);
 		//LFO[i].setFreq(100);
 		buffer[i].init(i);
 	}
 	_time=hardware.getElapsedBastlCyclesLong();
+	 //LFO.setBastlCyclesPerPeriod(800);
 }
 
 uint16_t testTime=0;
@@ -585,7 +586,7 @@ void renderOutput(){
 				}
 				break;
 			case LFO_MODE:
-				/*
+
 				if( bitRead(channelValue[i][SETTINGS_BYTE],CV_ASSING_0) ) {
 					if(hardware.getCVValue(i)!=hardware.getLastCVValue(i)){
 						reflectValueChange(i,0);
@@ -601,8 +602,8 @@ void renderOutput(){
 						reflectValueChange(i,2);
 					}
 				}
-				*/
-				/*
+
+
 				if(randomLfo[i]){
 					buffer[i].update();
 					out=buffer[i].getCurrentValue();
@@ -619,11 +620,11 @@ void renderOutput(){
 						//out=out^(form>>1);
 					}
 				}
-				*/
 
-				// LFO[i].setBastlCyclesPerPeriod(curveMap(255-channelValue[i][0],LFOMAP_POINTS,LFOMap));
+
+			//	 LFO[i].setBastlCyclesPerPeriod(curveMap(255-channelValue[i][0],LFOMAP_POINTS,LFOMap));
 			//	 LFO[i].setBastlCyclesPerPeriod(channelValue[i][0]<<4);
-			//	 out=LFO[i].getValue(testTime);
+				// out=LFO[i].getValue(testTime);
 				hardware.setDAC(i,out);
 				break;
 			case ADSR_MODE:
@@ -667,31 +668,37 @@ void loop() {
 	}
 	else
 	*/
-	/*
+//	uint8_t out;
+
 
 	if(hardware.getElapsedBastlCyclesLong()!=_time){
 		_time=hardware.getElapsedBastlCyclesLong();
 		testTime++;
+		renderOutput();
+		/*
 		for(int i=0;i<6;i++){
 			 LFO[i].setBastlCyclesPerPeriod(800*(i+1));
 				 out=LFO[i].getValue(testTime);
 				hardware.setDAC(i,out);
 			}
+		*/
 		updateHW();
 	}
-	*/
-	uint8_t out;
+	com.update();
+
+
+	/*
 	if(hardware.getElapsedBastlCyclesLong()!=_time){
 			_time=hardware.getElapsedBastlCyclesLong();
 			testTime++;
 			//for(int i=0;i<6;i++){
-				 LFO.setBastlCyclesPerPeriod(800);
+			LFO.setBastlCyclesPerPeriod(800);
 					 out=LFO.getValue(testTime);
 					hardware.setDAC(0,out);
 			//	}
 			updateHW();
 		}
-
+*/
 	//renderOutput();
 
 	/*
