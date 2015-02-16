@@ -255,7 +255,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		rate=channelValue[channel][0];
 		form=channelValue[channel][1];
 		shape=channelValue[channel][2];
-		LFO[channel].setXOR(form);
+
 
 		buffer[channel].interpolateMode(false);
 		if( bitRead(channelValue[channel][SETTINGS_BYTE],CV_ASSING_0) ){
@@ -287,11 +287,13 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 
 		//make sofisticated map
 		LFO[channel].setResolution(0);//channelValue[channel][1]>>3);
-		if(value==2){
+		if(value!=0){
 		switch(map(shape,0,255,0,7)){ //
 		case 0:
 			LFO[channel].setWaveform(SAW);
 			LFO[channel].setFlop(0);
+			LFO[channel].setXOR(form);
+			LFO[channel].setResolution(0);
 			//,false,false,FOLDING);
 			wshape=false;
 			randomLfo[channel]=false;
@@ -299,6 +301,8 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		case 1:
 			LFO[channel].setWaveform(TRIANGLE);
 			LFO[channel].setFlop(0);
+			LFO[channel].setXOR(form);
+			LFO[channel].setResolution(0);
 			//,false,false,FOLDING);
 			wshape=false;
 			randomLfo[channel]=false;
@@ -306,6 +310,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		case 2:
 			LFO[channel].setWaveform(SAW);
 			LFO[channel].setFlop(0);
+			LFO[channel].setResolution(form/2);
 			LFO[channel].setXOR(255);
 			//,true,false,FOLDING);
 			wshape=true;
@@ -313,21 +318,27 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 			break;
 		case 3:
 			LFO[channel].setWaveform(SAW);
-			LFO[channel].setFlop(3);
+			LFO[channel].setFlop(1<<4);
+			LFO[channel].setXOR(form);
+			LFO[channel].setResolution(0);
 			//,false,true,FOLDING);
 			wshape=false;
 			randomLfo[channel]=false;
 			break;
 		case 4:
 			LFO[channel].setWaveform(TRIANGLE);//
-			LFO[channel].setFlop(3);
+			LFO[channel].setFlop(1<<4);
+			LFO[channel].setXOR(form);
+			LFO[channel].setResolution(0);
 			//,false,true,FOLDING);
 			wshape=false;
 			randomLfo[channel]=false;
 			break;
 		case 5:
 			LFO[channel].setWaveform(SAW);
-			LFO[channel].setFlop(3);
+			LFO[channel].setFlop(1<<4);
+			LFO[channel].setXOR(form);
+			LFO[channel].setResolution(0);
 			//,true,true,FOLDING);
 			wshape=false;
 			randomLfo[channel]=false;
@@ -546,6 +557,7 @@ void setup() {
 		envelope[i].setTargetRatioDR(0.01);
 		LFO[i].init();
 		LFO[i].setBastlCyclesPerPeriod(500);
+	//	LFO[i].setFlop(1<<5);
 		//LFO[i].setFreq(100);
 		buffer[i].init(i);
 	}
