@@ -56,7 +56,8 @@ int main(void) {
 #include <expADSR.h>
 #include <Line.h>
 #include <interpolatingBuffer.h>
-
+//#include <quantizer8bit.h>
+//quantizer8bit quantizer;
 interpolatingBuffer buffer[6];
 //Line <float> line[6];
 ADSR envelope[6];
@@ -124,9 +125,11 @@ void buttonCall(uint8_t v) {
 
 #define LFOMAP_POINTS 5
 #define ADSRMAP_POINTS 5
-
 uint16_t LFOMap[10]={0,63,127,191,255,   10,500,1000,3000,10000};
 uint16_t ADSRMap[10]={0,63,127,191,255,  10,500,1000,3000,10000};
+
+
+
 
 uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
 	uint32_t inMin=0, inMax=255, outMin=0, outMax=255;
@@ -594,6 +597,7 @@ void renderOutput(){
 				//buffer[i].update();
 				if(!channelRecord[i]){
 					out=buffer[i].getCurrentValue();
+					//if(channelValue[i][2]!=0) out=quantize(out,channelValue[i][2]>>5);
 					hardware.setDAC(i,out);
 				}
 				break;
@@ -723,13 +727,11 @@ void loop() {
 	Serial.println();
 delay(100);
 */
-	/*
+
 if(hardware.getElapsedBastlCyclesLong()-time>100){
 		time=hardware.getElapsedBastlCyclesLong();
-		//clockInCall();
+		clockInCall();
 	}
-*/
+
 
 }
-
-
