@@ -37,7 +37,8 @@ saving changes sound
 #ifdef EXTERNAL_IDE
 
 #include <Arduino.h>
-#include <EEPROM.h>
+
+//#include <EEPROM.h>
 
 int main(void) {
   init();
@@ -56,6 +57,7 @@ int main(void) {
 #include <expADSR.h>
 #include <Line.h>
 #include <interpolatingBuffer.h>
+//#include <mapping.h>
 //#include <quantizer8bit.h>
 //quantizer8bit quantizer;
 interpolatingBuffer buffer[6];
@@ -241,6 +243,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 	uint8_t rate=0;
 	uint8_t form=0;
 	uint8_t shape=0;
+	uint8_t res=0;
 	switch(channelMode[channel]){
 	case TRIGGER_MODE:
 		break;
@@ -289,14 +292,14 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		buffer[channel].setSmootingAmount(form);
 
 		//make sofisticated map
-		LFO[channel].setResolution(0);//channelValue[channel][1]>>3);
+		LFO[channel].setResolution(255);//channelValue[channel][1]>>3);
 		if(value!=0){
 		switch(map(shape,0,255,0,7)){ //
 		case 0:
 			LFO[channel].setWaveform(SAW);
 			LFO[channel].setFlop(0);
 			LFO[channel].setXOR(form);
-			LFO[channel].setResolution(0);
+			LFO[channel].setResolution(255);
 			//,false,false,FOLDING);
 			wshape=false;
 			randomLfo[channel]=false;
@@ -305,7 +308,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 			LFO[channel].setWaveform(TRIANGLE);
 			LFO[channel].setFlop(0);
 			LFO[channel].setXOR(form);
-			LFO[channel].setResolution(0);
+			LFO[channel].setResolution(255);
 			//,false,false,FOLDING);
 			wshape=false;
 			randomLfo[channel]=false;
@@ -313,17 +316,26 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		case 2:
 			LFO[channel].setWaveform(SAW);
 			LFO[channel].setFlop(0);
-			LFO[channel].setResolution(form/2);
-			LFO[channel].setXOR(255);
+			res=form>>4;
+			if(res>7){
+				res=(15-res)-7;
+				LFO[channel].setResolution((1<<res));
+				LFO[channel].setXOR(0);
+			}
+			else{
+				LFO[channel].setResolution((1<<res));
+				LFO[channel].setXOR(255);
+			}
+
 			//,true,false,FOLDING);
 			wshape=true;
 			randomLfo[channel]=false;
 			break;
 		case 3:
 			LFO[channel].setWaveform(SAW);
-			LFO[channel].setFlop(1<<4);
+			LFO[channel].setFlop((1<<4)+1);
 			LFO[channel].setXOR(form);
-			LFO[channel].setResolution(0);
+			LFO[channel].setResolution(255);
 			//,false,true,FOLDING);
 			wshape=false;
 			randomLfo[channel]=false;
@@ -332,7 +344,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 			LFO[channel].setWaveform(TRIANGLE);//
 			LFO[channel].setFlop(1<<4);
 			LFO[channel].setXOR(form);
-			LFO[channel].setResolution(0);
+			LFO[channel].setResolution(255);
 			//,false,true,FOLDING);
 			wshape=false;
 			randomLfo[channel]=false;
@@ -341,7 +353,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 			LFO[channel].setWaveform(SAW);
 			LFO[channel].setFlop(1<<4);
 			LFO[channel].setXOR(form);
-			LFO[channel].setResolution(0);
+			LFO[channel].setResolution(255);
 			//,true,true,FOLDING);
 			wshape=false;
 			randomLfo[channel]=false;
@@ -558,7 +570,7 @@ void setup() {
 		envelope[i].setSustainLevel(0.5);
 		envelope[i].setTargetRatioA(0.5);
 		envelope[i].setTargetRatioDR(0.01);
-		LFO[i].init();
+		LFO[i].init(1000);
 		LFO[i].setBastlCyclesPerPeriod(500);
 	//	LFO[i].setFlop(1<<5);
 		//LFO[i].setFreq(100);
@@ -626,21 +638,18 @@ void renderOutput(){
 				}
 				else{
 
-					//LFO[i].step();
+					LFO[i].step();//testTime
 					out=LFO[i].getValue(testTime);//hardware.getElapsedBastlCyclesLong());
+
 					if(wshape){
-						out=out>>(form>>5);
-						out=out<<(form>>5);
+					//	out=out>>(form>>5);
+					//	out=out<<(form>>5);
 					}
 					else{
 						//out=out^(form>>1);
 					}
 				}
 
-
-			//	 LFO[i].setBastlCyclesPerPeriod(curveMap(255-channelValue[i][0],LFOMAP_POINTS,LFOMap));
-			//	 LFO[i].setBastlCyclesPerPeriod(channelValue[i][0]<<4);
-				// out=LFO[i].getValue(testTime);
 				hardware.setDAC(i,out);
 				break;
 			case ADSR_MODE:
@@ -676,57 +685,17 @@ hardware.isr_updateClockIn();
 
 void loop() {
 
-/*
-	if(hardware.getElapsedBastlCyclesLong()-_time>1){
-		//while(1);
-		_time=hardware.getElapsedBastlCyclesLong();
-		bit_set(PIN_2);
-	}
-	else
-	*/
-//	uint8_t out;
-
 
 	if(hardware.getElapsedBastlCyclesLong()!=_time){
 		_time=hardware.getElapsedBastlCyclesLong();
 		testTime++;
 		renderOutput();
-		/*
-		for(int i=0;i<6;i++){
-			 LFO[i].setBastlCyclesPerPeriod(800*(i+1));
-				 out=LFO[i].getValue(testTime);
-				hardware.setDAC(i,out);
-			}
-		*/
 		updateHW();
 	}
 	com.update();
 
 
-	/*
-	if(hardware.getElapsedBastlCyclesLong()!=_time){
-			_time=hardware.getElapsedBastlCyclesLong();
-			testTime++;
-			//for(int i=0;i<6;i++){
-			LFO.setBastlCyclesPerPeriod(800);
-					 out=LFO.getValue(testTime);
-					hardware.setDAC(0,out);
-			//	}
-			updateHW();
-		}
-*/
-	//renderOutput();
 
-	/*
-	for(int i=0;i<6;i++){
-		Serial.print(i);
-		Serial.print(": ");
-		Serial.print(hardware.getCVValue(i));
-		Serial.print("    ");
-	}
-	Serial.println();
-delay(100);
-*/
 
 if(hardware.getElapsedBastlCyclesLong()-time>100){
 		time=hardware.getElapsedBastlCyclesLong();
