@@ -18,10 +18,11 @@ int main(void) {
 #include <EEPROM.h>
 #include <MIDI.h>
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial, MIDI)  ;
-
+#include <MIDInoteBuffer.h>
 #include<spiShared.h>
 #define DAC_CONFIG 0x30
 #define SS_DAC B,2
+MIDInoteBuffer buffer;
 
 void writeDAC(uint16_t signal) {
 
@@ -69,7 +70,8 @@ bool anyNoteOn(){
 	return false;
 }
 void setGate(bool state){
-
+ digitalWrite(8,state);
+ digitalWrite(7,state);
 }
 bool calibrating=false;
 uint8_t selectedNote;
@@ -80,9 +82,19 @@ uint16_t tuneInputTable[60]={0,17,34,51,68,85,102,119,136,153,170,188,
 						614,631,648,665,682,699,716,733,750,767,784,801,
 						818,835,853,870,887,904,921,938,955,972,989,1006};
 
-uint16_t tuneTable[22]={0,6, 12,18, 24,30, 36,42, 48,54, 60, 0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4096};
+uint16_t tuneTable[22]={0,6, 12,18, 24,30, 36,42, 48,54, 60, 0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4095};
 #define TUNE_POINTS 11
-
+void loadTable(){
+	for(int i=0;i<22;i++){
+		tuneTable[i]=word(EEPROM.read(i*2),EEPROM.read(1+(i*2)));
+	}
+}
+void saveTable(){
+	for(int i=0;i<22;i++){
+		EEPROM.write(i*2,highByte(tuneTable[i]));
+		EEPROM.write(1+(i*2),lowByte(tuneTable[i]));
+	}
+}
 uint8_t signalToNote(uint16_t signal){
 	uint8_t resultNote=0;
 	for(int i=0;i<5;i++){
@@ -169,11 +181,15 @@ void calibrate(uint8_t note){
 			writeDAC(curveMap(selectedNote,TUNE_POINTS, tuneTable));
 			//note-36
 		}
-		if((note % 5) == 0){
+		if((note % 6) == 5){
 			if(((note+1)) == selectedNote) tuneTable[TUNE_POINTS+(selectedNote/6)]--;
+			writeDAC(curveMap(selectedNote,TUNE_POINTS, tuneTable));
+			saveTable();
 		}
-		if((note % 7) == 0){
+		if((note % 6) == 1){
 			if(((note-1)) == selectedNote) tuneTable[TUNE_POINTS+(selectedNote/6)]++;
+			writeDAC(curveMap(selectedNote,TUNE_POINTS, tuneTable));
+			saveTable();
 		}
 	}
 }
@@ -182,27 +198,59 @@ void handleNoteOn(byte channel, byte pitch, byte velocity)
 {
 	noteOn[pitch]=true;
 	setGate(true);
-	if(pitch>=36 && pitch<=96) writeDAC(curveMap(pitch,TUNE_POINTS, tuneTable));
-	if(calibrating) calibrate(pitch);
+	if(channel==1) calibrating=true;
+	//else
+	calibrating=false;
+
+	if(calibrating){
+		calibrate(pitch);
+	//	digitalWrite(8,HIGH);
+	}
+	else{
+		buffer.addNoteToBuffer(pitch,velocity);
+		if(pitch>=36 && pitch<=96) writeDAC(curveMap(pitch-36,TUNE_POINTS, tuneTable));
+		//digitalWrite(8,LOW);
+	}
+
+	//digitalWrite(8,HIGH);
 }
 
 void handleNoteOff(byte channel, byte pitch, byte velocity)
 {
+	buffer.removeNoteFromBuffer(pitch);
+	if(buffer.getNumberOfNotesInBuffer()>0) writeDAC(curveMap(buffer.getNoteFromBuffer(0)-36,TUNE_POINTS, tuneTable));
+	else setGate(false);
 	noteOn[pitch]=false;
-	if(!anyNoteOn()) setGate(false);
+	//if(!anyNoteOn())
+
+
 }
 
 void setup(){
 
 	dacInit();
+
+	MIDI.begin(MIDI_CHANNEL_OMNI);
     MIDI.setHandleNoteOn(handleNoteOn);
     MIDI.setHandleNoteOff(handleNoteOff);
-    MIDI.begin(MIDI_CHANNEL_OMNI);
+
+//saveTable();
+    loadTable();
+
+    pinMode(8,OUTPUT);
+    pinMode(7,OUTPUT);
+    buffer.init();
+    buffer.setPolyphony(1);
 }
 
 void loop()
-{
+{/*
+	for(int i=0;i<4096;i++){
+	writeDAC(i);
+	delay(1);
+	}*/
     MIDI.read();
+
 }
 
 

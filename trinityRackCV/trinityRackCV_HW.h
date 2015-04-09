@@ -26,6 +26,8 @@ public:
 	void setDAC(uint8_t number, uint8_t value);
 	bool getClockState();
 
+	void setSelect(uint8_t _selectedChannel){selectedChannel=_selectedChannel;};
+
 	/**TIMING**/
 
 	// the number of bastl cycles elapsed since startup
@@ -75,6 +77,7 @@ public:
 	void isr_updateADC();
 	void isr_updateDAC();
 	void isr_updateClockIn();
+	void isr_updateSelect();
 
 	inline void incrementBastlCycles() {bastlCycles++;}
 
@@ -88,7 +91,7 @@ private:
 	/** CLOCK IN **/
 	bool clockInState;
 	void (*clockInCallback)();
-
+	uint8_t selectedChannel;
 	/** CV out */
 	static const uint8_t numbDACs = 8;
 	uint8_t dacCount;

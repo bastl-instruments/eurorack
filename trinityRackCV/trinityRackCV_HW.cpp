@@ -50,6 +50,9 @@ void trinityRackCV_HW::init(void(*clockInCallback)()) {
 	bit_dir_outp(PIN); //debug
 	bit_dir_outp(PIN_2);
 
+	bit_dir_outp(SELECT_1); //debug
+	bit_dir_outp(SELECT_2);
+
 	DACInit();
 
 	// store callback pointer for changed buttons
@@ -139,7 +142,10 @@ void trinityRackCV_HW::isr_updateDAC(){
 
 
 }
-
+void trinityRackCV_HW::isr_updateSelect(){
+	if(selectedChannel>2) bit_set(SELECT_1), bit_clear(SELECT_2);
+	else bit_set(SELECT_2), bit_clear(SELECT_1);
+}
 void trinityRackCV_HW::DACInit(){
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);  // Most Significant bit first.

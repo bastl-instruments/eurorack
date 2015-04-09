@@ -27,6 +27,9 @@ const uint8_t ANALOG_PIN_6 = 2;
 #define PIN B,1
 #define PIN_2 B,0
 
+#define SELECT_1 B,0
+#define SELECT_2 B,1
+
 
 
 

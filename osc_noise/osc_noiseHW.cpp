@@ -4,7 +4,7 @@
 
 
 #define DEBUGPIN B,5
-#define SWITCHPIN B,4
+#define SWITCHPIN B,0
 
 osc_noiseHW hardware;
 
@@ -13,7 +13,7 @@ void osc_noiseHW::init() {
 
 	fastAnalogRead::init();
 
-	currentAnalogChannel = 0;
+	currentAnalogChannel = 1;
 	fastAnalogRead::connectChannel(currentAnalogChannel);
 	fastAnalogRead::startConversion();
 
@@ -30,16 +30,16 @@ void osc_noiseHW::update(){
 
 		// KNOB
 		if (currentAnalogChannel < numbKnobs) {
-			knobStates[currentAnalogChannel] = reading;
+			knobStates[currentAnalogChannel-1] = reading;
 
 		// CV
 		} else {
-			CVStates[currentAnalogChannel-numbKnobs] = reading;
+			CVStates[currentAnalogChannel-numbKnobs-1] = reading;
 		}
 
 		// Start next conversion
 		currentAnalogChannel++;
-		if(currentAnalogChannel == numbKnobs+numbCVs) currentAnalogChannel = 0;
+		if(currentAnalogChannel == numbKnobs+numbCVs+1) currentAnalogChannel = 1;
 
 		fastAnalogRead::connectChannel(currentAnalogChannel);
 		fastAnalogRead::startConversion();

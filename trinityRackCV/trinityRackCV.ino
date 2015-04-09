@@ -9,10 +9,11 @@
 think how to finish automation 3rd parameter
 combo for reseting sequence
  midi expansion support
- random rate mapping
+
 
 
  to test
+  random rate mapping
  handsake + selfrepair ?
  sync indication // lichy rychlej?
  universality and compatibility with other trinity modules
@@ -57,9 +58,13 @@ int main(void) {
 #include <expADSR.h>
 #include <Line.h>
 #include <interpolatingBuffer.h>
+
 //#include <mapping.h>
 //#include <quantizer8bit.h>
 //quantizer8bit quantizer;
+
+
+
 interpolatingBuffer buffer[6];
 //Line <float> line[6];
 ADSR envelope[6];
@@ -127,11 +132,9 @@ void buttonCall(uint8_t v) {
 
 #define LFOMAP_POINTS 5
 #define ADSRMAP_POINTS 5
+
 uint16_t LFOMap[10]={0,63,127,191,255,   10,500,1000,3000,10000};
 uint16_t ADSRMap[10]={0,63,127,191,255,  10,500,1000,3000,10000};
-
-
-
 
 uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
 	uint32_t inMin=0, inMax=255, outMin=0, outMax=255;
@@ -451,6 +454,7 @@ void restartCall(uint8_t number){
 
 void selectCall(uint8_t number){
 	selectedChannel=number;
+	hardware.setSelect(number);
 	com.sendPairMessage();
 }
 void channelTriggerCall(uint8_t channel,uint8_t number){
@@ -609,7 +613,6 @@ void renderOutput(){
 				//buffer[i].update();
 				if(!channelRecord[i]){
 					out=buffer[i].getCurrentValue();
-					//if(channelValue[i][2]!=0) out=quantize(out,channelValue[i][2]>>5);
 					hardware.setDAC(i,out);
 				}
 				break;
@@ -681,6 +684,7 @@ void updateHW(){
 hardware.isr_updateClockIn();
 	hardware.isr_updateADC();
 	hardware.isr_updateDAC();
+	hardware.isr_updateSelect();
 }
 
 void loop() {
@@ -697,10 +701,24 @@ void loop() {
 
 
 
+	/*
+	for(int i=0;i<6;i++){
+		Serial.print(i);
+		Serial.print(": ");
+		Serial.print(hardware.getCVValue(i));
+		Serial.print("    ");
+	}
+	Serial.println();
+delay(100);
+*/
+	/*
+>>>>>>> parent of 1166210... problematic - cannot compile committing for revert
 if(hardware.getElapsedBastlCyclesLong()-time>100){
 		time=hardware.getElapsedBastlCyclesLong();
-		clockInCall();
+		//clockInCall();
 	}
-
+*/
 
 }
+
+

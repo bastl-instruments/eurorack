@@ -1,30 +1,621 @@
 Archive member included because of file (symbol)
 
+/Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                              ./cvToDCMotor.o (Serial)
+/Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o) (_ZN5Print5writeEPKhj)
+/Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+                              ./cvToDCMotor.o (_Z6randoml)
+/Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o) (_ZNK6StringixEj)
+/Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o) (__cxa_pure_virtual)
 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                              ./cvToDCMotor.o (init)
+                              ./cvToDCMotor.o (delay)
+/Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+                              ./cvToDCMotor.o (analogWrite)
+/Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                              ./cvToDCMotor.o (pinMode)
+/Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o) (malloc)
+/Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (realloc)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o) (random)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (atol)
 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
                               /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o (exit)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(isspace.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (isspace)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(tolower.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (tolower)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(toupper.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (toupper)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memcpy.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (memcpy)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memmove.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (memmove)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strchr.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (strchr)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcmp.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (strcmp)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcpy.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (strcpy)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncmp.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (strncmp)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncpy.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (strncpy)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrchr.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (strrchr)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strstr.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (strstr)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (itoa)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ltoa.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (ltoa)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsi10.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o) (__mulsi_const_10)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ultoa.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (ultoa)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(utoa.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o) (utoa)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o) (__subsf3)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o) (__addsf3x)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o) (__ltsf2)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o) (__divsf3)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o) (__divsf3x)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o) (__fixsfsi)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o) (__fixunssfsi)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o) (__floatunsisf)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_cmp.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o) (__fp_cmp)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_inf.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o) (__fp_inf)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_nan.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o) (__fp_nan)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscA.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o) (__fp_pscA)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscB.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o) (__fp_pscB)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_round.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o) (__fp_round)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_split3.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o) (__fp_split3)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o) (__fp_zero)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o) (__gtsf2)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o) (__mulsf3)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o) (__mulsf3x)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(unordsf2.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o) (__unordsf2)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cty_isfalse.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(isspace.o) (__ctype_isfalse)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrev.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o) (strrev)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o) (__mulsi3)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o) (__udivmodhi4)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o) (__udivmodsi4)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o) (__divmodsi4)
 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
                               /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o) (_exit)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+                              ./cvToDCMotor.o (__do_copy_data)
 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
-                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o) (__do_clear_bss)
+                              ./cvToDCMotor.o (__do_clear_bss)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o) (__do_global_ctors)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o) (__muluhisi3)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o) (__mulohisi3)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o) (__tablejump__)
+/usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o) (__umulhisi3)
+
+Allocating common symbols
+Common symbol       size              file
+
+__brkval            0x2               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+__flp               0x2               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
 
 Discarded input sections
 
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
  .text          0x00000000        0x0 ./cvToDCMotor.o
  .bss           0x00000000        0x0 ./cvToDCMotor.o
- .text.setup    0x00000000        0x2 ./cvToDCMotor.o
- .text.loop     0x00000000        0x2 ./cvToDCMotor.o
+ .text._Z13renderChannelh
+                0x00000000       0x46 ./cvToDCMotor.o
+ .text.loop     0x00000000        0x4 ./cvToDCMotor.o
+ .bss.speed     0x00000000        0x2 ./cvToDCMotor.o
+ .bss.analogValue
+                0x00000000        0xc ./cvToDCMotor.o
+ .group         0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .group         0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .text._Z11serialEventv
+                0x00000000        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .text._Z14serialEventRunv
+                0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .text._ZN14HardwareSerialC2EP11ring_bufferS1_PVhS3_S3_S3_S3_S3_hhhhh
+                0x00000000       0x88 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .text._ZN14HardwareSerial5beginEmh
+                0x00000000      0x10c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .text._ZN14HardwareSerial3endEv
+                0x00000000       0xae /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .text._ZN14HardwareSerialcvbEv
+                0x00000000        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .rodata._ZTV6Stream
+                0x00000000       0x10 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .group         0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .group         0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printEPK19__FlashStringHelper
+                0x00000000       0x42 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printERK6String
+                0x00000000       0x6c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printERK9Printable
+                0x00000000       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnEPK19__FlashStringHelper
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnERK6String
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnEPKc
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnEc
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnERK9Printable
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printEmi
+                0x00000000       0x1a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnEmi
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printEji
+                0x00000000        0xc /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnEji
+                0x00000000       0x30 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printEhi
+                0x00000000        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnEhi
+                0x00000000       0x32 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnEli
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnEii
+                0x00000000       0x34 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .rodata.str1.1
+                0x00000000        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print10printFloatEdh
+                0x00000000      0x1ee /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printEdi
+                0x00000000        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnEdi
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .rodata._ZTV5Print
+                0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+ .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+ .text._Z10randomSeedj
+                0x00000000       0x10 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+ .text._Z6randomll
+                0x00000000       0x3c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+ .text._Z3maplllll
+                0x00000000       0x8e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+ .text._Z8makeWordj
+                0x00000000        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+ .text._Z8makeWordhh
+                0x00000000        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+ .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringD2Ev
+                0x00000000        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String10invalidateEv
+                0x00000000       0x24 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String12changeBufferEj
+                0x00000000       0x34 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String7reserveEj
+                0x00000000       0x3e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String4copyEPKcj
+                0x00000000       0x42 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringC2EPKc
+                0x00000000       0x3a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringaSERKS_
+                0x00000000       0x2e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringC2ERKS_
+                0x00000000       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringaSEPKc
+                0x00000000       0x34 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringC2Emh
+                0x00000000       0x5c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringC2Elh
+                0x00000000       0x5c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringC2Ejh
+                0x00000000       0x5a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringC2Eih
+                0x00000000       0x5a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringC2Ehh
+                0x00000000       0x5c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringC2Ec
+                0x00000000       0x32 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String6concatEPKcj
+                0x00000000       0x58 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String6concatERKS_
+                0x00000000        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String6concatEPKc
+                0x00000000       0x20 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String6concatEc
+                0x00000000       0x26 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String6concatEh
+                0x00000000       0x5a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String6concatEi
+                0x00000000       0x64 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String6concatEj
+                0x00000000       0x5e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String6concatEl
+                0x00000000       0x66 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String6concatEm
+                0x00000000       0x66 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZplRK15StringSumHelperRK6String
+                0x00000000       0x2c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZplRK15StringSumHelperPKc
+                0x00000000       0x3a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZplRK15StringSumHelperc
+                0x00000000       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZplRK15StringSumHelperh
+                0x00000000       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZplRK15StringSumHelperi
+                0x00000000       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZplRK15StringSumHelperj
+                0x00000000       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZplRK15StringSumHelperl
+                0x00000000       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZplRK15StringSumHelperm
+                0x00000000       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String9compareToERKS_
+                0x00000000       0x62 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String6equalsERKS_
+                0x00000000       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String6equalsEPKc
+                0x00000000       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6StringltERKS_
+                0x00000000        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6StringgtERKS_
+                0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6StringleERKS_
+                0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6StringgeERKS_
+                0x00000000       0x10 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String16equalsIgnoreCaseERKS_
+                0x00000000       0x70 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String10startsWithERKS_j
+                0x00000000       0x48 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String10startsWithERKS_
+                0x00000000       0x1e /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String8endsWithERKS_
+                0x00000000       0x42 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String9setCharAtEjc
+                0x00000000       0x1c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6StringixEj
+                0x00000000       0x26 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6StringixEj
+                0x00000000       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String6charAtEj
+                0x00000000        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String8getBytesEPhjj
+                0x00000000       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String7indexOfEcj
+                0x00000000       0x3c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String7indexOfEc
+                0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String7indexOfERKS_j
+                0x00000000       0x3c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String7indexOfERKS_
+                0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String11lastIndexOfEcj
+                0x00000000       0x6c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String11lastIndexOfEc
+                0x00000000        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String11lastIndexOfERKS_j
+                0x00000000       0x9a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String11lastIndexOfERKS_
+                0x00000000       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .rodata.str1.1
+                0x00000000        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String9substringEjj
+                0x00000000       0x8a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String9substringEj
+                0x00000000       0x18 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String7replaceEcc
+                0x00000000       0x1c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String7replaceERKS_S1_
+                0x00000000      0x224 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String11toLowerCaseEv
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String11toUpperCaseEv
+                0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZN6String4trimEv
+                0x00000000       0xca /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text._ZNK6String5toIntEv
+                0x00000000       0x18 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .bss._ZZN6StringixEjE19dummy_writable_char
+                0x00000000        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+ .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+ .text._Znwj    0x00000000        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+ .text._Znaj    0x00000000        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+ .text._ZdlPv   0x00000000        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+ .text._ZdaPv   0x00000000        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+ .text.__cxa_guard_acquire
+                0x00000000       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+ .text.__cxa_guard_release
+                0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+ .text.__cxa_guard_abort
+                0x00000000        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+ .text.__cxa_pure_virtual
+                0x00000000        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
  .text.millis   0x00000000       0x24 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
- .text.micros   0x00000000       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
- .text.delay    0x00000000       0x4c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
  .text.delayMicroseconds
                 0x00000000       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+ .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+ .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+ .text.analogReference
+                0x00000000        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+ .text.analogRead
+                0x00000000       0x42 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+ .data.analog_reference
+                0x00000000        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+ .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+ .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+ .text.digitalRead
+                0x00000000       0x52 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+ .progmem.data.port_to_input_PGM
+                0x00000000        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+ .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+ .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+ .text.avr-libc
+                0x00000000      0x274 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+ .data.__malloc_heap_end
+                0x00000000        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+ .data.__malloc_heap_start
+                0x00000000        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+ .data.__malloc_margin
+                0x00000000        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+ COMMON         0x00000000        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+ .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+ .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+ .text.avr-libc
+                0x00000000      0x1c8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o)
+ .text.avr-libc
+                0x00000000       0x4e /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(isspace.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(isspace.o)
+ .text.avr-libc
+                0x00000000       0x10 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(isspace.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(tolower.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(tolower.o)
+ .text.avr-libc
+                0x00000000       0x10 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(tolower.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(toupper.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(toupper.o)
+ .text.avr-libc
+                0x00000000       0x10 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(toupper.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memcpy.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memcpy.o)
+ .text.avr-libc
+                0x00000000       0x12 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memcpy.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memmove.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memmove.o)
+ .text.avr-libc
+                0x00000000       0x24 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memmove.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strchr.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strchr.o)
+ .text.avr-libc
+                0x00000000       0x16 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strchr.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcmp.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcmp.o)
+ .text.avr-libc
+                0x00000000       0x12 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcmp.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcpy.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcpy.o)
+ .text.avr-libc
+                0x00000000        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcpy.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncmp.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncmp.o)
+ .text.avr-libc
+                0x00000000       0x1c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncmp.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncpy.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncpy.o)
+ .text.avr-libc
+                0x00000000       0x1e /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncpy.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrchr.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrchr.o)
+ .text.avr-libc
+                0x00000000       0x16 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrchr.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strstr.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strstr.o)
+ .text.avr-libc
+                0x00000000       0x34 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strstr.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o)
+ .text.avr-libc
+                0x00000000       0x42 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ltoa.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ltoa.o)
+ .text.avr-libc
+                0x00000000       0x68 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ltoa.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsi10.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsi10.o)
+ .text.avr-libc
+                0x00000000       0x2a /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsi10.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ultoa.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ultoa.o)
+ .text.avr-libc
+                0x00000000       0x4a /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ultoa.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(utoa.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(utoa.o)
+ .text.avr-libc
+                0x00000000       0x2c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(utoa.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
+ .text.avr-libc.fplib
+                0x00000000        0xa /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+ .text.avr-libc.fplib
+                0x00000000       0xc0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+ .text.avr-libc.fplib
+                0x00000000        0x8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
+ .text.avr-libc.fplib
+                0x00000000        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+ .text.avr-libc.fplib
+                0x00000000       0xcc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
+ .text.avr-libc.fplib
+                0x00000000        0xa /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
+ .text.avr-libc.fplib
+                0x00000000       0x58 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
+ .text.avr-libc.fplib
+                0x00000000       0x7a /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_cmp.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_cmp.o)
+ .text.avr-libc.fplib
+                0x00000000       0x48 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_cmp.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_inf.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_inf.o)
+ .text.avr-libc.fplib
+                0x00000000        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_inf.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_nan.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_nan.o)
+ .text.avr-libc.fplib
+                0x00000000        0x6 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_nan.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscA.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscA.o)
+ .text.avr-libc.fplib
+                0x00000000        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscA.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscB.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscB.o)
+ .text.avr-libc.fplib
+                0x00000000        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscB.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_round.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_round.o)
+ .text.avr-libc.fplib
+                0x00000000       0x22 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_round.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_split3.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_split3.o)
+ .text.avr-libc.fplib
+                0x00000000       0x44 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_split3.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
+ .text.avr-libc.fplib
+                0x00000000        0xe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
+ .text.avr-libc.fplib
+                0x00000000        0x8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
+ .text.avr-libc.fplib
+                0x00000000        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+ .text.avr-libc.fplib
+                0x00000000       0xc2 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(unordsf2.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(unordsf2.o)
+ .text.avr-libc.fplib
+                0x00000000        0x8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(unordsf2.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cty_isfalse.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cty_isfalse.o)
+ .text.avr-libc
+                0x00000000        0x6 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cty_isfalse.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrev.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrev.o)
+ .text.avr-libc
+                0x00000000       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrev.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .text.libgcc.mul
+                0x00000000       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .text.libgcc.div
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .text.libgcc.mul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .text.libgcc.div
+                0x00000000       0x28 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .text.libgcc.mul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .text.libgcc.mul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
  .text.libgcc.mul
@@ -38,6 +629,19 @@ Discarded input sections
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
  .text.libgcc.fmul
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .text.libgcc.mul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .text.libgcc.div
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
  .text.libgcc.mul
@@ -51,6 +655,64 @@ Discarded input sections
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
  .text.libgcc.fmul
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .text.libgcc.mul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .text.libgcc.div
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .text.libgcc.div
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .text.libgcc.div
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .text.libgcc.mul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .text.libgcc.div
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+ .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+ .text.libgcc.div
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+ .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
 
 Memory Configuration
 
@@ -170,7 +832,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x1a0
+.text           0x00000000      0xdde
  *(.vectors)
  .vectors       0x00000000       0x68 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
                 0x00000000                __vectors
@@ -178,94 +840,211 @@ END GROUP
  *(.vectors)
  *(.progmem.gcc*)
  *(.progmem*)
-                0x00000068                . = ALIGN (0x2)
-                0x00000068                __trampolines_start = .
+ .progmem.data.digital_pin_to_timer_PGM
+                0x00000068       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x00000068                digital_pin_to_timer_PGM
+ .progmem.data.digital_pin_to_bit_mask_PGM
+                0x0000007c       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x0000007c                digital_pin_to_bit_mask_PGM
+ .progmem.data.digital_pin_to_port_PGM
+                0x00000090       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x00000090                digital_pin_to_port_PGM
+ .progmem.data.port_to_output_PGM
+                0x000000a4        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x000000a4                port_to_output_PGM
+ .progmem.data.port_to_mode_PGM
+                0x000000ae        0xa /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x000000ae                port_to_mode_PGM
+                0x000000b8                . = ALIGN (0x2)
+                0x000000b8                __trampolines_start = .
  *(.trampolines)
- .trampolines   0x00000068        0x0 linker stubs
+ .trampolines   0x000000b8        0x0 linker stubs
  *(.trampolines*)
-                0x00000068                __trampolines_end = .
+                0x000000b8                __trampolines_end = .
  *(.jumptables)
  *(.jumptables*)
  *(.lowtext)
  *(.lowtext*)
-                0x00000068                __ctors_start = .
+                0x000000b8                __ctors_start = .
  *(.ctors)
-                0x00000068                __ctors_end = .
-                0x00000068                __dtors_start = .
+ .ctors         0x000000b8        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x000000ba                __ctors_end = .
+                0x000000ba                __dtors_start = .
  *(.dtors)
-                0x00000068                __dtors_end = .
+                0x000000ba                __dtors_end = .
  SORT(*)(.ctors)
  SORT(*)(.dtors)
  *(.init0)
- .init0         0x00000068        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
-                0x00000068                __init
+ .init0         0x000000ba        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+                0x000000ba                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x00000068        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+ .init2         0x000000ba        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
  *(.init2)
  *(.init3)
  *(.init3)
  *(.init4)
- .init4         0x00000074       0x10 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
-                0x00000074                __do_clear_bss
+ .init4         0x000000c6       0x16 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+                0x000000c6                __do_copy_data
+ .init4         0x000000dc       0x10 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+                0x000000dc                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
  *(.init6)
+ .init6         0x000000ec       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+                0x000000ec                __do_global_ctors
  *(.init6)
  *(.init7)
  *(.init7)
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x00000084        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+ .init9         0x00000100        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
  *(.init9)
  *(.text)
- .text          0x00000088        0x2 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
-                0x00000088                __vector_20
-                0x00000088                __vector_1
-                0x00000088                __vector_24
-                0x00000088                __vector_12
-                0x00000088                __bad_interrupt
-                0x00000088                __vector_6
-                0x00000088                __vector_3
-                0x00000088                __vector_23
-                0x00000088                __vector_25
-                0x00000088                __vector_11
-                0x00000088                __vector_13
-                0x00000088                __vector_17
-                0x00000088                __vector_19
-                0x00000088                __vector_7
-                0x00000088                __vector_5
-                0x00000088                __vector_4
-                0x00000088                __vector_9
-                0x00000088                __vector_2
-                0x00000088                __vector_21
-                0x00000088                __vector_15
-                0x00000088                __vector_8
-                0x00000088                __vector_14
-                0x00000088                __vector_10
-                0x00000088                __vector_18
-                0x00000088                __vector_22
-                0x0000008a                . = ALIGN (0x2)
+ .text          0x00000104        0x2 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+                0x00000104                __vector_20
+                0x00000104                __vector_1
+                0x00000104                __vector_24
+                0x00000104                __vector_12
+                0x00000104                __bad_interrupt
+                0x00000104                __vector_6
+                0x00000104                __vector_3
+                0x00000104                __vector_23
+                0x00000104                __vector_25
+                0x00000104                __vector_11
+                0x00000104                __vector_13
+                0x00000104                __vector_17
+                0x00000104                __vector_7
+                0x00000104                __vector_5
+                0x00000104                __vector_4
+                0x00000104                __vector_9
+                0x00000104                __vector_2
+                0x00000104                __vector_21
+                0x00000104                __vector_15
+                0x00000104                __vector_8
+                0x00000104                __vector_14
+                0x00000104                __vector_10
+                0x00000104                __vector_22
+                0x00000106                . = ALIGN (0x2)
  *(.text.*)
+ .text.setup    0x00000106       0x60 ./cvToDCMotor.o
+                0x00000106                setup
+ .text._Z5motorhbh
+                0x00000166       0x9a ./cvToDCMotor.o
+                0x00000166                _Z5motorhbh
+ .text._Z4testv
+                0x00000200       0xaa ./cvToDCMotor.o
+                0x00000200                _Z4testv
  .text.startup.main
-                0x0000008a        0x4 ./cvToDCMotor.o
-                0x0000008a                main
+                0x000002aa        0x8 ./cvToDCMotor.o
+                0x000002aa                main
+ .text._ZN14HardwareSerial9availableEv
+                0x000002b2       0x26 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x000002b2                _ZN14HardwareSerial9availableEv
+ .text._ZN14HardwareSerial4peekEv
+                0x000002d8       0x38 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x000002d8                _ZN14HardwareSerial4peekEv
+ .text._ZN14HardwareSerial4readEv
+                0x00000310       0x48 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00000310                _ZN14HardwareSerial4readEv
+ .text._ZN14HardwareSerial5flushEv
+                0x00000358       0x16 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00000358                _ZN14HardwareSerial5flushEv
+ .text._ZN14HardwareSerial5writeEh
+                0x0000036e       0x7a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x0000036e                _ZN14HardwareSerial5writeEh
+ .text.__vector_18
+                0x000003e8       0x74 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x000003e8                __vector_18
+ .text.__vector_19
+                0x0000045c       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x0000045c                __vector_19
+ .text._ZN14HardwareSerial5beginEm
+                0x000004d2       0xfe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x000004d2                _ZN14HardwareSerial5beginEm
+ .text.startup._GLOBAL__sub_I_rx_buffer
+                0x000005d0       0xac /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .text._ZN5Print5writeEPKhj
+                0x0000067c       0x50 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                0x0000067c                _ZN5Print5writeEPKhj
+ .text._ZN5Print5writeEPKc
+                0x000006cc       0x2c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                0x000006cc                _ZN5Print5writeEPKc
+ .text._ZN5Print5printEPKc
+                0x000006f8        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                0x000006f8                _ZN5Print5printEPKc
+ .text._ZN5Print5printEc
+                0x000006fa        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                0x000006fa                _ZN5Print5printEc
+ .text._ZN5Print7printlnEv
+                0x00000708       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                0x00000708                _ZN5Print7printlnEv
+ .text._ZN5Print11printNumberEmh
+                0x00000730       0xb4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                0x00000730                _ZN5Print11printNumberEmh
+ .text._ZN5Print5printEli
+                0x000007e4       0x90 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                0x000007e4                _ZN5Print5printEli
+ .text._ZN5Print5printEii
+                0x00000874        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                0x00000874                _ZN5Print5printEii
+ .text._Z6randoml
+                0x00000882       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+                0x00000882                _Z6randoml
  .text.__vector_16
-                0x0000008e       0x94 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x0000008e                __vector_16
- .text.init     0x00000122       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x00000122                init
+                0x000008d6       0x94 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x000008d6                __vector_16
+ .text.micros   0x0000096a       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x0000096a                micros
+ .text.delay    0x000009be       0x48 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x000009be                delay
+ .text.init     0x00000a06       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x00000a06                init
+ .text.analogWrite
+                0x00000a7c       0xbe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+                0x00000a7c                analogWrite
+ .text.turnOffPWM
+                0x00000b3a       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+ .text.pinMode  0x00000b8e       0x70 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x00000b8e                pinMode
+ .text.digitalWrite
+                0x00000bfe       0x6c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x00000bfe                digitalWrite
  .text.avr-libc
-                0x00000198        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
-                0x00000198                exit
-                0x0000019c                . = ALIGN (0x2)
+                0x00000c6a       0xae /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+                0x00000cfe                random_r
+                0x00000d00                random
+                0x00000d06                srandom
+ .text.avr-libc
+                0x00000d18        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
+                0x00000d18                exit
+ .text.libgcc.div
+                0x00000d1c       0x44 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+                0x00000d1c                __udivmodsi4
+ .text.libgcc.div
+                0x00000d60       0x36 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+                0x00000d60                __divmodsi4
+ .text.libgcc.mul
+                0x00000d96       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+                0x00000d96                __muluhisi3
+ .text.libgcc.mul
+                0x00000daa        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+                0x00000daa                __mulshisi3
+                0x00000dae                __mulohisi3
+ .text.libgcc   0x00000db6        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+                0x00000db6                __tablejump2__
+                0x00000dba                __tablejump__
+ .text.libgcc.mul
+                0x00000dc2       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+                0x00000dc2                __umulhisi3
+                0x00000dda                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000019c        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
-                0x0000019c                _exit
+ .fini9         0x00000dda        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+                0x00000dda                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -284,50 +1063,133 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000019c        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+ .fini0         0x00000dda        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
  *(.fini0)
-                0x000001a0                _etext = .
+                0x00000dde                _etext = .
 
-.data           0x00800100        0x0 load address 0x000001a0
+.data           0x00800100       0x32 load address 0x00000dde
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
  .data          0x00800100        0x0 ./cvToDCMotor.o
+ .data          0x00800100        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .data          0x00800100        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .data          0x00800100        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+ .data          0x00800100        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .data          0x00800100        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
  .data          0x00800100        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
- .data          0x00800100        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
- .data          0x00800100        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
- .data          0x00800100        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+ .data          0x00800100        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+ .data          0x00800100        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+ .data          0x00800100        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+ .data          0x00800100        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+ .data          0x00800100        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(isspace.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(tolower.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(toupper.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memcpy.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memmove.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strchr.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcmp.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcpy.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncmp.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncpy.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrchr.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strstr.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ltoa.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsi10.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ultoa.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(utoa.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_cmp.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_inf.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_nan.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscA.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscB.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_round.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_split3.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(unordsf2.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cty_isfalse.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrev.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .data          0x00800104        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
  *(.data*)
+ .data.analogPin
+                0x00800104        0x6 ./cvToDCMotor.o
+                0x00800104                analogPin
+ .data.pwmPin   0x0080010a        0x2 ./cvToDCMotor.o
+                0x0080010a                pwmPin
+ .data.ledPin   0x0080010c        0x4 ./cvToDCMotor.o
+                0x0080010c                ledPin
+ .data.motorPin
+                0x00800110        0x4 ./cvToDCMotor.o
+                0x00800110                motorPin
  *(.rodata)
  *(.rodata*)
+ .rodata.str1.1
+                0x00800114        0xe ./cvToDCMotor.o
+ .rodata._ZTV14HardwareSerial
+                0x00800122       0x10 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00800122                _ZTV14HardwareSerial
  *(.gnu.linkonce.d*)
-                0x00800100                . = ALIGN (0x2)
-                0x00800100                _edata = .
-                0x00800100                PROVIDE (__data_end, .)
+                0x00800132                . = ALIGN (0x2)
+                0x00800132                _edata = .
+                0x00800132                PROVIDE (__data_end, .)
 
-.bss            0x00800100        0x9
-                0x00800100                PROVIDE (__bss_start, .)
+.bss            0x00800132       0xb3
+                0x00800132                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
+ .bss.Serial    0x00800132       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00800132                Serial
+ .bss.tx_buffer
+                0x00800154       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00800154                tx_buffer
+ .bss.rx_buffer
+                0x00800198       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00800198                rx_buffer
  .bss.timer0_millis
-                0x00800100        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x00800100                timer0_millis
+                0x008001dc        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x008001dc                timer0_millis
  .bss.timer0_overflow_count
-                0x00800104        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x00800104                timer0_overflow_count
+                0x008001e0        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x008001e0                timer0_overflow_count
  .bss.timer0_fract
-                0x00800108        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x008001e4        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
  *(COMMON)
-                0x00800109                PROVIDE (__bss_end, .)
-                0x000001a0                __data_load_start = LOADADDR (.data)
-                0x000001a0                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x008001e5                PROVIDE (__bss_end, .)
+                0x00000dde                __data_load_start = LOADADDR (.data)
+                0x00000e10                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800109        0x0
-                0x00800109                PROVIDE (__noinit_start, .)
+.noinit         0x008001e5        0x0
+                0x008001e5                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800109                PROVIDE (__noinit_end, .)
-                0x00800109                _end = .
-                0x00800109                PROVIDE (__heap_start, .)
+                0x008001e5                PROVIDE (__noinit_end, .)
+                0x008001e5                _end = .
+                0x008001e5                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -348,15 +1210,95 @@ END GROUP
 .user_signatures
  *(.user_signatures*)
 
-.stab           0x00000000      0x6fc
+.stab           0x00000000     0x2fd0
  *(.stab)
  .stab          0x00000000      0x6cc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
- .stab          0x000006cc       0x30 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
+ .stab          0x000006cc      0x1e0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o)
+                                0x1ec (size before relaxing)
+ .stab          0x000008ac       0x30 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
                                  0x3c (size before relaxing)
+ .stab          0x000008dc       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(isspace.o)
+                                 0xa8 (size before relaxing)
+ .stab          0x000008f4       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(tolower.o)
+                                 0xa8 (size before relaxing)
+ .stab          0x0000090c       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(toupper.o)
+                                 0xa8 (size before relaxing)
+ .stab          0x00000924       0x84 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memcpy.o)
+                                 0x90 (size before relaxing)
+ .stab          0x000009a8       0xe4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memmove.o)
+                                 0xf0 (size before relaxing)
+ .stab          0x00000a8c       0x9c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strchr.o)
+                                 0xa8 (size before relaxing)
+ .stab          0x00000b28       0x84 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcmp.o)
+                                 0x90 (size before relaxing)
+ .stab          0x00000bac       0x6c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcpy.o)
+                                 0x78 (size before relaxing)
+ .stab          0x00000c18       0xc0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncmp.o)
+                                 0xcc (size before relaxing)
+ .stab          0x00000cd8       0xcc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncpy.o)
+                                 0xd8 (size before relaxing)
+ .stab          0x00000da4       0x9c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrchr.o)
+                                 0xa8 (size before relaxing)
+ .stab          0x00000e40      0x150 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strstr.o)
+                                0x15c (size before relaxing)
+ .stab          0x00000f90       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o)
+                                0x1bc (size before relaxing)
+ .stab          0x00000fa8       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ltoa.o)
+                                0x2a0 (size before relaxing)
+ .stab          0x00000fc0      0x114 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsi10.o)
+                                0x120 (size before relaxing)
+ .stab          0x000010d4       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ultoa.o)
+                                0x1ec (size before relaxing)
+ .stab          0x000010ec       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(utoa.o)
+                                0x138 (size before relaxing)
+ .stab          0x00001104       0x78 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
+                                 0x84 (size before relaxing)
+ .stab          0x0000117c      0x4bc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+                                0x4c8 (size before relaxing)
+ .stab          0x00001638       0x90 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+                                 0x9c (size before relaxing)
+ .stab          0x000016c8       0x48 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
+                                 0x54 (size before relaxing)
+ .stab          0x00001710      0x510 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+                                0x51c (size before relaxing)
+ .stab          0x00001c20       0x6c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
+                                 0x78 (size before relaxing)
+ .stab          0x00001c8c      0x240 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
+                                0x24c (size before relaxing)
+ .stab          0x00001ecc      0x318 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
+                                0x324 (size before relaxing)
+ .stab          0x000021e4      0x1e0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_cmp.o)
+                                0x1ec (size before relaxing)
+ .stab          0x000023c4       0x78 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_inf.o)
+                                 0x84 (size before relaxing)
+ .stab          0x0000243c       0x54 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_nan.o)
+                                 0x60 (size before relaxing)
+ .stab          0x00002490       0x84 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscA.o)
+                                 0x90 (size before relaxing)
+ .stab          0x00002514       0x84 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscB.o)
+                                 0x90 (size before relaxing)
+ .stab          0x00002598       0xfc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_round.o)
+                                0x108 (size before relaxing)
+ .stab          0x00002694      0x1d4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_split3.o)
+                                0x1e0 (size before relaxing)
+ .stab          0x00002868       0x90 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
+                                 0x9c (size before relaxing)
+ .stab          0x000028f8       0x6c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
+                                 0x78 (size before relaxing)
+ .stab          0x00002964       0x48 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
+                                 0x54 (size before relaxing)
+ .stab          0x000029ac      0x4d4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+                                0x4e0 (size before relaxing)
+ .stab          0x00002e80       0x60 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(unordsf2.o)
+                                 0x6c (size before relaxing)
+ .stab          0x00002ee0       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cty_isfalse.o)
+                                 0x6c (size before relaxing)
+ .stab          0x00002ef8       0xd8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrev.o)
+                                 0xe4 (size before relaxing)
 
-.stabstr        0x00000000       0xda
+.stabstr        0x00000000      0xefe
  *(.stabstr)
- .stabstr       0x00000000       0xda /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+ .stabstr       0x00000000      0xefe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
 
 .stab.excl
  *(.stab.excl)
@@ -374,7 +1316,17 @@ END GROUP
  *(.comment)
  .comment       0x00000000       0x11 ./cvToDCMotor.o
                                  0x12 (size before relaxing)
+ .comment       0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .comment       0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .comment       0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+ .comment       0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ .comment       0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
  .comment       0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+ .comment       0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+ .comment       0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+ .comment       0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+ .comment       0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+ .comment       0x00000000       0x12 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
 
 .debug
  *(.debug)
@@ -388,40 +1340,99 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x40
+.debug_aranges  0x00000000      0x1b8
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+                0x00000000       0x38 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
  .debug_aranges
-                0x00000020       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+                0x00000038       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .debug_aranges
+                0x00000058       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .debug_aranges
+                0x00000078       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .debug_aranges
+                0x00000098       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .debug_aranges
+                0x000000b8       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+ .debug_aranges
+                0x000000d8       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .debug_aranges
+                0x000000f8       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+ .debug_aranges
+                0x00000118       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .debug_aranges
+                0x00000138       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .debug_aranges
+                0x00000158       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .debug_aranges
+                0x00000178       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .debug_aranges
+                0x00000198       0x20 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x17c
+.debug_info     0x00000000      0xa49
  *(.debug_info)
- .debug_info    0x00000000       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
- .debug_info    0x000000be       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+ .debug_info    0x00000000      0x161 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+ .debug_info    0x00000161       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .debug_info    0x0000021f       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .debug_info    0x000002dd       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .debug_info    0x0000039b       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .debug_info    0x00000459       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+ .debug_info    0x00000517       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .debug_info    0x000005d5       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+ .debug_info    0x00000693       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .debug_info    0x00000751       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .debug_info    0x0000080f       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .debug_info    0x000008cd       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .debug_info    0x0000098b       0xbe /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev   0x00000000       0x28
+.debug_abbrev   0x00000000      0x1c8
  *(.debug_abbrev)
- .debug_abbrev  0x00000000       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
- .debug_abbrev  0x00000014       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+ .debug_abbrev  0x00000000       0xd8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+ .debug_abbrev  0x000000d8       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .debug_abbrev  0x000000ec       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .debug_abbrev  0x00000100       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .debug_abbrev  0x00000114       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .debug_abbrev  0x00000128       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+ .debug_abbrev  0x0000013c       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .debug_abbrev  0x00000150       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+ .debug_abbrev  0x00000164       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .debug_abbrev  0x00000178       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .debug_abbrev  0x0000018c       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .debug_abbrev  0x000001a0       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .debug_abbrev  0x000001b4       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
 
-.debug_line     0x00000000       0xb6
+.debug_line     0x00000000      0x506
  *(.debug_line)
- .debug_line    0x00000000       0x58 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
- .debug_line    0x00000058       0x5e /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+ .debug_line    0x00000000       0x5d /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+ .debug_line    0x0000005d       0x65 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+ .debug_line    0x000000c2       0x6a /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+ .debug_line    0x0000012c       0x78 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .debug_line    0x000001a4       0x71 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .debug_line    0x00000215       0x58 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+ .debug_line    0x0000026d       0x61 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+ .debug_line    0x000002ce       0x5e /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+ .debug_line    0x0000032c       0x60 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+ .debug_line    0x0000038c       0x60 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .debug_line    0x000003ec       0x5c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .debug_line    0x00000448       0x5c /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+ .debug_line    0x000004a4       0x62 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
 
-.debug_frame
+.debug_frame    0x00000000       0x88
  *(.debug_frame)
+ .debug_frame   0x00000000       0x88 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
 
-.debug_str
+.debug_str      0x00000000       0xc6
  *(.debug_str)
+ .debug_str     0x00000000       0xc6 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+                                 0xda (size before relaxing)
 
-.debug_loc
+.debug_loc      0x00000000      0x1e8
  *(.debug_loc)
+ .debug_loc     0x00000000      0x1e8 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -429,8 +1440,9 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges
+.debug_ranges   0x00000000       0x28
  *(.debug_ranges)
+ .debug_ranges  0x00000000       0x28 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
 
 .debug_macro
  *(.debug_macro)
@@ -440,14 +1452,266 @@ LOAD linker stubs
 Cross Reference Table
 
 Symbol                                            File
+HardwareSerial::HardwareSerial(ring_buffer*, ring_buffer*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char) /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+HardwareSerial::HardwareSerial(ring_buffer*, ring_buffer*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char) /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+HardwareSerial::available()                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+HardwareSerial::begin(unsigned long)              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                                                  ./cvToDCMotor.o
+HardwareSerial::begin(unsigned long, unsigned char) /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+HardwareSerial::end()                             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+HardwareSerial::flush()                           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+HardwareSerial::operator bool()                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+HardwareSerial::peek()                            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+HardwareSerial::read()                            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+HardwareSerial::write(unsigned char)              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+Print::print(Printable const&)                    /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::print(String const&)                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::print(__FlashStringHelper const*)          /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::print(char const*)                         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                                                  ./cvToDCMotor.o
+Print::print(char)                                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::print(double, int)                         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::print(int, int)                            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                                                  ./cvToDCMotor.o
+Print::print(long, int)                           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::print(unsigned char, int)                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::print(unsigned int, int)                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::print(unsigned long, int)                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::printFloat(double, unsigned char)          /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::printNumber(unsigned long, unsigned char)  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println()                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                                                  ./cvToDCMotor.o
+Print::println(Printable const&)                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println(String const&)                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println(__FlashStringHelper const*)        /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println(char const*)                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println(char)                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println(double, int)                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println(int, int)                          /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println(long, int)                         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println(unsigned char, int)                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println(unsigned int, int)                 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::println(unsigned long, int)                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::write(char const*)                         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+Print::write(unsigned char const*, unsigned int)  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+Serial                                            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                                                  ./cvToDCMotor.o
+String::String(String const&)                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(String const&)                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(char const*)                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(char const*)                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(char)                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(char)                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(int, unsigned char)                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(int, unsigned char)                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(long, unsigned char)               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(long, unsigned char)               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(unsigned char, unsigned char)      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(unsigned char, unsigned char)      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(unsigned int, unsigned char)       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(unsigned int, unsigned char)       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(unsigned long, unsigned char)      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::String(unsigned long, unsigned char)      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::changeBuffer(unsigned int)                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::charAt(unsigned int) const                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::compareTo(String const&) const            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::concat(String const&)                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::concat(char const*)                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::concat(char const*, unsigned int)         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::concat(char)                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::concat(int)                               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::concat(long)                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::concat(unsigned char)                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::concat(unsigned int)                      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::concat(unsigned long)                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::copy(char const*, unsigned int)           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::endsWith(String const&) const             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::equals(String const&) const               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::equals(char const*) const                 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::equalsIgnoreCase(String const&) const     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::getBytes(unsigned char*, unsigned int, unsigned int) const /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::indexOf(String const&) const              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::indexOf(String const&, unsigned int) const /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::indexOf(char) const                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::indexOf(char, unsigned int) const         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::invalidate()                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::lastIndexOf(String const&) const          /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::lastIndexOf(String const&, unsigned int) const /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::lastIndexOf(char) const                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::lastIndexOf(char, unsigned int) const     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::operator<(String const&) const            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::operator<=(String const&) const           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::operator=(String const&)                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::operator=(char const*)                    /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::operator>(String const&) const            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::operator>=(String const&) const           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::operator[](unsigned int)                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::operator[](unsigned int) const            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+String::replace(String const&, String const&)     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::replace(char, char)                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::reserve(unsigned int)                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::setCharAt(unsigned int, char)             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::startsWith(String const&) const           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::startsWith(String const&, unsigned int) const /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::substring(unsigned int) const             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::substring(unsigned int, unsigned int) const /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::toInt() const                             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::toLowerCase()                             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::toUpperCase()                             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::trim()                                    /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::~String()                                 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+String::~String()                                 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+__addsf3                                          /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+__addsf3x                                         /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
 __bad_interrupt                                   /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+__brkval                                          /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
 __bss_end                                         /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
 __bss_start                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+__cmpsf2                                          /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+__ctors_end                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+__ctors_start                                     /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+__ctype_isfalse                                   /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cty_isfalse.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(isspace.o)
+__ctype_istrue                                    /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cty_isfalse.o)
+__cxa_guard_abort                                 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+__cxa_guard_acquire                               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+__cxa_guard_release                               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+__cxa_pure_virtual                                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+__data_end                                        /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+__data_load_start                                 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+__data_start                                      /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+__divmodsi4                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+__divsf3                                          /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+__divsf3_pse                                      /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+__divsf3x                                         /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
 __do_clear_bss                                    /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_clear_bss.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
                                                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                                                  ./cvToDCMotor.o
+__do_copy_data                                    /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_copy_data.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                                                  ./cvToDCMotor.o
+__do_global_ctors                                 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+__eqsf2                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+__fixsfsi                                         /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+__fixunssfsi                                      /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+__floatsisf                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+__floatunsisf                                     /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(floatsisf.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+__flp                                             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+__fp_cmp                                          /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_cmp.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(unordsf2.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+__fp_inf                                          /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_inf.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+__fp_nan                                          /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_nan.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+__fp_pscA                                         /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscA.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+__fp_pscB                                         /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_pscB.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+__fp_round                                        /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_round.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
+__fp_split3                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_split3.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+__fp_splitA                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_split3.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
+__fp_szero                                        /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixsfsi.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(divsf3x.o)
+__fp_zero                                         /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fp_zero.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(fixunssfsi.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3x.o)
+__gesf2                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
+__gtsf2                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(gesf2.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
 __heap_end                                        /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+__heap_start                                      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
 __init                                            /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+__lesf2                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+__ltsf2                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+__malloc_heap_end                                 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+__malloc_heap_start                               /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+__malloc_margin                                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+__mulohisi3                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+__mulsf3                                          /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+__mulsf3_pse                                      /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+__mulsf3x                                         /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3x.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsf3.o)
+__mulshisi3                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+__mulsi3                                          /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+__mulsi_const_10                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(mulsi10.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o)
+__muluhisi3                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulsi3.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+__nesf2                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(cmpsf2.o)
 __stack                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+__subsf3                                          /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(addsf3.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+__tablejump2__                                    /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+__tablejump__                                     /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
+__udivmodhi4                                      /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodhi4.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(utoa.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o)
+__udivmodsi4                                      /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ultoa.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ltoa.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+__umulhisi3                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+__unordsf2                                        /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(unordsf2.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
 __vector_1                                        /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
 __vector_10                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
 __vector_11                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
@@ -458,8 +1722,10 @@ __vector_15                                       /usr/local/CrossPack-AVR-20131
 __vector_16                                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
                                                   /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
 __vector_17                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
-__vector_18                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
-__vector_19                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+__vector_18                                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+__vector_19                                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
 __vector_2                                        /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
 __vector_20                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
 __vector_21                                       /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
@@ -478,17 +1744,127 @@ __vector_default                                  /usr/local/CrossPack-AVR-20131
 __vectors                                         /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
 _exit                                             /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
                                                   /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
+analogPin                                         ./cvToDCMotor.o
+analogRead                                        /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+analogReference                                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+analogValue                                       ./cvToDCMotor.o
+analogWrite                                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+                                                  ./cvToDCMotor.o
+analog_reference                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+atol                                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
 delay                                             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                                                  ./cvToDCMotor.o
 delayMicroseconds                                 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+digitalRead                                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+digitalWrite                                      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+                                                  ./cvToDCMotor.o
+digital_pin_to_bit_mask_PGM                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+digital_pin_to_port_PGM                           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+digital_pin_to_timer_PGM                          /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
 exit                                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
                                                   /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+free                                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
 init                                              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
                                                   ./cvToDCMotor.o
+isspace                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(isspace.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+itoa                                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+ledPin                                            ./cvToDCMotor.o
 loop                                              ./cvToDCMotor.o
+ltoa                                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ltoa.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
 main                                              ./cvToDCMotor.o
                                                   /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
+makeWord(unsigned char, unsigned char)            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+makeWord(unsigned int)                            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+malloc                                            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+map(long, long, long, long, long)                 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+memcpy                                            /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memcpy.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memmove.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+memmove                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(memmove.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
 micros                                            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
 millis                                            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+motor(unsigned char, bool, unsigned char)         ./cvToDCMotor.o
+motorPin                                          ./cvToDCMotor.o
+operator delete(void*)                            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+operator delete[](void*)                          /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+operator new(unsigned int)                        /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+operator new[](unsigned int)                      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(new.o)
+operator+(StringSumHelper const&, String const&)  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+operator+(StringSumHelper const&, char const*)    /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+operator+(StringSumHelper const&, char)           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+operator+(StringSumHelper const&, int)            /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+operator+(StringSumHelper const&, long)           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+operator+(StringSumHelper const&, unsigned char)  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+operator+(StringSumHelper const&, unsigned int)   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+operator+(StringSumHelper const&, unsigned long)  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+pinMode                                           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+                                                  ./cvToDCMotor.o
+port_to_input_PGM                                 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+port_to_mode_PGM                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+port_to_output_PGM                                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+pwmPin                                            ./cvToDCMotor.o
+random                                            /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+random(long)                                      /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+                                                  ./cvToDCMotor.o
+random(long, long)                                /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+randomSeed(unsigned int)                          /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+random_r                                          /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+realloc                                           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+renderChannel(unsigned char)                      ./cvToDCMotor.o
+rx_buffer                                         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+serialEvent()                                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+serialEventRun()                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
 setup                                             ./cvToDCMotor.o
+speed                                             ./cvToDCMotor.o
+srandom                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+strchr                                            /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strchr.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+strcmp                                            /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcmp.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+strcpy                                            /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strcpy.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+strncmp                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncmp.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+strncpy                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strncpy.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+strrchr                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrchr.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+strrev                                            /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strrev.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(utoa.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ultoa.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ltoa.o)
+                                                  /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(itoa.o)
+strstr                                            /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(strstr.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+test()                                            ./cvToDCMotor.o
 timer0_millis                                     /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
 timer0_overflow_count                             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+tolower                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(tolower.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+toupper                                           /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(toupper.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+tx_buffer                                         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ultoa                                             /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(ultoa.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+utoa                                              /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(utoa.o)
+                                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WString.o)
+vtable for HardwareSerial                         /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+vtable for Print                                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+vtable for Stream                                 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
