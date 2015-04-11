@@ -13,7 +13,7 @@ Archive member included because of file (symbol)
 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
                               ./cvToDCMotor.o (delay)
 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
-                              ./cvToDCMotor.o (analogWrite)
+                              ./cvToDCMotor.o (analogRead)
 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
                               ./cvToDCMotor.o (pinMode)
 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(malloc.o)
@@ -140,12 +140,10 @@ Discarded input sections
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
  .text          0x00000000        0x0 ./cvToDCMotor.o
  .bss           0x00000000        0x0 ./cvToDCMotor.o
- .text._Z13renderChannelh
-                0x00000000       0x46 ./cvToDCMotor.o
- .text.loop     0x00000000        0x4 ./cvToDCMotor.o
- .bss.speed     0x00000000        0x2 ./cvToDCMotor.o
- .bss.analogValue
-                0x00000000        0xc ./cvToDCMotor.o
+ .rodata.str1.1
+                0x00000000       0x13 ./cvToDCMotor.o
+ .text._Z4testv
+                0x00000000      0x114 ./cvToDCMotor.o
  .group         0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
  .group         0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
@@ -156,6 +154,8 @@ Discarded input sections
                 0x00000000       0x12 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
  .text._ZN14HardwareSerialC2EP11ring_bufferS1_PVhS3_S3_S3_S3_S3_hhhhh
                 0x00000000       0x88 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+ .text._ZN14HardwareSerial5beginEm
+                0x00000000      0x102 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
  .text._ZN14HardwareSerial5beginEmh
                 0x00000000      0x10c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
  .text._ZN14HardwareSerial3endEv
@@ -168,12 +168,20 @@ Discarded input sections
  .group         0x00000000        0x8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5writeEPKc
+                0x00000000       0x2c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print5printEPK19__FlashStringHelper
                 0x00000000       0x42 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print5printERK6String
                 0x00000000       0x6c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printEPKc
+                0x00000000        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printEc
+                0x00000000        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print5printERK9Printable
                 0x00000000       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print7printlnEv
+                0x00000000       0x2c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print7printlnEPK19__FlashStringHelper
                 0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print7printlnERK6String
@@ -184,6 +192,8 @@ Discarded input sections
                 0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print7printlnERK9Printable
                 0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print11printNumberEmh
+                0x00000000       0xb8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print5printEmi
                 0x00000000       0x1a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print7printlnEmi
@@ -196,8 +206,12 @@ Discarded input sections
                 0x00000000        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print7printlnEhi
                 0x00000000       0x32 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printEli
+                0x00000000       0x96 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print7printlnEli
                 0x00000000       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+ .text._ZN5Print5printEii
+                0x00000000       0x10 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .text._ZN5Print7printlnEii
                 0x00000000       0x34 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
  .rodata.str1.1
@@ -214,6 +228,8 @@ Discarded input sections
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
  .text._Z10randomSeedj
                 0x00000000       0x10 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
+ .text._Z6randoml
+                0x00000000       0x58 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
  .text._Z6randomll
                 0x00000000       0x3c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
  .text._Z3maplllll
@@ -373,16 +389,14 @@ Discarded input sections
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
  .text.millis   0x00000000       0x24 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+ .text.micros   0x00000000       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+ .text.delay    0x00000000       0x4c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
  .text.delayMicroseconds
                 0x00000000       0x14 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
  .text.analogReference
                 0x00000000        0x6 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
- .text.analogRead
-                0x00000000       0x42 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
- .data.analog_reference
-                0x00000000        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
  .text          0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
  .bss           0x00000000        0x0 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
  .text.digitalRead
@@ -406,6 +420,8 @@ Discarded input sections
                 0x00000000      0x1c8 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(realloc.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
+ .text.avr-libc
+                0x00000000       0xbc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(atol.o)
  .text.avr-libc
@@ -598,6 +614,8 @@ Discarded input sections
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
  .text.libgcc.mul
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
+ .text.libgcc.div
+                0x00000000       0x44 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
  .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
  .text.libgcc.prologue
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
@@ -609,6 +627,8 @@ Discarded input sections
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
  .text.libgcc.mul
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
+ .text.libgcc.div
+                0x00000000       0x38 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
  .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
  .text.libgcc.prologue
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
@@ -670,6 +690,8 @@ Discarded input sections
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_ctors.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
+ .text.libgcc.mul
+                0x00000000       0x16 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
  .text.libgcc.div
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
  .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
@@ -681,6 +703,8 @@ Discarded input sections
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
+ .text.libgcc.mul
+                0x00000000       0x10 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
  .text.libgcc.div
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
  .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
@@ -704,6 +728,8 @@ Discarded input sections
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
  .text          0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
  .bss           0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
+ .text.libgcc.mul
+                0x00000000       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
  .text.libgcc.div
                 0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
  .text.libgcc   0x00000000        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
@@ -832,7 +858,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0xdde
+.text           0x00000000      0x93a
  *(.vectors)
  .vectors       0x00000000       0x68 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
                 0x00000000                __vectors
@@ -931,120 +957,73 @@ END GROUP
                 0x00000104                __vector_22
                 0x00000106                . = ALIGN (0x2)
  *(.text.*)
- .text.setup    0x00000106       0x60 ./cvToDCMotor.o
+ .text.setup    0x00000106       0x40 ./cvToDCMotor.o
                 0x00000106                setup
  .text._Z5motorhbh
-                0x00000166       0x9a ./cvToDCMotor.o
-                0x00000166                _Z5motorhbh
- .text._Z4testv
-                0x00000200       0xaa ./cvToDCMotor.o
-                0x00000200                _Z4testv
+                0x00000146       0x9a ./cvToDCMotor.o
+                0x00000146                _Z5motorhbh
+ .text._Z13renderChannelh
+                0x000001e0       0xb4 ./cvToDCMotor.o
+                0x000001e0                _Z13renderChannelh
+ .text.loop     0x00000294       0x34 ./cvToDCMotor.o
+                0x00000294                loop
  .text.startup.main
-                0x000002aa        0x8 ./cvToDCMotor.o
-                0x000002aa                main
+                0x000002c8        0x8 ./cvToDCMotor.o
+                0x000002c8                main
  .text._ZN14HardwareSerial9availableEv
-                0x000002b2       0x26 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x000002b2                _ZN14HardwareSerial9availableEv
+                0x000002d0       0x26 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x000002d0                _ZN14HardwareSerial9availableEv
  .text._ZN14HardwareSerial4peekEv
-                0x000002d8       0x38 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x000002d8                _ZN14HardwareSerial4peekEv
+                0x000002f6       0x38 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x000002f6                _ZN14HardwareSerial4peekEv
  .text._ZN14HardwareSerial4readEv
-                0x00000310       0x48 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00000310                _ZN14HardwareSerial4readEv
+                0x0000032e       0x48 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x0000032e                _ZN14HardwareSerial4readEv
  .text._ZN14HardwareSerial5flushEv
-                0x00000358       0x16 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00000358                _ZN14HardwareSerial5flushEv
+                0x00000376       0x16 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00000376                _ZN14HardwareSerial5flushEv
  .text._ZN14HardwareSerial5writeEh
-                0x0000036e       0x7a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x0000036e                _ZN14HardwareSerial5writeEh
+                0x0000038c       0x7a /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x0000038c                _ZN14HardwareSerial5writeEh
  .text.__vector_18
-                0x000003e8       0x74 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x000003e8                __vector_18
+                0x00000406       0x74 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00000406                __vector_18
  .text.__vector_19
-                0x0000045c       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x0000045c                __vector_19
- .text._ZN14HardwareSerial5beginEm
-                0x000004d2       0xfe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x000004d2                _ZN14HardwareSerial5beginEm
+                0x0000047a       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x0000047a                __vector_19
  .text.startup._GLOBAL__sub_I_rx_buffer
-                0x000005d0       0xac /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x000004f0       0xac /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
  .text._ZN5Print5writeEPKhj
-                0x0000067c       0x50 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
-                0x0000067c                _ZN5Print5writeEPKhj
- .text._ZN5Print5writeEPKc
-                0x000006cc       0x2c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
-                0x000006cc                _ZN5Print5writeEPKc
- .text._ZN5Print5printEPKc
-                0x000006f8        0x2 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
-                0x000006f8                _ZN5Print5printEPKc
- .text._ZN5Print5printEc
-                0x000006fa        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
-                0x000006fa                _ZN5Print5printEc
- .text._ZN5Print7printlnEv
-                0x00000708       0x28 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
-                0x00000708                _ZN5Print7printlnEv
- .text._ZN5Print11printNumberEmh
-                0x00000730       0xb4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
-                0x00000730                _ZN5Print11printNumberEmh
- .text._ZN5Print5printEli
-                0x000007e4       0x90 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
-                0x000007e4                _ZN5Print5printEli
- .text._ZN5Print5printEii
-                0x00000874        0xe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
-                0x00000874                _ZN5Print5printEii
- .text._Z6randoml
-                0x00000882       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(WMath.o)
-                0x00000882                _Z6randoml
+                0x0000059c       0x50 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                0x0000059c                _ZN5Print5writeEPKhj
  .text.__vector_16
-                0x000008d6       0x94 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x000008d6                __vector_16
- .text.micros   0x0000096a       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x0000096a                micros
- .text.delay    0x000009be       0x48 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x000009be                delay
- .text.init     0x00000a06       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x00000a06                init
+                0x000005ec       0x94 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x000005ec                __vector_16
+ .text.init     0x00000680       0x76 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x00000680                init
+ .text.analogRead
+                0x000006f6       0x42 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+                0x000006f6                analogRead
  .text.analogWrite
-                0x00000a7c       0xbe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
-                0x00000a7c                analogWrite
+                0x00000738       0xbe /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+                0x00000738                analogWrite
  .text.turnOffPWM
-                0x00000b3a       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
- .text.pinMode  0x00000b8e       0x70 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
-                0x00000b8e                pinMode
+                0x000007f6       0x54 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+ .text.pinMode  0x0000084a       0x70 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x0000084a                pinMode
  .text.digitalWrite
-                0x00000bfe       0x6c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
-                0x00000bfe                digitalWrite
+                0x000008ba       0x6c /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_digital.o)
+                0x000008ba                digitalWrite
  .text.avr-libc
-                0x00000c6a       0xae /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(random.o)
-                0x00000cfe                random_r
-                0x00000d00                random
-                0x00000d06                srandom
- .text.avr-libc
-                0x00000d18        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
-                0x00000d18                exit
- .text.libgcc.div
-                0x00000d1c       0x44 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_udivmodsi4.o)
-                0x00000d1c                __udivmodsi4
- .text.libgcc.div
-                0x00000d60       0x36 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_divmodsi4.o)
-                0x00000d60                __divmodsi4
- .text.libgcc.mul
-                0x00000d96       0x14 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_muluhisi3.o)
-                0x00000d96                __muluhisi3
- .text.libgcc.mul
-                0x00000daa        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_mulshisi3.o)
-                0x00000daa                __mulshisi3
-                0x00000dae                __mulohisi3
- .text.libgcc   0x00000db6        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
-                0x00000db6                __tablejump2__
-                0x00000dba                __tablejump__
- .text.libgcc.mul
-                0x00000dc2       0x18 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_umulhisi3.o)
-                0x00000dc2                __umulhisi3
-                0x00000dda                . = ALIGN (0x2)
+                0x00000926        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
+                0x00000926                exit
+ .text.libgcc   0x0000092a        0xc /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_tablejump.o)
+                0x0000092a                __tablejump2__
+                0x0000092e                __tablejump__
+                0x00000936                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000dda        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
-                0x00000dda                _exit
+ .fini9         0x00000936        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+                0x00000936                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -1063,11 +1042,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000dda        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
+ .fini0         0x00000936        0x4 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/avr5/libgcc.a(_exit.o)
  *(.fini0)
-                0x00000dde                _etext = .
+                0x0000093a                _etext = .
 
-.data           0x00800100       0x32 load address 0x00000dde
+.data           0x00800100       0x26 load address 0x0000093a
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328p.o
@@ -1147,49 +1126,56 @@ END GROUP
  .data.motorPin
                 0x00800110        0x4 ./cvToDCMotor.o
                 0x00800110                motorPin
+ .data.analog_reference
+                0x00800114        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+                0x00800114                analog_reference
  *(.rodata)
  *(.rodata*)
- .rodata.str1.1
-                0x00800114        0xe ./cvToDCMotor.o
  .rodata._ZTV14HardwareSerial
-                0x00800122       0x10 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00800122                _ZTV14HardwareSerial
+                0x00800115       0x10 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00800115                _ZTV14HardwareSerial
  *(.gnu.linkonce.d*)
-                0x00800132                . = ALIGN (0x2)
-                0x00800132                _edata = .
-                0x00800132                PROVIDE (__data_end, .)
+                0x00800126                . = ALIGN (0x2)
+ *fill*         0x00800125        0x1 
+                0x00800126                _edata = .
+                0x00800126                PROVIDE (__data_end, .)
 
-.bss            0x00800132       0xb3
-                0x00800132                PROVIDE (__bss_start, .)
+.bss            0x00800126       0xc1
+                0x00800126                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
- .bss.Serial    0x00800132       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00800132                Serial
+ .bss.speed     0x00800126        0x2 ./cvToDCMotor.o
+                0x00800126                speed
+ .bss.analogValue
+                0x00800128        0xc ./cvToDCMotor.o
+                0x00800128                analogValue
+ .bss.Serial    0x00800134       0x22 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00800134                Serial
  .bss.tx_buffer
-                0x00800154       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00800154                tx_buffer
+                0x00800156       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x00800156                tx_buffer
  .bss.rx_buffer
-                0x00800198       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                0x00800198                rx_buffer
+                0x0080019a       0x44 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
+                0x0080019a                rx_buffer
  .bss.timer0_millis
-                0x008001dc        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x008001dc                timer0_millis
+                0x008001de        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x008001de                timer0_millis
  .bss.timer0_overflow_count
-                0x008001e0        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
-                0x008001e0                timer0_overflow_count
+                0x008001e2        0x4 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x008001e2                timer0_overflow_count
  .bss.timer0_fract
-                0x008001e4        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
+                0x008001e6        0x1 /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring.o)
  *(COMMON)
-                0x008001e5                PROVIDE (__bss_end, .)
-                0x00000dde                __data_load_start = LOADADDR (.data)
-                0x00000e10                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x008001e7                PROVIDE (__bss_end, .)
+                0x0000093a                __data_load_start = LOADADDR (.data)
+                0x00000960                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008001e5        0x0
-                0x008001e5                PROVIDE (__noinit_start, .)
+.noinit         0x008001e7        0x0
+                0x008001e7                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x008001e5                PROVIDE (__noinit_end, .)
-                0x008001e5                _end = .
-                0x008001e5                PROVIDE (__heap_start, .)
+                0x008001e7                PROVIDE (__noinit_end, .)
+                0x008001e7                _end = .
+                0x008001e7                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -1456,7 +1442,6 @@ HardwareSerial::HardwareSerial(ring_buffer*, ring_buffer*, unsigned char volatil
 HardwareSerial::HardwareSerial(ring_buffer*, ring_buffer*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char volatile*, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char) /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
 HardwareSerial::available()                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
 HardwareSerial::begin(unsigned long)              /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
-                                                  ./cvToDCMotor.o
 HardwareSerial::begin(unsigned long, unsigned char) /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
 HardwareSerial::end()                             /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
 HardwareSerial::flush()                           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(HardwareSerial.o)
@@ -1475,6 +1460,7 @@ Print::print(int, int)                            /Users/dasvaclav/Documents/wor
                                                   ./cvToDCMotor.o
 Print::print(long, int)                           /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
 Print::print(unsigned char, int)                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
+                                                  ./cvToDCMotor.o
 Print::print(unsigned int, int)                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
 Print::print(unsigned long, int)                  /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
 Print::printFloat(double, unsigned char)          /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(Print.o)
@@ -1746,6 +1732,7 @@ _exit                                             /usr/local/CrossPack-AVR-20131
                                                   /usr/local/CrossPack-AVR-20131128/lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/libc.a(exit.o)
 analogPin                                         ./cvToDCMotor.o
 analogRead                                        /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
+                                                  ./cvToDCMotor.o
 analogReference                                   /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)
 analogValue                                       ./cvToDCMotor.o
 analogWrite                                       /Users/dasvaclav/Documents/workspace/arduino-base/Release/libarduino-base.a(wiring_analog.o)

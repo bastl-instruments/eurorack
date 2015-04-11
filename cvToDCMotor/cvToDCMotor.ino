@@ -62,7 +62,7 @@ void setup(){
   pinMode(pwmPin[0],OUTPUT);
   pinMode(pwmPin[1],OUTPUT);
   for(int i=0;i<6;i++){
-    pinMode(analogPin[i],INPUT);
+   // pinMode(analogPin[i],INPUT);
   }
 #ifdef DEBUG
   Serial.begin(9600);
@@ -74,6 +74,44 @@ void setup(){
 #define FORWARD 1
 #define BACKWARD 0
 uint8_t speed[2];
+
+
+void motor(uint8_t ch,bool direction, uint8_t pwm){
+  if(direction){
+    digitalWrite(motorPin[ch*2+0],HIGH);
+    digitalWrite(motorPin[ch*2+1],LOW);
+    digitalWrite(ledPin[ch*2+0],HIGH);
+    digitalWrite(ledPin[ch*2+1],LOW);
+  }
+  else{
+    digitalWrite(motorPin[ch*2+0],LOW);
+    digitalWrite(motorPin[ch*2+1],HIGH);
+    digitalWrite(ledPin[ch*2+0],LOW);
+    digitalWrite(ledPin[ch*2+1],HIGH);
+  }
+  analogWrite(pwmPin[ch],pwm);
+}
+#define SPEED_OFFSET 2
+void renderChannel(uint8_t ch){
+  uint16_t value=analogValue[3*ch + CV]-512+analogValue[3*ch + THRESHOLD];
+  bool dir;
+  if(value>512){
+    dir=true;
+    speed[ch]=constrain((( value-512)>>1) + ((analogValue[3*ch + SPEED_OFFSET])>>2),0,255);
+  }
+  else{
+    dir=false;
+    speed[ch]=constrain(((512-value)>>1) + ((analogValue[3*ch + SPEED_OFFSET])>>2),0,255);
+  }
+
+
+  if(dir){
+    motor(ch,FORWARD,speed[ch]);
+  }
+  else {
+    motor(ch,BACKWARD,speed[ch]);
+  }
+}
 
 void test(){
   //for(int i=0;i<2;i++){
@@ -105,42 +143,8 @@ void test(){
   Serial.println();
   delay(random(400));
 }
-void motor(uint8_t ch,bool direction, uint8_t pwm){
-  if(direction){
-    digitalWrite(motorPin[ch*2+0],HIGH);
-    digitalWrite(motorPin[ch*2+1],LOW);
-    digitalWrite(ledPin[ch*2+0],HIGH);
-    digitalWrite(ledPin[ch*2+1],LOW);
-  }
-  else{
-    digitalWrite(motorPin[ch*2+0],LOW);
-    digitalWrite(motorPin[ch*2+1],HIGH);
-    digitalWrite(ledPin[ch*2+0],LOW);
-    digitalWrite(ledPin[ch*2+1],HIGH);
-  }
-  analogWrite(pwmPin[ch],pwm);
-}
-#define SPEED_OFFSET 2
-void renderChannel(uint8_t ch){
-  uint16_t value=analogValue[3*ch + CV]+analogValue[3*ch + THRESHOLD];
-  bool dir;
-  if(value>512){
-    dir=true;
-    speed[ch]=constrain((( value-512)>>1) + ((analogValue[3*ch + SPEED_OFFSET])>>2),0,255);
-  }
-  else{
-    dir=false;
-    speed[ch]=constrain(((512-value)>>1) + ((analogValue[3*ch + SPEED_OFFSET])>>2),0,255);
-  }
 
 
-  if(dir){
-    motor(ch,FORWARD,speed[ch]);
-  }
-  else {
-    motor(ch,BACKWARD,speed[ch]);
-  }
-}
 void loop()
 {
 #ifdef DEBUG

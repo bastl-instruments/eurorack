@@ -33,7 +33,7 @@ digitalNoise digiNoise;
 const uint8_t numbMetallicChannels = 6;
 const uint8_t numbCowbellChannels = 2;
 
-uint16_t minFrequencies[numbMetallicChannels + numbCowbellChannels] = {153,185,267,327,465,1023,587,845};
+uint16_t minFrequencies[numbMetallicChannels + numbCowbellChannels] = {153,185,267,327,465,1023,377,293};//587,754}; //
 uint8_t pinIndices[numbMetallicChannels + numbCowbellChannels]  = {2,3,4,5,6,7,0,1};
 uint16_t frequencies[numbMetallicChannels + numbCowbellChannels];
 
@@ -92,7 +92,7 @@ void loop() {
 		metalicOffset=hardware.getKnobValue(1)+hardware.getCVValue(1);
 	}
 	for (; index<numbMetallicChannels; index++) {
-		frequencies[index] = minFrequencies[index]/8 + (((uint32_t)minFrequencies[index]*metalicOffset)>>7);
+		frequencies[index] = minFrequencies[index]/8 + (((uint32_t)minFrequencies[index]*metalicOffset)>>9);
 		digiNoise.checkForBitFlip();
 	}
 
@@ -102,7 +102,8 @@ void loop() {
 	// set cowbell frequencies
 	uint16_t freq=hardware.getKnobValue(2)+(hardware.getCVValue(0)>>1);
 	for (; index<numbMetallicChannels+numbCowbellChannels; index++) {
-		frequencies[index] = minFrequencies[index]/16 + (((uint32_t)minFrequencies[index]*freq)>>8); //changed here
+		frequencies[index] = minFrequencies[index]/16 + (((uint32_t)minFrequencies[index]*freq)>>6); // WAS >>8 changed here
+		//frequencies[index] = lookUp[index-numbMetallicChannels][freq];
 		digiNoise.checkForBitFlip();
 	}
 
