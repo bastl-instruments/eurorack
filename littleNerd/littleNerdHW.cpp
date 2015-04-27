@@ -249,11 +249,11 @@ void littleNerdHW::resetTriggers(){
 void littleNerdHW::isr_updateClockIn(){
 	if(clockInCallback!=0){
 		static bool clockInState[2];
-		bool newState=!bit_read_in(INPUT_1);
+		bool newState=bit_read_in(INPUT_1);
 		if(newState && !clockInState[0]) clockInCallback(0);
 		clockInState[0]=newState;
 
-		newState=!bit_read_in(INPUT_2);
+		newState=bit_read_in(INPUT_2);
 		if(newState && !clockInState[1]) clockInCallback(1);
 		clockInState[1]=newState;
 	}

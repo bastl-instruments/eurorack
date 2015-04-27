@@ -208,8 +208,9 @@ void loadValuesFromMemmory(unsigned char _sound){
 
 
 }
-int valueToSampleRate(int _value){ // longer zero
+uint16_t valueToSampleRate(int _value){ // longer zero
   pitch=myMap(_value,1023,420);
+  
   if(tuned){
     pitch/=10;
     return (pgm_read_word_near(noteSampleRateTable+pitch));
@@ -218,6 +219,8 @@ int valueToSampleRate(int _value){ // longer zero
     int pitchStep=(pgm_read_word_near(noteSampleRateTable+pitch/10+1) - pgm_read_word_near(noteSampleRateTable+pitch/10))/10;
     return pgm_read_word_near(noteSampleRateTable+pitch/10)+(pitch%10)*pitchStep;
   } 
+  
+  //return _value<<4;
 }
 void setSetting(unsigned char _sound){
   setting=getVar(_sound,SETTING);
@@ -258,7 +261,7 @@ uint16_t lastCv;
 bool cvChanged=false;
 uint16_t cvToSampleRate(uint16_t _cv){
 //  _cv/10
-  return _cv+100;
+  return _cv<<4;
 }
 void renderTweaking(unsigned char _page){
 
@@ -273,7 +276,7 @@ void renderTweaking(unsigned char _page){
         _CV=cvToSampleRate(hw.getCvValue());
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-        if(cvChanged) sampleRateNow=((long)(valueToSampleRate(getVar(_sound,RATE))*_CV))/100; //novinka testthis
+        if(cvChanged) sampleRateNow=valueToSampleRate(getVar(_sound,RATE))+_CV;//((long)(valueToSampleRate(getVar(_sound,RATE))*_CV))/100; //novinka testthis
         wave.setSampleRate(sampleRateNow);
         break;
       case 1:
