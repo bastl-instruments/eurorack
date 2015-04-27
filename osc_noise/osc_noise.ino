@@ -109,6 +109,8 @@ void loop() {
 	digiNoise.checkForBitFlip();
 
 	//** Set metallic frequencies
+
+
 	for (uint8_t index=0; index<numbMetallicChannels; index++) {
 		frequencies[index] = minFrequencies[index]/8 + (((uint32_t)minFrequencies[index]*metallicIn)>>9);
 		digiNoise.checkForBitFlip();
@@ -116,8 +118,8 @@ void loop() {
 
 
 	//** Set cowbell frequencies
-	frequencies[6] = mapProgmemU8U16(metallicIn,cowbellTableHigh);
-	frequencies[7] = mapProgmemU8U16(metallicIn,cowbellTableLow);
+	frequencies[7] = mapProgmemU8U16(cowbellIn,cowbellTableHigh);
+	frequencies[6] = mapProgmemU8U16(cowbellIn,cowbellTableLow);
 
 	digiNoise.checkForBitFlip();
 	oscil.setFrequencies(frequencies);
