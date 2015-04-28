@@ -3,7 +3,7 @@
 from curveCalculator import *
 
 relation = float(293)/377
-maxHigh = 800
+maxHigh = 1600
 
 high=[]
 
