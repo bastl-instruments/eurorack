@@ -112,7 +112,7 @@ uint8_t currentPreset=0;
 uint8_t parameter[6][2]={{0,0},{0,0},{0,0},{0,0},{0,0},{0,20}};
 bool lock=false;
 uint8_t defaultValue1[8]={0,0,0,32,16,31,127,184};
-uint8_t defaultValue2[8]={0,16,16,0,200,255,127,0};
+uint8_t defaultValue2[8]={0,16,29,0,200,255,127,0};
 
 PROGMEM const uint8_t clearTo[]={ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,   };
 void save(uint8_t _preset){
@@ -284,9 +284,23 @@ void renderNumberDisplay(uint8_t i, uint8_t index, uint8_t _ch){
 		}
 
 		else{
-			if(channelMode[i]==DIVIDER || channelMode[i]==FLOP_DIVIDER ||channelMode[i]==EUCLID){
+			if(channelMode[i]==DIVIDER ||channelMode[i]==EUCLID){
 				if((parameter[i][index]>>bitShifter[channelMode[_ch]])!=(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])){
 					if((((hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
+
+					else hardware.setColor(BLACK);
+
+
+					//Serial.println(i);
+					showTime=hardware.getElapsedBastlCycles();
+					show=true;
+				}
+				else hardware.setColor(channelMode[_ch]);
+			}
+			else if(channelMode[i]==FLOP_DIVIDER){ //novinka
+				//myMap(parameter[_ch][1],255,9)
+				if(myMap(parameter[_ch][1],255,9)!=myMap(hardware.getKnobValue(i),255,9)){
+					if(((myMap(hardware.getKnobValue(i),255,9)) % 4) == 0) hardware.setColor(WHITE);
 
 					else hardware.setColor(BLACK);
 
