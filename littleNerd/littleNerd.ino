@@ -6,8 +6,10 @@
  * licensed under cc-by-sa
  *
  *TODO
-flop divider visual
+
 euclidian visual
+multiplier reset
+
  *
  */
 
@@ -95,7 +97,7 @@ void test(uint8_t v) {
 #define OSC 6
 #define PROBABILITY 7
 
-uint8_t bitShifter[8]={0,4,4,5,4,4,0,0};
+uint8_t bitShifter[8]={0,4,4,5,3,4,0,0};
 
 #define DEFAULT_TRIGGER_LENGTH 10 // around 10ms
 
@@ -111,20 +113,21 @@ bool flop[6];
 uint8_t currentPreset=0;
 uint8_t parameter[6][2]={{0,0},{0,0},{0,0},{0,0},{0,0},{0,20}};
 bool lock=false;
-uint8_t defaultValue1[8]={0,0,0,32,16,31,127,184};
-uint8_t defaultValue2[8]={0,16,29,0,200,255,127,0};
+const uint8_t defaultValue1[8]={0,0,0,32,16,31,127,184};
+const uint8_t defaultValue2[8]={0,16,29,0,200,255,127,0};
 
 PROGMEM const uint8_t clearTo[]={ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0,  0,  0,  0,  0,  0,   };
+
 void save(uint8_t _preset){
 	if(!lock){
-	uint16_t presetOffset=_preset*32;
-	for(int i=0;i<6;i++){
-		for(int j=0;j<2;j++){
-			EEPROM.write(presetOffset+j+i*2,parameter[i][j]);
-		}
-		EEPROM.write(presetOffset+12+i,channelMode[i]);
+		uint16_t presetOffset=_preset*32;
+		for(int i=0;i<6;i++){
+			for(int j=0;j<2;j++){
+				EEPROM.write(presetOffset+j+i*2,parameter[i][j]);
+			}
+			EEPROM.write(presetOffset+12+i,channelMode[i]);
 
-	}
+		}
 	}
 }
 void load(uint8_t _preset){
@@ -261,7 +264,7 @@ void renderNumberDisplay(uint8_t i, uint8_t index, uint8_t _ch){
 
 		if(index==0){ // only for EUCLID - needs to map the fills because maximum is the number of steps
 
-			if(channelMode[i]==MULTIPLIER || channelMode[i]==GROOVE ){
+			if(channelMode[i]==MULTIPLIER){
 				if((parameter[i][index]>>bitShifter[channelMode[_ch]])!=(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])){
 					if((((hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
 					else hardware.setColor(BLACK);
@@ -272,8 +275,12 @@ void renderNumberDisplay(uint8_t i, uint8_t index, uint8_t _ch){
 				else hardware.setColor(channelMode[_ch]);
 			}
 			else if(channelMode[_ch]==EUCLID){
-				if(myMap(parameter[_ch][0]>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])!=myMap(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])){
-							if(((myMap(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
+				//if(myMap(parameter[_ch][0]>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])!=myMap(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])){
+				if(myMap(parameter[_ch][0],255,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1)!=myMap(hardware.getKnobValue(i),255,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1)){
+
+					//if(((myMap(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
+					if(((myMap(hardware.getKnobValue(i),255,parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
+
 							else hardware.setColor(BLACK);
 							showTime=hardware.getElapsedBastlCycles();
 							show=true;
@@ -284,7 +291,7 @@ void renderNumberDisplay(uint8_t i, uint8_t index, uint8_t _ch){
 		}
 
 		else{
-			if(channelMode[i]==DIVIDER ||channelMode[i]==EUCLID){
+			if(channelMode[i]==DIVIDER ||channelMode[i]==EUCLID || channelMode[i]==GROOVE ){
 				if((parameter[i][index]>>bitShifter[channelMode[_ch]])!=(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])){
 					if((((hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
 
@@ -380,14 +387,14 @@ uint8_t divider;
 uint32_t offset[6];
 
 void renderMultiplier(uint8_t _ch){
-	uint8_t multiplication=(parameter[_ch][0]>>5)+1;
+	uint8_t multiplication=(parameter[_ch][0]>>(bitShifter[channelMode[_ch]]))+1;
 
 	if (counterLeft[_ch] != 0) {
 
 			if ((hardware.getElapsedBastlCycles() - lastChannelTime[_ch]) > (clockInTime[_ch] / multiplication)) {
 
 				counter[_ch]++;
-				unsigned char subStepsFromLastStep = (multiplication - counterLeft[_ch]);
+				unsigned char subStepsFromLastStep = abs(multiplication - counterLeft[_ch]);
 
 				//Next line is handling problems with rounding so instead of increasing the last triggered
 				//To the current time we increase it by division of the step multiplied by number of current step
@@ -397,12 +404,22 @@ void renderMultiplier(uint8_t _ch){
 
 			}
 		}
+		if(flop[_ch] ==true){
+
+			if(hardware.getElapsedBastlCycles()-lastClockInTime[_ch]>((clockInTime[_ch] / multiplication)/2)){
+				setAndRecordTrigger(_ch,littleNerdHW::OFF, 0);
+				flop[_ch] =false;
+			}
+		}
 
 		//And here we trigger steps if there are some and the time from last step is lower then
 		//Minimum distance in between steps that could be set by public setter
-		if ((counter[_ch] > 0) &&
-			((hardware.getElapsedBastlCycles() - lastClockInTime[_ch]) >  (clockInTime[_ch] / multiplication))) { // tady byl default trigger length
-			setAndRecordTrigger(_ch,littleNerdHW::ON, (clockInTime[_ch] / multiplication)/2);
+		if ((counter[_ch] > 0) ) { //&& ((hardware.getElapsedBastlCycles() - lastClockInTime[_ch]) >  10)
+			//if(!hardware.getTriggerState(_ch)){// tady byl default trigger length //clockInTime[_ch] / multiplication
+				flop[_ch] = true;
+
+				setAndRecordTrigger(_ch,littleNerdHW::ON, 0);//
+
 			/*
 			if (stepCallback_ != 0) {
 				stepCallback_(id);
@@ -410,6 +427,8 @@ void renderMultiplier(uint8_t _ch){
 			*/
 			lastClockInTime[_ch] = hardware.getElapsedBastlCycles();
 			counter[_ch]--;
+			//}
+			//else setAndRecordTrigger(_ch,littleNerdHW::OFF,0);
 		}
 
 
@@ -475,11 +494,11 @@ void clockInChannel(uint8_t _ch){
 
 	case MULTIPLIER:{ //
 
-		uint8_t multiplication=(parameter[_ch][0]>>bitShifter[channelMode[_ch]])+1; //
+		uint8_t multiplication=(parameter[_ch][0]>>(bitShifter[channelMode[_ch]]))+1; //
 
-		if (flop[_ch]) {
-			clockInTime[_ch] = hardware.getElapsedBastlCycles() - channelTime[_ch];
-		}
+		//if (flop[_ch]) {
+		clockInTime[_ch] = hardware.getElapsedBastlCycles() - channelTime[_ch];
+	//	}
 		channelTime[_ch] = hardware.getElapsedBastlCycles();
 		lastChannelTime[_ch] = hardware.getElapsedBastlCycles();
 
@@ -489,8 +508,9 @@ void clockInChannel(uint8_t _ch){
 		counterLeft[_ch] = ((multiplication) - 1);
 
 		counter[_ch]++;
+		//flop[_ch]=false;
 		renderMultiplier(_ch);
-		flop[_ch] = true;
+	//	flop[_ch] = true;
 	//	}
 
 
@@ -520,9 +540,9 @@ void clockInChannel(uint8_t _ch){
 		break;
 	case GROOVE:{
 	//	else { // trigger repeater TESTED !
-		uint8_t multiplication=(parameter[_ch][0]>>bitShifter[channelMode[_ch]])+1;
+		uint8_t multiplication=(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1;
 		for(int i=0;i<multiplication;i++){
-			dly.createEvent(_ch,STANDART_TRIGGER,hardware.getElapsedBastlCycles()+i*(((255-parameter[_ch][1])<<1)+DEFAULT_TRIGGER_LENGTH*2)); // naladit
+			dly.createEvent(_ch,STANDART_TRIGGER,hardware.getElapsedBastlCycles()+i*(((255-parameter[_ch][0]))+(DEFAULT_TRIGGER_LENGTH*2))); // naladit
 			}
 		}
 		// TESTED !
@@ -544,7 +564,7 @@ void clockInChannel(uint8_t _ch){
 		*/
 		break;
 	case EUCLID:{ // TESTED ! - DODELAT ZOBRAZOVANI MIMO EDIT MOD
-		uint8_t fills=myMap(parameter[_ch][0]>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]]);
+		uint8_t fills=myMap(parameter[_ch][0],255,parameter[_ch][1]>>bitShifter[channelMode[_ch]]);
 		euclidian[_ch].generateSequence(fills+1,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1);
 		if(euclidian[_ch].getCurrentStep()) setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
 		/*

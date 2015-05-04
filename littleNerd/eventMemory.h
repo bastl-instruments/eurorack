@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 
-#define M_BUFFER_SIZE 128
+#define M_BUFFER_SIZE 5
 #define STOP_STATE 0
 #define RECORDING_STATE 1
 #define LOOPING_STATE 2

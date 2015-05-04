@@ -136,7 +136,10 @@ boolean revMidi=false;
 void setEnd(unsigned char _sound){
   endPosition=sizeOfFile;
   if(revMidi) endIndex=startIndex+1, startIndex=0; //, startPosition=0;
-  else endIndex=getVar(_sound,END);
+  else {
+    if(cvAssign==7) endIndex=getVar(_sound,END)+ hw.getCvValue();
+    else endIndex=getVar(_sound,END);
+  }
   
 
     if(endIndex<1000){
@@ -166,38 +169,52 @@ void loadValuesFromMemmory(unsigned char _sound){
 
   }
   else if(_sound>=23 && _sound<66) notePitch=_sound-23,_sound=activeSound,startGranule=sizeOfFile/1024, startIndex=getVar(_sound,START);
-  else _sound=activeSound,startGranule=sizeOfFile/1024, startIndex=getVar(_sound,START);
+  else{
+    _sound=activeSound,startGranule=sizeOfFile/1024;
+   if(cvAssign==6) startIndex=getVar(_sound,START)+ hw.getCvValue();
+    else startIndex=getVar(_sound,START);
+  }
   // endIndex=getVar(_sound,END);
   // if(startIndex>endIndex) startIndex=endIndex+3;
 
   startPosition=startIndex*startGranule;
   setSetting(_sound);
-  attackInterval=getVar(_sound,ATTACK);
-  releaseInterval=getVar(_sound,RELEASE);
-  if(releaseInterval==127) sustain=true;
+ 
+  if(cvAssign==2) attackInterval=getVar(_sound,ATTACK)+ hw.getCvValue()>>3;
+  else attackInterval=getVar(_sound,ATTACK);
+  if(cvAssign==3) releaseInterval=getVar(_sound,RELEASE)+ hw.getCvValue()>>3;
+  else releaseInterval=getVar(_sound,RELEASE);
+  if(releaseInterval>=127) sustain=true;
   else sustain=false;
   wave.pause();
 
   if(notePitch!=255){
+  
     sampleRateNow=(pgm_read_word_near(noteSampleRateTable+notePitch)); //+rnd number to lower probability of interference novinka
   }
   else{
-    sampleRateNow=valueToSampleRate(getVar(_sound,RATE));
+    //  sampleRateNow=valueToSampleRate(getVar(_sound,RATE))+_CV;
+    if(cvAssign==0) sampleRateNow=valueToSampleRate(getVar(_sound,RATE)+hw.getCvValue());
+    else sampleRateNow=valueToSampleRate(getVar(_sound,RATE));
   }
 
 
   wave.setSampleRate(sampleRateNow);//+pitchBendNow);
   //  bit_set(PIN);
-  crush=getVar(_sound,CRUSH)<<1;
+  if(cvAssign==1) crush=constrain((getVar(_sound,CRUSH)<<1)+(hw.getCvValue()>>3),0,255);
+  else crush=getVar(_sound,CRUSH)<<1;
   wave.setCrush(crush);
-  ll=getVar(_sound,LOOP_LENGTH);
+  if(cvAssign==4) ll=getVar(_sound,LOOP_LENGTH)+ hw.getCvValue()>>3;
+  else ll=getVar(_sound,LOOP_LENGTH);
   if(sync) loopLength=1,ll=1;//pgm_read_word_near(usefulLengths+(ll>>3));
 
   else loopLength=ll<<LOOP_LENGTH_SHIFT;
   //if(sync) shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)-128)<<SHIFT_SPEED_SYNC_SHIFT;
   //else 
-  shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)-128)<<SHIFT_SPEED_SHIFT;
+  if(cvAssign==4) shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)+(hw.getCvValue()>>2)-256)<<SHIFT_SPEED_SHIFT;
+  else shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)-128)<<SHIFT_SPEED_SHIFT;
   if(shiftSpeed<0 && ll!=0) reverse=true;
+  
   else reverse=false;
   setEnd(_sound);
   granularTime=millis(); //novinka
@@ -209,6 +226,8 @@ void loadValuesFromMemmory(unsigned char _sound){
 
 }
 uint16_t valueToSampleRate(int _value){ // longer zero
+  return mapVOct(_value);
+/*
   pitch=myMap(_value,1023,420);
   
   if(tuned){
@@ -221,6 +240,7 @@ uint16_t valueToSampleRate(int _value){ // longer zero
   } 
   
   //return _value<<4;
+  */
 }
 void setSetting(unsigned char _sound){
   setting=getVar(_sound,SETTING);
@@ -273,61 +293,66 @@ void renderTweaking(unsigned char _page){
 
       switch(cvAssign){
       case 0:
-        _CV=cvToSampleRate(hw.getCvValue());
+        _CV=hw.getCvValue(); 
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-        if(cvChanged) sampleRateNow=valueToSampleRate(getVar(_sound,RATE))+_CV;//((long)(valueToSampleRate(getVar(_sound,RATE))*_CV))/100; //novinka testthis
+      //  if(cvChanged) 
+        sampleRateNow=valueToSampleRate(getVar(_sound,RATE)+_CV);//((long)(valueToSampleRate(getVar(_sound,RATE))*_CV))/100; //novinka testthis
         wave.setSampleRate(sampleRateNow);
         break;
       case 1:
-        _CV=hw.getCvValue();
+        _CV=hw.getCvValue()>>3;
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-        if(cvChanged) wave.setCrush((getVar(_sound,CRUSH)<<1)+_CV);
+        //if(cvChanged) 
+        wave.setCrush((getVar(_sound,CRUSH)<<1)+_CV);
         break;
       case 2:
-        _CV=hw.getCvValue()>>1;
+        _CV=hw.getCvValue()>>3;
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-        if(cvChanged) attackInterval=getVar(_sound,ATTACK)+_CV;
+       // if(cvChanged) 
+        attackInterval=getVar(_sound,ATTACK)+_CV;
         break;
       case 3:
-        _CV=hw.getCvValue()>>1;
+        _CV=hw.getCvValue()>>3;
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-        if(cvChanged) releaseInterval=getVar(_sound,RELEASE)+_CV;
+        //if(cvChanged) 
+        releaseInterval=getVar(_sound,RELEASE)+_CV;
         break;
       case 4:
-        _CV=hw.getCvValue(); //??
+        _CV=hw.getCvValue()>>3; //??
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-        if(cvChanged){
+        //if(cvChanged){
           ll=getVar(_sound,LOOP_LENGTH)+_CV;
           if(sync) loopLength=1,ll=1;//pgm_read_word_near(usefulLengths+(ll>>3));
           else loopLength=ll<<LOOP_LENGTH_SHIFT;
-        }
+       // }
         break;
       case 5:
-        _CV=hw.getCvValue(); //??
+        _CV=hw.getCvValue()>>2; //??
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-        if(cvChanged) {
-          shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)-128)+_CV)<<SHIFT_SPEED_SHIFT;
-        }
+       // if(cvChanged) {
+          shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)+_CV-256))<<SHIFT_SPEED_SHIFT;
+        //}
         break;
       case 6:
-        _CV=hw.getCvValue()<<2;
+        _CV=hw.getCvValue();
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-        if(cvChanged) {
+       // if(cvChanged) {
           startIndex=getVar(_sound,START)+_CV;
           startPosition=startIndex*startGranule;
-        }
+        //}
         break;
       case 7:
         _CV=hw.getCvValue();
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
+        setEnd(_sound);
         break;
       }
     }
@@ -337,7 +362,7 @@ void renderTweaking(unsigned char _page){
 
 
       if(!hw.knobFreezed(0) ){
-        if(cvAssign==0) sampleRateNow=valueToSampleRate(getVar(_sound,RATE))+_CV;
+        if(cvAssign==0) sampleRateNow=valueToSampleRate(getVar(_sound,RATE)+_CV);
         else sampleRateNow=valueToSampleRate(getVar(_sound,RATE));
         if(sound<7 || !tuned) wave.setSampleRate(sampleRateNow);//+pitchBendNow);
       }
@@ -352,14 +377,14 @@ void renderTweaking(unsigned char _page){
         else attackInterval=getVar(_sound,ATTACK);
       }
       if(!hw.knobFreezed(1)){
-        if(cvAssign==2) releaseInterval=getVar(_sound,RELEASE)+_CV;
+        if(cvAssign==3) releaseInterval=getVar(_sound,RELEASE)+_CV;
         else releaseInterval=getVar(_sound,RELEASE);
       }
 
       break;
     case 2:
       // if(!hw.knobFreezed(0)){
-      if(cvAssign==3) ll=getVar(_sound,LOOP_LENGTH)+_CV;
+      if(cvAssign==4) ll=getVar(_sound,LOOP_LENGTH)+_CV;
       else  ll=getVar(_sound,LOOP_LENGTH);
       if(sync) loopLength=1,ll=1;//pgm_read_word_near(usefulLengths+(ll>>3));
       else loopLength=ll<<LOOP_LENGTH_SHIFT;
@@ -367,14 +392,14 @@ void renderTweaking(unsigned char _page){
       if(!hw.knobFreezed(1)) {
         //if(sync) shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)-128)<<SHIFT_SPEED_SYNC_SHIFT;
         //else 
-        if(cvAssign==4) shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)-128)+_CV)<<SHIFT_SPEED_SHIFT;
+        if(cvAssign==5) shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)+_CV-256))<<SHIFT_SPEED_SHIFT;
         else  shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)-128))<<SHIFT_SPEED_SHIFT;
       }
       break;
     case 3:
       if(!hw.knobFreezed(0)){ //splice here??
         if(!revMidi){
-          if(cvAssign==5)  startIndex=getVar(_sound,START)+_CV;
+          if(cvAssign==6)  startIndex=getVar(_sound,START)+_CV;
           else startIndex=getVar(_sound,START);
           //if(startIndex>endIndex) startIndex=endIndex-3;//MINIMAL_LOOP; //novinka
           startPosition=startIndex*startGranule;
@@ -732,7 +757,8 @@ void renderKnobs(){
     if(shift){
     for(int i=0;i<2;i++){
       if(hw.knobMoved(i)){
-        hw.setColor(WHITE);
+        if(page==3) hw.setColor(BLACK);
+        else hw.setColor(WHITE);
         unsigned char _variable=i+(VARIABLES_PER_PAGE*page);
         cvAssign=_variable;
 
