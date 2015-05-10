@@ -8,9 +8,6 @@
 
 #include "multiChannelOscillator.h"
 
-
-
-
 #ifndef TESTING
 #include <Arduino.h>
 #include <util/atomic.h>
@@ -27,6 +24,18 @@ volatile uint8_t pinRegister = 0;
 #endif
 
 
+// macros for accessing port register
+#define REG_PIN(...) REG_PIN_(__VA_ARGS__)
+#define REG_PIN_(L) PIN ## L
+
+#define REG_PORT(...) REG_PORT_(__VA_ARGS__)
+#define REG_PORT_(L) PORT ## L
+
+#define REG_DIR(...) REG_DIR_(__VA_ARGS__)
+#define REG_DIR_(L) DDR ## L
+
+
+
 
 void MultiChannelOscillator::stop() {
 #ifndef TESTING
@@ -35,6 +44,8 @@ void MultiChannelOscillator::stop() {
 	printf("stopped\n");
 #endif
 }
+
+
 
 void MultiChannelOscillator::start() {
 
@@ -67,6 +78,14 @@ void MultiChannelOscillator::setFrequencies(uint16_t* frequencies) {
 
 }
 
+void MultiChannelOscillator::setFrequency(uint8_t channel, uint16_t frequency) {
+
+	if (frequencies[channel] != frequency) {
+		frequencies[channel] = frequency;
+		calcCompareValues();
+	}
+}
+
 
 void MultiChannelOscillator::init(uint8_t* pinIndices) {
 
@@ -97,6 +116,9 @@ void MultiChannelOscillator::init(uint8_t* pinIndices) {
 	}
 	#endif
 
+	// enable all channels
+	channelEnabled = 255;
+
 
 	#ifndef TESTING
 	sei();
@@ -107,19 +129,20 @@ void MultiChannelOscillator::init(uint8_t* pinIndices) {
 
 void MultiChannelOscillator::calcCompareValues() {
 
-
-
 	for (uint8_t index=0; index<numbChannels; index++) {
 
-		compareValues[index] = (F_CPU / 128) / frequencies[index];
-		//currentCompareValues[index] = compareValues[index];
+		if (frequencies[index] != 0) {
+			compareValues[index] = (F_CPU / 128) / frequencies[index];
+			setHigh(channelEnabled,index);
+		} else {
+			setLow(channelEnabled,index);
+		}
+
 
 		#ifdef TESTING
 		printf("Channel %u: %u\n",index,compareValues[index]);
 		#endif
 	}
-
-
 
 	#ifdef TESTING
 		printf("\n");
@@ -142,25 +165,26 @@ inline void MultiChannelOscillator::queueNextToggle() {
 	uint16_t distanceToNext = -1;
 
 
-
-
 	for (uint8_t index=0; index<numbChannels; index++) {
 
 		// new relative toggle distances
 		currentCompareValues[index] -= lastTime;
 		if (currentCompareValues[index] <= 0) currentCompareValues[index] += compareValues[index];
 
+		// only check a channel if it is enabled
+		if (channelEnabled & (1<<index)) {
 
-		// find nearest and bits to flip at next position
-		if (currentCompareValues[index] < distanceToNext) {
-			lastPins = channelMappings[index];
-			distanceToNext = currentCompareValues[index];
+			// find nearest and bits to flip at next position
+			if (currentCompareValues[index] < distanceToNext) {
+				lastPins = channelMappings[index];
+				distanceToNext = currentCompareValues[index];
+			}
+
+			if (currentCompareValues[index] == distanceToNext) {
+				lastPins |= channelMappings[index];
+			}
+
 		}
-
-		if (currentCompareValues[index] == distanceToNext) {
-			lastPins |= channelMappings[index];
-		}
-
 
 	}
 
@@ -204,7 +228,7 @@ void MultiChannelOscillator::printBuffer() {
 }
 
 
-// INLINE!!!!
+
 inline void MultiChannelOscillator::performToggle() {
 
 		toggleEvent event;
@@ -219,7 +243,6 @@ inline void MultiChannelOscillator::performToggle() {
 	#endif
 
 		} else {
-			//Serial.println("BUFFER EMPTY!");
 			stop();
 		}
 
@@ -232,11 +255,7 @@ MultiChannelOscillator oscil;
 
 //max 64 cycles = 4us
 ISR(TIMER1_COMPA_vect) {
-	//bit_set(PIN);
-	//sei();
 	oscil.performToggle();
-	//bit_clear(PIN);
-
 }
 
 #endif
