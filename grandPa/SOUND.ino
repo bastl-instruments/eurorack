@@ -4,7 +4,7 @@ uint32_t startPosition;
 uint32_t endPosition;
 int startIndex,endIndex;
 boolean repeat;
-boolean shiftDir,sync=true;
+
 boolean ending=true;
 //unsigned char row;
 boolean hold;
@@ -43,6 +43,11 @@ void updateSound(){
     }
     else {
       // setSetting(midiBuffer[ZERO]);
+      if(sustain){
+        renderEnvelope();
+        renderLooping();
+        renderGranular();
+      }
       setSetting(activeSound);
 
       if(repeat){
@@ -88,34 +93,34 @@ void renderLooping(){
   if(instantLoop==2){
     /*
     if(sync){
-      if((clockCounter % instantClockCounter)==0){
+     if((clockCounter % instantClockCounter)==0){
+     wave.pause();
+     wave.seek(instantStart);
+     wave.resume();
+     lastPosition=instantStart;
+     }
+     }
+     */
+    // else{
+    //if(shiftSpeed<0 && ll!=0){ 
+    if(reverse){
+      if(_pos<=instantEnd){
         wave.pause();
         wave.seek(instantStart);
         wave.resume();
         lastPosition=instantStart;
       }
     }
-    */
-   // else{
-      //if(shiftSpeed<0 && ll!=0){ 
-      if(reverse){
-        if(_pos<=instantEnd){
-          wave.pause();
-          wave.seek(instantStart);
-          wave.resume();
-          lastPosition=instantStart;
-        }
-      }
-      else{
-        if(_pos>=instantEnd){
-          wave.pause();
-          wave.seek(instantStart);
-          wave.resume();
-          lastPosition=instantStart;
-        }
+    else{
+      if(_pos>=instantEnd){
+        wave.pause();
+        wave.seek(instantStart);
+        wave.resume();
+        lastPosition=instantStart;
       }
     }
- // }
+  }
+  // }
   else{
 
     // if(shiftSpeed<0 && ll!=0){ 
@@ -189,8 +194,8 @@ void renderGranular(){
 
     if(sync){
 
-     // if((clockCounter%loopLength)==0){
-       if(clockCounter!=lastCC){
+      // if((clockCounter%loopLength)==0){
+      if(clockCounter!=lastCC){
         doGrainShift();
       }
 
@@ -200,6 +205,9 @@ void renderGranular(){
       if(millis()-granularTime>=(loopLength)){
         //+COMPENSATION//  novinka - kompenzace
         granularTime=millis(); 
+        doGrainShift();
+      }
+      if(clockCounter!=lastCC){
         doGrainShift();
       }
     } 
@@ -326,6 +334,7 @@ int rand( int minval,  int maxval)
  return (int) ((((xorshift96() & 0xFFFF) * (maxval-minval))>>16) + minval);
  }
  */
+
 
 
 

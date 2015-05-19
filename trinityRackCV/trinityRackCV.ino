@@ -472,7 +472,7 @@ bool channelRecord[6];
 void channelInterpolateFromCall(uint8_t channel,uint8_t number){
 	writeToStep[channel]=number;
 	channelRecord[channel]=false;
-	//line[channel].set(number); //number
+	line[channel].set(number); //number
 }
 void channelInterpolateToCall(uint8_t channel,uint8_t _number){
 	if((writeToStep[channel]>=0) && (writeToStep[channel]<=31)) buffer[channel].setStepValue(writeToStep[channel],_number);

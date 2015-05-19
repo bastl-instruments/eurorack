@@ -85,64 +85,135 @@ unsigned char currentPreset=0;
 unsigned char currentBank=0;
 #define E_BANK 1001
 #define E_PRESET 1002
-PROGMEM prog_uint16_t noteSampleRateTable[49]={/*0-C*/
-  2772,2929,3103,3281,3500,3679,3910,4146,4392,4660,4924,5231,5528,5863,6221,6579,6960,7355,7784,8278,8786,9333,9847,10420,11023,/*11*/ 11662,12402,13119,13898,14706,15606,16491,17550,18555,19677,20857, /*0*/22050,23420,24807,26197,27815,29480,29480,29480,29480,29480,29480,29480,/*48-C*/29480};
-
-uint16_t cvInputCalibrate[15];
-void channelCVCall(uint8_t channel, uint8_t number) {
-  if(channel==1) {
-    uint16_t avrg=0;
-    for(int i=0;i<10;i++){
-      hw.updateKnobs();
-      hw.updateButtons();   
-      hw.updateDisplay();
-      avrg+=hw.getCvValue();
-      delay(1);
-    }
-    cvInputCalibrate[number]=avrg/10;
+int clockCounter=1;
+unsigned char cvAssign=255;
+unsigned char sound, activeSound;
+PROGMEM prog_uint16_t noteSampleRateTable[65]={//1386,
+  1465,1552,1641,1750,1840,1955,2073,2196,2330,2462,2616,
+  /*0-C*/
+  2772,2929,3103,3281,3500,3679,3910,4146,4392,4660,4924,5231, 5528,5863,6221,6579,6960,7355,7784,8278,8786,9333,9847,10420,11023,/*11*/ 11662,12402,13119,13898,14706,15606,16591,17550,18555,19677,20857, /*0*/22050,23420,24807,26197,27815,29480,32982,35100,37110,39354,41714,44100,/*48-C*/44100,44100,44100,44100,44100};
+uint8_t expanderValue[8]={
+  0,0,0,0,0,0,0,0};
+uint16_t cvInputCalibrate[12]={
+  0, 100, 201, 302, 403, 504, 605, 706, 808, 910, 1023,1023} 
+;
+/*
+void channelModeCall(uint8_t channel, uint8_t value){
+ 	//
+ 	//if(channel==1)
+ 	wait=false;
+ 	hw.displayNumber(value);
+ 	hw.updateDisplay();
+ //	com.sendPairMessage();
+ //	com.sendChannelMode(channel, value);
+ }
+ */
+void channelTriggerCall(uint8_t channel, uint8_t number) {
+  clockCounter++;
+}
+void channelModeCall(uint8_t channel, uint8_t number) {
+  // if(channel==1) {
+  if(number>=10) number=10;
+  uint32_t avrg=0;
+  hw.setColor(BLUE);
+  for(int i=0;i<10;i++){
+    //      hw.displayChar('c');
+    hw.displayNumber(number/2);
+    hw.updateKnobs();
+    hw.updateButtons();   
+    hw.updateDisplay();
+    avrg+=hw.getCvValue();
+    delay(10);
   }
+
+  cvInputCalibrate[number]=(avrg/10);
+  // if(number==10) cvInputCalibrate[number]=1022,hw.setColor(WHITE);
+  // else hw.setColor(GREEN);
+  hw.setColor(GREEN);
+  //}
   EEPROM.write(100+(2*number), lowByte(cvInputCalibrate[number]));
   EEPROM.write(100+(2*number)+1, highByte(cvInputCalibrate[number]));
-  com.sendChannelCV(1,cvInputCalibrate[number]>>2);
+
+  hw.updateDisplay();
+  delay(100);
+  // pinMode(1,OUTPUT);
+  //  com.sendChannelCV(1,cvInputCalibrate[number]>>2);
+  //  com.init(38400);
+  com.sendPairMessage();
+  com.sendChannelMode(1, cvInputCalibrate[number]>>2);
 }
 void fillEeprom(){
-  int number;
-  for(int i=0;i<15;i++){
-    number=(1024/15)*i;
-    EEPROM.write(100+(2*i), lowByte(number));
-    EEPROM.write(100+(2*i)+1, highByte(number));
+  //  int number;
+  for(int i=0;i<11;i++){
+    //  number=(1023/16)*i;
+    EEPROM.write(100+(2*i), lowByte(cvInputCalibrate[i]));
+    EEPROM.write(100+(2*i)+1, highByte(cvInputCalibrate[i]));
   }
+
 }
 uint32_t mapVOct(uint16_t value){
-  uint8_t numberOfPoints=15;
-  uint32_t inMin=0, inMax=255, outMin=0, outMax=255;
+  // Serial.print(value);
+  // Serial.print(", ");
+  if(value>=cvInputCalibrate[9]) value=cvInputCalibrate[9];
+  // if(value>=1023) value=1023;
+  uint8_t numberOfPoints=11;
+  uint32_t inMin=0, inMax=cvInputCalibrate[10], outMin=1465, outMax=30000;
   for(int i=0;i<numberOfPoints-1;i++){
-    if(value >= cvInputCalibrate[i] && value <= cvInputCalibrate[i+1]) {
+    if(value > cvInputCalibrate[i] && value <= cvInputCalibrate[i+1]) {
       inMax=cvInputCalibrate[i+1];
       inMin=cvInputCalibrate[i];
-      outMax=pgm_read_word_near(noteSampleRateTable+((i+1)*4));//tableMap[numberOfPoints+i+1];
-      outMin=pgm_read_word_near(noteSampleRateTable+(i*4));
+      uint16_t sixth=(inMax-inMin) / 6;
+      uint8_t _note=0;
+      for(int j=0;j<6;j++){
+        if(value > (inMin+(sixth*j)) && value <= (inMin+(sixth*(j+1))))  _note=j, j=6;
+      }
+      inMax=inMin+(sixth*(_note+1));
+      inMin=inMax-sixth;
+      outMax=pgm_read_word_near(noteSampleRateTable+((i*6)+_note+1));//tableMap[numberOfPoints+i+1];
+      outMin=pgm_read_word_near(noteSampleRateTable+(i*6)+_note);
+
       i=numberOfPoints+10;
     }
   }
   uint32_t out=map(value,inMin,inMax,outMin,outMax);
-  if(out>=44100) out=44099;
+  //  Serial.println(out);
+  if(out>=31000) out=31000;
   return out;
 }
+#define GRAIN_MAP_POINTS 8
+PROGMEM prog_uint16_t granSizeMap[16]={
+  0,5,10,80,127,160,220,255,  0,25,25,100,400,1000,2000,4000};
+//const uint16_t granSizeMap[2]={0,30};//,80,127,160,190,255,  0,1,1,100,500,1000,2000};
+#define SHIFT_SPEED_POINTS 10
+PROGMEM prog_uint16_t shiftSpeedMap[20]={
+  0,30,60,90,115,135,160,190,220,255,  0,5000,12000,15000,16000,16000,17000,20000,27000,32000};
 
+uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, prog_uint16_t * tableMap){
+  uint32_t inMin=0, inMax=255, outMin=0, outMax=255;
+  for(int i=0;i<numberOfPoints-1;i++){
+    if(value >= pgm_read_word_near(tableMap+i) && value <= pgm_read_word_near(tableMap+i+1)) {
+      inMax=pgm_read_word_near(tableMap+i+1);
+      inMin=pgm_read_word_near(tableMap+i);
+      outMax=pgm_read_word_near(tableMap+numberOfPoints+i+1);
+      outMin=pgm_read_word_near(tableMap+numberOfPoints+i);
+      i=numberOfPoints+10;
+    }
+  }
+  return map(value,inMin,inMax,outMin,outMax);
+}
 
-
-
+void clockCall(uint8_t _number){
+}
 void setup(void) {
 
   hw.initialize();
 
   initSdCardAndReport();
-  fillEeprom();
+  // fillEeprom();
   //
   if(!EEPROM.read(1000)) ;//wave.setSampleRate(22050), wave.resume();
   else EEPROM.write(1000,0),currentPreset=EEPROM.read(E_PRESET),currentBank=EEPROM.read(E_BANK);
-  for(int i=0;i<15;i++) cvInputCalibrate[i]=word(EEPROM.read(100+(2*i)+1),EEPROM.read(100+(2*i)));
+  for(int i=0;i<11;i++) cvInputCalibrate[i]=word(EEPROM.read(100+(2*i)+1),EEPROM.read(100+(2*i)));
   // initMidi();
 
 
@@ -158,8 +229,16 @@ void setup(void) {
   // timer2setup();
 
   com.init(38400);
-
+  com.attachClockCallback(&clockCall);
+  com.attachChannelModeCallback(&channelModeCall);
   com.attachChannelCVCallback(&channelCVCall);
+  com.attachChannelTriggerCallback(&channelTriggerCall);
+  /*
+  for(int i=0;i<11;i++){
+   Serial.print(cvInputCalibrate[i]);
+   Serial.print(", ");
+   }
+   */
   /*
   com.attachClockCallback(&clockCall);
    com.attachStepCallback(&stepCall);
@@ -177,7 +256,7 @@ void setup(void) {
    com.attachChannelModeCallback(&channelModeCall);
    com.attachChannelValueCallback(&channelValueCall);
    */
-  com.sendPairMessage();
+  //  com.sendPairMessage();
   //Serial.begin(9600);
   // Serial.println("start");
 
@@ -261,6 +340,9 @@ void errorLoop(){
 
   }
 }
+
+
+
 
 
 

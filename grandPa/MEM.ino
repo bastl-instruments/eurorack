@@ -1,25 +1,8 @@
-uint16_t LFOMap[10]={0,63,127,191,255,   10,500,1000,3000,10000};
-uint16_t ADSRMap[10]={0,63,127,191,255,  10,500,1000,3000,10000};
-
-uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
-	uint32_t inMin=0, inMax=255, outMin=0, outMax=255;
-	for(int i=0;i<numberOfPoints-1;i++){
-		if(value >= tableMap[i] && value <= tableMap[i+1]) {
-			inMax=tableMap[i+1];
-			inMin=tableMap[i];
-			outMax=tableMap[numberOfPoints+i+1];
-			outMin=tableMap[numberOfPoints+i];
-			i=numberOfPoints+10;
-		}
-	}
-	return map(value,inMin,inMax,outMin,outMax);
-}
-
 
 PROGMEM prog_uint16_t clearTo[]={
-  877, 0, 0,0,  0,128,0,1022, 5 , 82,54};
+  877, 0, 0,0,  0,128,0,1022, 4 , 82,54};
 /*
-// 5= 1010
+// 4= 0010
 //13 = 1011 -  sync ON, shiftDir OFF,tuned ON,repeat ON, 
  
  red
@@ -114,7 +97,7 @@ const unsigned char variableDepth[NUMBER_OF_VARIABLES]={
 
 
 
-int maxVal(int _maxVal){
+int maxVal(uint8_t _maxVal){
   return  pgm_read_word_near(maxValue+_maxVal);
 }
 
@@ -183,6 +166,7 @@ void calculateBitDepth(){
    } 
    */
 }
+// grainTrig, grain size 0-5v , grain speed -5 5V, crush, start, end,  attack, decay
 
 int getVar(unsigned char _SOUND, unsigned char _VARIABLE){
   int _value=0;
@@ -206,6 +190,8 @@ int getVar(unsigned char _SOUND, unsigned char _VARIABLE){
     bitWrite(_value,i,bitState);
 
   }
+  //_value=_value+scale(expanderValue[_VARIABLE],8,variableDepth[_VARIABLE]);
+ // if (_value >= maxVal(_VARIABLE)) _value=maxVal(_VARIABLE);
   return _value; 
 
 

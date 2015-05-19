@@ -34,12 +34,14 @@ boolean tuned=true;
 #define SYNC_BIT 3 //1
 #define SHIFT_DIR_BIT 4 //0
 #define EXTRA_BIT 5 //0
-
+#define LOW_SET 760
+#define HI_SET  820
+#define MID_SET 794
 //1101
 //TUNED, LEGATO, REPEAT, SYNC and RANDOM SHIFT
 uint32_t startGranule;
 
-unsigned char cvAssign=255;
+//unsigned char cvAssign=255;
 
 #define DEFAULT_VELOCITY 127
 
@@ -137,23 +139,24 @@ void setEnd(unsigned char _sound){
   endPosition=sizeOfFile;
   if(revMidi) endIndex=startIndex+1, startIndex=0; //, startPosition=0;
   else {
-    if(cvAssign==7) endIndex=getVar(_sound,END)+ hw.getCvValue();
-    else endIndex=getVar(_sound,END);
+    if(cvAssign==7) endIndex=getVar(_sound,END)-(hw.getCvValue()+(expanderValue[7]<<2));
+    else endIndex=getVar(_sound,END)+(expanderValue[7]<<2);
   }
-  
 
-    if(endIndex<1000){
-      if(endIndex<=startIndex) endIndex=startIndex+10;     
-      endPosition=endIndex*startGranule;
+  if(sustain && endIndex>=1000) endIndex=999;
 
-    }
+  if(endIndex<1000){
+    if(endIndex<=startIndex) endIndex=startIndex+10;     
+    endPosition=endIndex*startGranule;
 
-    else endPosition=sizeOfFile-512;
-    if(reverse) seekPosition=endPosition;//, lastPosition=endPosition;
+  }
 
-    else seekPosition=startPosition;
+  else endPosition=sizeOfFile-512;
+  if(reverse) seekPosition=endPosition;//, lastPosition=endPosition;
 
-  
+  else seekPosition=startPosition;
+
+
 
 }
 int pitch;
@@ -168,53 +171,54 @@ void loadValuesFromMemmory(unsigned char _sound){
     if(reverse);// revMidi=true;//,startIndex=0 ;
 
   }
-  else if(_sound>=23 && _sound<66) notePitch=_sound-23,_sound=activeSound,startGranule=sizeOfFile/1024, startIndex=getVar(_sound,START);
+  else if(_sound>=23 && _sound<66) notePitch=_sound-23,_sound=activeSound,startGranule=sizeOfFile/1024, startIndex=getVar(_sound,START)+(expanderValue[6]<<2);
   else{
     _sound=activeSound,startGranule=sizeOfFile/1024;
-   if(cvAssign==6) startIndex=getVar(_sound,START)+ hw.getCvValue();
-    else startIndex=getVar(_sound,START);
+    if(cvAssign==6) startIndex=getVar(_sound,START)+ hw.getCvValue()+(expanderValue[6]<<2);
+    else startIndex=getVar(_sound,START)+(expanderValue[6]<<2);
   }
   // endIndex=getVar(_sound,END);
   // if(startIndex>endIndex) startIndex=endIndex+3;
 
   startPosition=startIndex*startGranule;
   setSetting(_sound);
- 
-  if(cvAssign==2) attackInterval=getVar(_sound,ATTACK)+ hw.getCvValue()>>3;
-  else attackInterval=getVar(_sound,ATTACK);
-  if(cvAssign==3) releaseInterval=getVar(_sound,RELEASE)+ hw.getCvValue()>>3;
-  else releaseInterval=getVar(_sound,RELEASE);
+
+  if(cvAssign==2) attackInterval=getVar(_sound,ATTACK)+ (hw.getCvValue()>>3) +(expanderValue[2]>>1);
+  else attackInterval=getVar(_sound,ATTACK)+(expanderValue[2]>>1);
+  if(cvAssign==3) releaseInterval=getVar(_sound,RELEASE)+ (hw.getCvValue()>>3)  +(expanderValue[3]>>1);
+  else releaseInterval=getVar(_sound,RELEASE)+(expanderValue[3]>>1);
   if(releaseInterval>=127) sustain=true;
   else sustain=false;
   wave.pause();
 
   if(notePitch!=255){
-  
+
     sampleRateNow=(pgm_read_word_near(noteSampleRateTable+notePitch)); //+rnd number to lower probability of interference novinka
   }
   else{
     //  sampleRateNow=valueToSampleRate(getVar(_sound,RATE))+_CV;
-    if(cvAssign==0) sampleRateNow=valueToSampleRate(getVar(_sound,RATE)+hw.getCvValue());
-    else sampleRateNow=valueToSampleRate(getVar(_sound,RATE));
+    if(cvAssign==0) sampleRateNow=valueToSampleRate(mapComp(getVar(_sound,RATE),LOW_SET,HI_SET,MID_SET,cvInputCalibrate[9])+hw.getCvValue());
+    else sampleRateNow=valueToSampleRate(mapComp(getVar(_sound,RATE),LOW_SET,HI_SET,MID_SET,cvInputCalibrate[9]));
   }
 
 
   wave.setSampleRate(sampleRateNow);//+pitchBendNow);
   //  bit_set(PIN);
-  if(cvAssign==1) crush=constrain((getVar(_sound,CRUSH)<<1)+(hw.getCvValue()>>3),0,255);
-  else crush=getVar(_sound,CRUSH)<<1;
+  if(cvAssign==1) crush=constrain((getVar(_sound,CRUSH)<<1)+(hw.getCvValue()>>2) +(expanderValue[1]),0,255);
+  else crush=(getVar(_sound,CRUSH)<<1)+(expanderValue[1]>>1);
   wave.setCrush(crush);
-  if(cvAssign==4) ll=getVar(_sound,LOOP_LENGTH)+ hw.getCvValue()>>3;
-  else ll=getVar(_sound,LOOP_LENGTH);
+  if(cvAssign==4) ll=getVar(_sound,LOOP_LENGTH)+ (hw.getCvValue()>>3) +(expanderValue[4]>>1);
+  else ll=getVar(_sound,LOOP_LENGTH)+(expanderValue[4]>>1); 
   if(sync) loopLength=1,ll=1;//pgm_read_word_near(usefulLengths+(ll>>3));
 
-  else loopLength=ll<<LOOP_LENGTH_SHIFT;
+  else loopLength=curveMap(ll<<1,GRAIN_MAP_POINTS, granSizeMap);//ll<<LOOP_LENGTH_SHIFT; 
   //if(sync) shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)-128)<<SHIFT_SPEED_SYNC_SHIFT;
   //else 
-  if(cvAssign==4) shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)+(hw.getCvValue()>>2)-256)<<SHIFT_SPEED_SHIFT;
-  else shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)-128)<<SHIFT_SPEED_SHIFT;
+  if(cvAssign==5) shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)+ (expanderValue[5])+ (hw.getCvValue()>>2)-256)<<SHIFT_SPEED_SHIFT;
+  //else shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)-128)<<SHIFT_SPEED_SHIFT;
+  else shiftSpeed=curveMap(getVar(_sound,SHIFT_SPEED)+(expanderValue[5]),SHIFT_SPEED_POINTS,shiftSpeedMap)-16000;
   if(shiftSpeed<0 && ll!=0) reverse=true;
-  
+
   else reverse=false;
   setEnd(_sound);
   granularTime=millis(); //novinka
@@ -227,20 +231,20 @@ void loadValuesFromMemmory(unsigned char _sound){
 }
 uint16_t valueToSampleRate(int _value){ // longer zero
   return mapVOct(_value);
-/*
+  /*
   pitch=myMap(_value,1023,420);
-  
-  if(tuned){
-    pitch/=10;
-    return (pgm_read_word_near(noteSampleRateTable+pitch));
-  }
-  else{
-    int pitchStep=(pgm_read_word_near(noteSampleRateTable+pitch/10+1) - pgm_read_word_near(noteSampleRateTable+pitch/10))/10;
-    return pgm_read_word_near(noteSampleRateTable+pitch/10)+(pitch%10)*pitchStep;
-  } 
-  
-  //return _value<<4;
-  */
+   
+   if(tuned){
+   pitch/=10;
+   return (pgm_read_word_near(noteSampleRateTable+pitch));
+   }
+   else{
+   int pitchStep=(pgm_read_word_near(noteSampleRateTable+pitch/10+1) - pgm_read_word_near(noteSampleRateTable+pitch/10))/10;
+   return pgm_read_word_near(noteSampleRateTable+pitch/10)+(pitch%10)*pitchStep;
+   } 
+   
+   //return _value<<4;
+   */
 }
 void setSetting(unsigned char _sound){
   setting=getVar(_sound,SETTING);
@@ -280,7 +284,7 @@ void startPlayback(unsigned char _sound){
 uint16_t lastCv;
 bool cvChanged=false;
 uint16_t cvToSampleRate(uint16_t _cv){
-//  _cv/10
+  //  _cv/10
   return _cv<<4;
 }
 void renderTweaking(unsigned char _page){
@@ -296,56 +300,59 @@ void renderTweaking(unsigned char _page){
         _CV=hw.getCvValue(); 
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-      //  if(cvChanged) 
-        sampleRateNow=valueToSampleRate(getVar(_sound,RATE)+_CV);//((long)(valueToSampleRate(getVar(_sound,RATE))*_CV))/100; //novinka testthis
+        //  if(cvChanged) 
+        sampleRateNow=valueToSampleRate(mapComp(getVar(_sound,RATE),LOW_SET,HI_SET,MID_SET,cvInputCalibrate[9])+_CV);//((long)(valueToSampleRate(getVar(_sound,RATE))*_CV))/100; //novinka testthis
         wave.setSampleRate(sampleRateNow);
         break;
       case 1:
-        _CV=hw.getCvValue()>>3;
+        _CV=(hw.getCvValue()>>2)+ (expanderValue[1]);
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
         //if(cvChanged) 
         wave.setCrush((getVar(_sound,CRUSH)<<1)+_CV);
         break;
       case 2:
-        _CV=hw.getCvValue()>>3;
+        _CV=(hw.getCvValue()>>3) +(expanderValue[2]>>1);
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-       // if(cvChanged) 
+        // if(cvChanged) 
         attackInterval=getVar(_sound,ATTACK)+_CV;
         break;
       case 3:
-        _CV=hw.getCvValue()>>3;
+        _CV=(hw.getCvValue()>>3)+(expanderValue[3]>>1);
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
         //if(cvChanged) 
         releaseInterval=getVar(_sound,RELEASE)+_CV;
+        if(releaseInterval>=127) sustain=true;
+        else sustain=false;
         break;
       case 4:
-        _CV=hw.getCvValue()>>3; //??
+        _CV=(hw.getCvValue()>>3)+(expanderValue[4]>>1); //??
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
         //if(cvChanged){
-          ll=getVar(_sound,LOOP_LENGTH)+_CV;
-          if(sync) loopLength=1,ll=1;//pgm_read_word_near(usefulLengths+(ll>>3));
-          else loopLength=ll<<LOOP_LENGTH_SHIFT;
-       // }
+        ll=getVar(_sound,LOOP_LENGTH)+_CV;
+        if(sync) loopLength=1,ll=1;//pgm_read_word_near(usefulLengths+(ll>>3));
+        else loopLength=curveMap(ll<<1,GRAIN_MAP_POINTS, granSizeMap);
+        // }
         break;
       case 5:
-        _CV=hw.getCvValue()>>2; //??
+        _CV=(hw.getCvValue()>>2)+(expanderValue[5]); //??
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-       // if(cvChanged) {
-          shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)+_CV-256))<<SHIFT_SPEED_SHIFT;
+        // if(cvChanged) {
+        //shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)+_CV-256))<<SHIFT_SPEED_SHIFT;
+        shiftSpeed=curveMap(getVar(_sound,SHIFT_SPEED),SHIFT_SPEED_POINTS,shiftSpeedMap)-16000;
         //}
         break;
       case 6:
-        _CV=hw.getCvValue();
+        _CV=hw.getCvValue()+(expanderValue[6]<<2);
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
-       // if(cvChanged) {
-          startIndex=getVar(_sound,START)+_CV;
-          startPosition=startIndex*startGranule;
+        // if(cvChanged) {
+        startIndex=getVar(_sound,START)+_CV;
+        startPosition=startIndex*startGranule;
         //}
         break;
       case 7:
@@ -362,45 +369,48 @@ void renderTweaking(unsigned char _page){
 
 
       if(!hw.knobFreezed(0) ){
-        if(cvAssign==0) sampleRateNow=valueToSampleRate(getVar(_sound,RATE)+_CV);
-        else sampleRateNow=valueToSampleRate(getVar(_sound,RATE));
+        if(cvAssign==0) sampleRateNow=valueToSampleRate(mapComp(getVar(_sound,RATE),LOW_SET,HI_SET,MID_SET,cvInputCalibrate[9])+_CV);
+        else sampleRateNow=valueToSampleRate(mapComp(getVar(_sound,RATE),LOW_SET,HI_SET,MID_SET,cvInputCalibrate[9]));
         if(sound<7 || !tuned) wave.setSampleRate(sampleRateNow);//+pitchBendNow);
       }
       if(!hw.knobFreezed(1) ){
         if(cvAssign==1) wave.setCrush((getVar(_sound,CRUSH)<<1)+_CV);
-        else wave.setCrush((getVar(_sound,CRUSH)<<1));
+        else wave.setCrush((getVar(_sound,CRUSH)<<1)+(expanderValue[1]));
       }
       break;
     case 1:
       if(!hw.knobFreezed(0) ){ 
         if(cvAssign==2) attackInterval=getVar(_sound,ATTACK)+_CV;
-        else attackInterval=getVar(_sound,ATTACK);
+        else attackInterval=getVar(_sound,ATTACK)+(expanderValue[2]>>1);
       }
       if(!hw.knobFreezed(1)){
         if(cvAssign==3) releaseInterval=getVar(_sound,RELEASE)+_CV;
-        else releaseInterval=getVar(_sound,RELEASE);
+        else releaseInterval=getVar(_sound,RELEASE)+(expanderValue[3]>>1);
+        if(releaseInterval>=127) sustain=true;
+        else sustain=false;
       }
 
       break;
     case 2:
       // if(!hw.knobFreezed(0)){
       if(cvAssign==4) ll=getVar(_sound,LOOP_LENGTH)+_CV;
-      else  ll=getVar(_sound,LOOP_LENGTH);
+      else  ll=getVar(_sound,LOOP_LENGTH)+(expanderValue[4]>>1);
       if(sync) loopLength=1,ll=1;//pgm_read_word_near(usefulLengths+(ll>>3));
-      else loopLength=ll<<LOOP_LENGTH_SHIFT;
+      else loopLength=curveMap(ll<<1,GRAIN_MAP_POINTS, granSizeMap);
       //}
       if(!hw.knobFreezed(1)) {
         //if(sync) shiftSpeed=((long)getVar(_sound,SHIFT_SPEED)-128)<<SHIFT_SPEED_SYNC_SHIFT;
         //else 
         if(cvAssign==5) shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)+_CV-256))<<SHIFT_SPEED_SHIFT;
-        else  shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)-128))<<SHIFT_SPEED_SHIFT;
+        //else  shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)-128))<<SHIFT_SPEED_SHIFT;
+        else shiftSpeed=curveMap(getVar(_sound,SHIFT_SPEED)+(expanderValue[5]),SHIFT_SPEED_POINTS,shiftSpeedMap)-16000;
       }
       break;
     case 3:
       if(!hw.knobFreezed(0)){ //splice here??
         if(!revMidi){
           if(cvAssign==6)  startIndex=getVar(_sound,START)+_CV;
-          else startIndex=getVar(_sound,START);
+          else startIndex=getVar(_sound,START)+(expanderValue[6]<<2);
           //if(startIndex>endIndex) startIndex=endIndex-3;//MINIMAL_LOOP; //novinka
           startPosition=startIndex*startGranule;
         }
@@ -423,15 +433,16 @@ void showValue(int _value, uint8_t _variable){
 
   switch(_variable){
   case RATE:
-    hw.lightNumber(map(_value,-360,60,40,52));
-    if(_value==0) hw.setDot(true);
+    hw.lightNumber(map(_value,0,1023,40,52));
+    _value=myMap(_value,1024,cvInputCalibrate[9]);
+    if(_value>760 && _value<820) hw.setDot(true);
     else hw.setDot(false);
     break; 
   case SHIFT_SPEED:
-    hw.lightNumber(map(_value,-126,127,40,52));
+    hw.lightNumber(map(_value,0,255,40,52));
     if(_value==0) hw.lightNumber(46),hw.setDot(true);
     else if(_value==-126) hw.setDot(true);
-    else if(_value==127) hw.setDot(true);
+    else if(_value>115 && _value<135) hw.setDot(true);
     else hw.setDot(false);
     break; 
   case START:
@@ -593,36 +604,36 @@ void renderSmallButtons(){
 }
 
 void doIRestartGrandPa(){
-if(hw.buttonState(DOWN) && hw.buttonState(UP)){
-      if(!longPress){
-        if((millis()-longTime) > LONG_PERIOD) longPress=true, longTime=millis();
-      }
-      else{
-        if(hw.buttonState(DOWN) && hw.buttonState(UP)) chacha();
-        /*
-        if((millis()-longTime) > MOVE_PERIOD){ 
-         longTime=millis();
-         if(hw.buttonState(DOWN)){
-         downWithFirstLetter();
-         setVar(activeSound,SAMPLE_NAME_1,name[0]);
-         //  hw.displayChar(name[0],2);
-         whileShow=true,whileTime=millis();
-         
-         
-         }
-         else if(hw.buttonState(UP)){
-         upWithFirstLetter();
-         setVar(activeSound,SAMPLE_NAME_1,name[0]);
-         // hw.displayChar(name[0],2);
-         whileShow=true,whileTime=millis();
-         
-         
-         } 
-         
-         }
-         */
-      }
+  if(hw.buttonState(DOWN) && hw.buttonState(UP)){
+    if(!longPress){
+      if((millis()-longTime) > LONG_PERIOD) longPress=true, longTime=millis();
     }
+    else{
+      if(hw.buttonState(DOWN) && hw.buttonState(UP)) chacha();
+      /*
+        if((millis()-longTime) > MOVE_PERIOD){ 
+       longTime=millis();
+       if(hw.buttonState(DOWN)){
+       downWithFirstLetter();
+       setVar(activeSound,SAMPLE_NAME_1,name[0]);
+       //  hw.displayChar(name[0],2);
+       whileShow=true,whileTime=millis();
+       
+       
+       }
+       else if(hw.buttonState(UP)){
+       upWithFirstLetter();
+       setVar(activeSound,SAMPLE_NAME_1,name[0]);
+       // hw.displayChar(name[0],2);
+       whileShow=true,whileTime=millis();
+       
+       
+       } 
+       
+       }
+       */
+    }
+  }
 }
 
 
@@ -711,8 +722,8 @@ void renderHold(){
 #define TOLERANCE_2 1
 
 
-unsigned int mapComp(unsigned int _val,unsigned int lowT,unsigned int hiT,unsigned int midSet){ 
-
+unsigned int mapComp(unsigned int _val,unsigned int lowT,unsigned int hiT,unsigned int midSet, unsigned int maxVal){ 
+  _val=myMap(_val,1024,maxVal);
   if(_val>hiT){
     //_val=myMap(_val-hiT,1023-hiT,1023); //-hiT
 
@@ -724,7 +735,7 @@ unsigned int mapComp(unsigned int _val,unsigned int lowT,unsigned int hiT,unsign
     // _val=myMap(_val,lowT,midSet)-85;
 
     _val-=hiT;
-    _val=myMap(_val,1023-hiT,1023-midSet);
+    _val=myMap(_val,maxVal-hiT,maxVal-midSet);
     _val+=midSet;
   }
   else if(_val>lowT){
@@ -747,7 +758,7 @@ unsigned int mapComp(unsigned int _val,unsigned int lowT,unsigned int hiT,unsign
 #define LOW_T_S 400
 #define HI_T_S 600
 #define MID_V_S 512
-uint8_t lastPage;
+uint8_t _lastPage;
 void renderKnobs(){
   unsigned char _sound;
   //if(notesInBuffer>0) _sound=activeSound;
@@ -781,113 +792,97 @@ void renderKnobs(){
     }
   }
   else{
- uint8_t _page=constrain(page,0,3);//%4;
-    for(int i=0;i<2;i++){
-    
-      unsigned char _variable=i+(VARIABLES_PER_PAGE*_page);
-      //32132
 
-      int _knobValue, _lastKnobValue;
-      //int _varNow=getVar(_sound,_variable);
-      int was=getVar(_sound,_variable);
+    uint8_t _page=constrain(page,0,3);//%4;
 
+    if( _lastPage==_page){
 
-      _knobValue=hw.knobValue(i);
-      //   _lastKnobValue=hw.lastKnobValue(i);
+      for(int i=0;i<2;i++){
 
-      if(_variable==LOOP_LENGTH)  _knobValue=mapComp(_knobValue,LOW_T_L,HI_T_L,MID_V_L);
-      else if(_variable==SHIFT_SPEED) {
-        _knobValue=mapComp(_knobValue,LOW_T_S,HI_T_S,MID_V_S);
-        // if(_knobValue==511) _knobValue=512; 
-      }
-      //inBetween( scale(_knobValue,KNOB_BITS,variableDepth[_variable]), scale(_lastKnobValue,KNOB_BITS,variableDepth[_variable]),was ) 
+        unsigned char _variable=i+(VARIABLES_PER_PAGE*_page);
+        //32132
 
-      if(hw.knobFreezed(i)) {
-
-        // if(page == lastPage){
-        //if(inBetween( scale(_knobValue,KNOB_BITS,variableDepth[_variable]), scale(hw.lastKnobValue(i),KNOB_BITS,variableDepth[_variable]),was ) ) Serial.println(_knobValue),Serial.println(hw.lastKnobValue(i)),Serial.println(was),hw.unfreezeKnob(i);
-        if(inBetween( scale(_knobValue,KNOB_BITS,variableDepth[_variable]), scale(hw.lastKnobValue(i),KNOB_BITS,variableDepth[_variable]),was ) || hw.knobMoved(i)) hw.unfreezeKnob(i),hw.setColor(WHITE);//,showForWhile(knobLabel(page,i)),lastMoved==i; //external unfreez
-        // }
-        //  hw.setLastKnobValue(i,_knobValue);
-        // lastPage=page;
-      }
-
-      else{    
-        // hw.setLed(knobLed[i],true);   
-        int _value=scale(_knobValue,KNOB_BITS,variableDepth[_variable]);
-        //_varNow;
-
-        setVar(_sound,_variable,_value); 
-        // long _timeNow=millis();
+        int _knobValue, _lastKnobValue;
+        //int _varNow=getVar(_sound,_variable);
+        int was=getVar(_sound,_variable);
 
 
+        _knobValue=hw.knobValue(i);
+        //   _lastKnobValue=hw.lastKnobValue(i);
+      /* // novinka
+        if(_variable==LOOP_LENGTH)  _knobValue=mapComp(_knobValue,LOW_T_L,HI_T_L,MID_V_L);
+        else if(_variable==SHIFT_SPEED) {
+          _knobValue=mapComp(_knobValue,LOW_T_S,HI_T_S,MID_V_S);
+          // if(_knobValue==511) _knobValue=512; 
+        }
+        */
+        //inBetween( scale(_knobValue,KNOB_BITS,variableDepth[_variable]), scale(_lastKnobValue,KNOB_BITS,variableDepth[_variable]),was ) 
+
+        if(hw.knobFreezed(i)) {
+
+          // if(page == lastPage){
+          //if(inBetween( scale(_knobValue,KNOB_BITS,variableDepth[_variable]), scale(hw.lastKnobValue(i),KNOB_BITS,variableDepth[_variable]),was ) ) Serial.println(_knobValue),Serial.println(hw.lastKnobValue(i)),Serial.println(was),hw.unfreezeKnob(i);
+          if(inBetween( scale(_knobValue,KNOB_BITS,variableDepth[_variable]), scale(hw.lastKnobValue(i),KNOB_BITS,variableDepth[_variable]),was ) || hw.knobMoved(i)) hw.unfreezeKnob(i),hw.setColor(WHITE);//,showForWhile(knobLabel(page,i)),lastMoved==i; //external unfreez
+          // }
+          //  hw.setLastKnobValue(i,_knobValue);
+          // lastPage=page;
+        }
+
+        else{    
+          // hw.setLed(knobLed[i],true);   
+          int _value=scale(_knobValue,KNOB_BITS,variableDepth[_variable]);
+          //_varNow;
+
+          setVar(_sound,_variable,_value); 
+          // long _timeNow=millis();
 
 
-        if(variableDepth[_variable]>8){ //novink
-          //if(((was>>2)!=(_value>>2))) { //minus větší než - ripple compensate // novinka
-          if(abs(was-_value)>TOLERANCE) {
+
+
+          if(variableDepth[_variable]>8){ //novink
+            //if(((was>>2)!=(_value>>2))) { //minus větší než - ripple compensate // novinka
+            if(abs(was-_value)>TOLERANCE) {
+              lastMoved=i;
+              whileShow=true;
+              whileTime=millis();
+
+              //
+
+              //if(_variable==START) loadValuesFromMemmory(sound); //snap to start //novinka
+            }
+
+          }
+          else if((was>>3)!=(_value>>3)) { ////minus větší než - ripple compensate // novinka
+
             lastMoved=i;
             whileShow=true;
             whileTime=millis();
-
-            //
-
-            //if(_variable==START) loadValuesFromMemmory(sound); //snap to start //novinka
           }
 
-        }
-        else if((was>>3)!=(_value>>3)) { ////minus větší než - ripple compensate // novinka
-
-          lastMoved=i;
-          whileShow=true;
-          whileTime=millis();
-        }
-
-        /*
+          /*
         if(hw.knobMoved(i) || was!=_value) {
-         lastMoved=i;
-         whileShow=true;
-         whileTime=millis();
-         }
-         */
-        //  if(was!=_value)
+           lastMoved=i;
+           whileShow=true;
+           whileTime=millis();
+           }
+           */
+          //  if(was!=_value)
 
-        boolean showSlash=false;
-        if(lastMoved==i){
-          if(_variable==RATE){
-            if(tuned){
-              _value=pitch-36;
-              //  _value=myMap(_value,1024,43);
-              // _value-=36;
-            }
-            else _value=pitch-360;//_value-=860;
+          boolean showSlash=false;
+          if(lastMoved==i){
+           
+            //hw.displayChar(pgm_read_word_near(labels + i + page*PAGE_KNOB_LABEL_OFFSET),0);
+            showValue(_value, _variable);
+            //  if(showSlash) hw.lightNumber(SLASH,1);
 
           }
-          else if(_variable==LOOP_LENGTH && sync){
-            _value=pgm_read_word_near(usefulLengths+(_value>>3));
-            if(_value<24 && _value>0) _value= 24/_value,showSlash=true;
-            else _value/=24; 
-          }
-          else if(_variable==SHIFT_SPEED){
-            _value-=128;
-          }
-          else if(_variable==END){
-            if(sync){
-              _value=pgm_read_word_near(usefulLengths+(_value>>6)+1);
-              if(_value<24 && _value>0) _value= 24/_value,showSlash=true;
-              else _value/=24; 
-            }
-            else _value=endIndex; 
-          }
-          //hw.displayChar(pgm_read_word_near(labels + i + page*PAGE_KNOB_LABEL_OFFSET),0);
-          showValue(_value, _variable);
-          //  if(showSlash) hw.lightNumber(SLASH,1);
-
         }
-      }
 
+      }
     }
+    _lastPage=_page;
   }
+
 
 }
 
@@ -1044,6 +1039,68 @@ void demo(){
 
 
 
+
+void channelCVCall(uint8_t channel, uint8_t number){
+  expanderValue[channel]=number; 
+  unsigned char _sound=activeSound;
+  switch(channel){
+    
+
+    case 1:   
+      if(cvAssign==1) wave.setCrush((getVar(_sound,CRUSH)<<1)+(hw.getCvValue()>>2));
+      else wave.setCrush((getVar(_sound,CRUSH)<<1)+(expanderValue[1]));
+
+      break;
+    case 2:
+
+      if(cvAssign==2) attackInterval=getVar(_sound,ATTACK)+(hw.getCvValue()>>3);
+      else attackInterval=getVar(_sound,ATTACK)+(expanderValue[2]>>1);
+      break;
+    case 3:
+      if(cvAssign==3) releaseInterval=getVar(_sound,RELEASE)+(hw.getCvValue()>>3);
+      else releaseInterval=getVar(_sound,RELEASE)+(expanderValue[3]>>1);
+      if(releaseInterval>=127) sustain=true;
+      else sustain=false;
+      break;
+    case 4:
+
+      // if(!hw.knobFreezed(0)){
+      if(cvAssign==4) ll=getVar(_sound,LOOP_LENGTH)+(hw.getCvValue()>>3);
+      else  ll=getVar(_sound,LOOP_LENGTH)+(expanderValue[4]>>1);
+      if(sync) loopLength=1,ll=1;//pgm_read_word_near(usefulLengths+(ll>>3));
+      else loopLength=curveMap(ll<<1,GRAIN_MAP_POINTS, granSizeMap);
+      //}
+      break;
+    case 5:
+
+      if(cvAssign==5) shiftSpeed=(((long)getVar(_sound,SHIFT_SPEED)+(hw.getCvValue()>>2)-256))<<SHIFT_SPEED_SHIFT;
+      else shiftSpeed=curveMap(getVar(_sound,SHIFT_SPEED)+(expanderValue[5]),SHIFT_SPEED_POINTS,shiftSpeedMap)-16000;
+
+      break;
+    case 6:
+      //splice here??
+      if(!revMidi){
+        if(cvAssign==6)  startIndex=getVar(_sound,START)+(hw.getCvValue())+(expanderValue[6]<<2);
+        else startIndex=getVar(_sound,START)+(expanderValue[6]<<2);
+        //if(startIndex>endIndex) startIndex=endIndex-3;//MINIMAL_LOOP; //novinka
+        startPosition=startIndex*startGranule;
+      }
+      //setEnd(_sound); //novinka
+      break;
+
+      //if(!hw.knobFreezed(3))  
+    case 7:
+      if(!revMidi)   setEnd(_sound);
+      break;
+
+
+
+      break;
+
+    }
+  
+  // renderTweaking(channel/2);
+}
 
 
 

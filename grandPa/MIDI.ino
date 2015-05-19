@@ -3,13 +3,13 @@ unsigned char incomingByte,note;
 boolean ignore, comandOff,slave=false,cc; //,midiNoteOn  noteOn,
 unsigned char state=0;
 int ll;
+boolean shiftDir,sync=true;
 
-int clockCounter=1;
 #define MIDI_CHANNEL 1023
 #define POLYPHONY NUMBER_OF_VOICES
 unsigned char notesInBuffer=ZERO;
 boolean thereIsNoteToPlay;
-unsigned char sound, activeSound;
+
 unsigned char inputChannel;
 #define BUFFER_SIZE 16
 unsigned char midiBuffer[BUFFER_SIZE];
