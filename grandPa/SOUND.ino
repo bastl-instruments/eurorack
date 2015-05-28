@@ -30,7 +30,7 @@ PROGMEM prog_uint16_t usefulLengths[17]={
 
 void updateSound(){
 
-  if(shiftSpeed<0 && ll!=0) reverse=true;
+  if(shiftSpeed<0 ) reverse=true; //&& ll!=0
   else reverse=false;
   // wave.getData();
   if(shiftDir && rand(2)==0) shiftSpeed=-shiftSpeed;
@@ -185,36 +185,23 @@ void renderLooping(){
 int lastCC;
 void renderGranular(){
 
-
-
   if(ll!=0){
     uint32_t pos=wave.getCurPosition();
     if(lastLL==0) lastPosition=pos;
-
-
-    if(sync){
-
-      // if((clockCounter%loopLength)==0){
-      if(clockCounter!=lastCC){
-        doGrainShift();
-      }
-
+    if(millis()-granularTime>=(loopLength)){
+      //+COMPENSATION//  novinka - kompenzace
+      granularTime=millis(); 
+      doGrainShift();
     }
 
+    if(sync){
+    }
     else{
-      if(millis()-granularTime>=(loopLength)){
-        //+COMPENSATION//  novinka - kompenzace
-        granularTime=millis(); 
-        doGrainShift();
-      }
-      if(clockCounter!=lastCC){
-        doGrainShift();
-      }
     } 
-
-
   }
-
+  if(clockCounter!=lastCC){
+    doGrainShift();
+  }
   lastLL=ll;
   lastCC=clockCounter;
 
@@ -225,6 +212,7 @@ void doGrainShift(){
   if(shiftSpeed>=0){
     //lastPosition+=shiftSpeed;
     if(lastPosition>=endPosition) lastPosition=startPosition; 
+    if(lastPosition+ll>=endPosition) lastPosition=startPosition; 
   }
   else{
     if(lastPosition>=endPosition || lastPosition<=startPosition) lastPosition=endPosition;
@@ -334,6 +322,7 @@ int rand( int minval,  int maxval)
  return (int) ((((xorshift96() & 0xFFFF) * (maxval-minval))>>16) + minval);
  }
  */
+
 
 
 

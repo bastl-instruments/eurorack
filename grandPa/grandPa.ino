@@ -47,9 +47,11 @@
 //#include <MIDI.h>
 #include <EEPROM.h>
 #include <avr/pgmspace.h>
-char firstLetter='R';
+char firstLetter='P';
 
-
+uint16_t MID_SET;
+uint16_t LOW_SET;
+uint16_t HI_SET;
 ///#include <envelope.h>
 
 
@@ -76,7 +78,7 @@ pgHW hw;
 simpleSerialDecoder com;
 //------------------------------------------------------------------------------
 
-
+bool ignoreCalibration=false;
 
 long seekTo;
 unsigned char crush;
@@ -88,8 +90,9 @@ unsigned char currentBank=0;
 int clockCounter=1;
 unsigned char cvAssign=255;
 unsigned char sound, activeSound;
-PROGMEM prog_uint16_t noteSampleRateTable[65]={//1386,
-  1465,1552,1641,1750,1840,1955,2073,2196,2330,2462,2616,
+PROGMEM prog_uint16_t noteSampleRateTable[65]={1386,
+  1465,
+  1552,1641,1750,1840,1955,2073,2196,2330,2462,2616,
   /*0-C*/
   2772,2929,3103,3281,3500,3679,3910,4146,4392,4660,4924,5231, 5528,5863,6221,6579,6960,7355,7784,8278,8786,9333,9847,10420,11023,/*11*/ 11662,12402,13119,13898,14706,15606,16591,17550,18555,19677,20857, /*0*/22050,23420,24807,26197,27815,29480,32982,35100,37110,39354,41714,44100,/*48-C*/44100,44100,44100,44100,44100};
 uint8_t expanderValue[8]={
@@ -109,10 +112,12 @@ void channelModeCall(uint8_t channel, uint8_t value){
  }
  */
 void channelTriggerCall(uint8_t channel, uint8_t number) {
+  ignoreCalibration=true;
   clockCounter++;
 }
 void channelModeCall(uint8_t channel, uint8_t number) {
   // if(channel==1) {
+    if(!ignoreCalibration){
   if(number>=10) number=10;
   uint32_t avrg=0;
   hw.setColor(BLUE);
@@ -141,6 +146,7 @@ void channelModeCall(uint8_t channel, uint8_t number) {
   //  com.init(38400);
   com.sendPairMessage();
   com.sendChannelMode(1, cvInputCalibrate[number]>>2);
+  }
 }
 void fillEeprom(){
   //  int number;
@@ -160,6 +166,9 @@ uint32_t mapVOct(uint16_t value){
   uint32_t inMin=0, inMax=cvInputCalibrate[10], outMin=1465, outMax=30000;
   for(int i=0;i<numberOfPoints-1;i++){
     if(value > cvInputCalibrate[i] && value <= cvInputCalibrate[i+1]) {
+      if(abs(value-cvInputCalibrate[i])<3) return pgm_read_word_near(noteSampleRateTable+(i*6));
+      if(abs(value-cvInputCalibrate[i+1])<3) return pgm_read_word_near(noteSampleRateTable+((1+i)*6));
+      
       inMax=cvInputCalibrate[i+1];
       inMin=cvInputCalibrate[i];
       uint16_t sixth=(inMax-inMin) / 6;
@@ -170,7 +179,7 @@ uint32_t mapVOct(uint16_t value){
       inMax=inMin+(sixth*(_note+1));
       inMin=inMax-sixth;
       outMax=pgm_read_word_near(noteSampleRateTable+((i*6)+_note+1));//tableMap[numberOfPoints+i+1];
-      outMin=pgm_read_word_near(noteSampleRateTable+(i*6)+_note);
+      outMin=pgm_read_word_near(noteSampleRateTable+(i*6)+_note+0);
 
       i=numberOfPoints+10;
     }
@@ -188,8 +197,10 @@ PROGMEM prog_uint16_t granSizeMap[16]={
 PROGMEM prog_uint16_t shiftSpeedMap[20]={
   0,30,60,90,115,135,160,190,220,255,  0,5000,12000,15000,16000,16000,17000,20000,27000,32000};
 
-uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, prog_uint16_t * tableMap){
-  uint32_t inMin=0, inMax=255, outMin=0, outMax=255;
+uint32_t curveMap(uint16_t value, uint8_t numberOfPoints, prog_uint16_t * tableMap){
+  if(value>255) value=255;
+  uint8_t inMin=0, inMax=255;
+   uint32_t outMin=0, outMax=255;
   for(int i=0;i<numberOfPoints-1;i++){
     if(value >= pgm_read_word_near(tableMap+i) && value <= pgm_read_word_near(tableMap+i+1)) {
       inMax=pgm_read_word_near(tableMap+i+1);
@@ -211,9 +222,13 @@ void setup(void) {
   initSdCardAndReport();
   // fillEeprom();
   //
-  if(!EEPROM.read(1000)) ;//wave.setSampleRate(22050), wave.resume();
-  else EEPROM.write(1000,0),currentPreset=EEPROM.read(E_PRESET),currentBank=EEPROM.read(E_BANK);
+ // if(!EEPROM.read(1000)) ;//wave.setSampleRate(22050), wave.resume();
+ // else EEPROM.write(1000,0),currentPreset=EEPROM.read(E_PRESET);//,currentBank=EEPROM.read(E_BANK);
+  currentPreset=EEPROM.read(E_PRESET);
   for(int i=0;i<11;i++) cvInputCalibrate[i]=word(EEPROM.read(100+(2*i)+1),EEPROM.read(100+(2*i)));
+  MID_SET=cvInputCalibrate[8];
+  LOW_SET=MID_SET-30;
+  HI_SET=MID_SET+30;
   // initMidi();
 
 
@@ -293,9 +308,10 @@ void loop() {
   // if(!wave.isPlaying() || wave.isPaused()) clearIndexes(),stopSound(),playBegin("A0.WAV",1),wave.setSampleRate(22050), wave.pause(), wave.seek(0), wave.resume(), Serial.println("ply");
   // else if(wave.isPlaying());// Serial.print(".");
   //delay(100);
+  
   hw.updateKnobs();
-  hw.updateButtons();   
   hw.updateDisplay();
+   hw.updateButtons(); 
   UI();
   updateSound();
   com.update();

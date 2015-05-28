@@ -190,7 +190,7 @@ bool mode=true;
 uint32_t waitTime;
 void loop()
 {
-
+/*
 	hw.updateKnobs();
 	hw.updateButtons();
 	hw.updateDisplay();
@@ -260,6 +260,9 @@ void loop()
 	if(hw.justPressed(PAGE)){
 		mode=!mode;
 	}
+*/
+	com.sendChannelTrigger(1,1);
+	delay(80);
 
 /*
 

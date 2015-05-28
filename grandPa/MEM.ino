@@ -3,7 +3,7 @@ PROGMEM prog_uint16_t clearTo[]={
   877, 0, 0,0,  0,128,0,1022, 4 , 82,54};
 /*
 // 4= 0010
-//13 = 1011 -  sync ON, shiftDir OFF,tuned ON,repeat ON, 
+ //13 = 1011 -  sync ON, shiftDir OFF,tuned ON,repeat ON, 
  
  red
  sampleRate, crush, start, end // loop
@@ -140,7 +140,7 @@ unsigned char variableCop[NUMBER_OF_SOUNDS][NUMBER_OF_BYTES];
  */
 void initMem(){
   //calculateBitDepth();
-  loadPreset(currentBank,currentPreset);
+  loadPreset(0,currentPreset);
 }
 
 void calculateBitDepth(){
@@ -191,7 +191,7 @@ int getVar(unsigned char _SOUND, unsigned char _VARIABLE){
 
   }
   //_value=_value+scale(expanderValue[_VARIABLE],8,variableDepth[_VARIABLE]);
- // if (_value >= maxVal(_VARIABLE)) _value=maxVal(_VARIABLE);
+  // if (_value >= maxVal(_VARIABLE)) _value=maxVal(_VARIABLE);
   return _value; 
 
 
@@ -229,11 +229,13 @@ boolean storePreset(unsigned char _bank,unsigned char _preset) {
   // Serial.begin(9600);
   noSound();
   //clearBuffer();
-  presetName[2]=_preset+49; 
+  _bank=0;
+  if(_preset<10) presetName[2]=_preset+48; 
+  else presetName[2]=_preset+65-10; 
   presetName[1]=_bank+48;
 
   if (!file.open(&root,presetName, O_WRITE | O_CREAT)) {
-    errorLoop();
+    //  errorLoop();
     return false;
   }
   for (int j = 0; j < NUMBER_OF_SOUNDS; j++) {
@@ -245,22 +247,23 @@ boolean storePreset(unsigned char _bank,unsigned char _preset) {
   file.close();
 
   //  clearIndexes();
+  hw.freezeAllKnobs();
   return true;
 }
 
 void loadPreset(unsigned char _bank,unsigned char _preset) {
-
+  _bank=0;
   if(_preset>=NUMBER_OF_PRESETS) _preset=NUMBER_OF_PRESETS-1;
-   if(_preset>=200) _preset=0;
+  if(_preset>=200) _preset=0;
   if(_bank>=200) _bank=0;
   if(_bank>=NUMBER_OF_BANKS) _bank=NUMBER_OF_BANKS;
   //if(_bank<=0) _bank=0;
-
-  presetName[2]=_preset+49; 
+  if(_preset<10) presetName[2]=_preset+48; 
+  else presetName[2]=_preset+65-10; 
   presetName[1]=_bank+48;
 
   currentPreset=_preset;
-  currentBank=_bank;
+  currentBank=0;
 
   noSound();
   clearBuffer();
@@ -277,7 +280,7 @@ void loadPreset(unsigned char _bank,unsigned char _preset) {
   }
   file.close();
   hw.freezeAllKnobs();
- // showForWhile("pr  "),hw.displayChar(presetName[2],3),hw.displayChar(presetName[1],2), clearIndexes(); //,hw.setDot(1,true)
+  // showForWhile("pr  "),hw.displayChar(presetName[2],3),hw.displayChar(presetName[1],2), clearIndexes(); //,hw.setDot(1,true)
 }
 
 
@@ -332,5 +335,7 @@ long myMap(long x,  long in_max,  long out_max)
 {
   return (x) * (out_max) / (in_max);
 }
+
+
 
 
