@@ -144,8 +144,8 @@ void channelModeCall(uint8_t channel, uint8_t number) {
   // pinMode(1,OUTPUT);
   //  com.sendChannelCV(1,cvInputCalibrate[number]>>2);
   //  com.init(38400);
-  com.sendPairMessage();
-  com.sendChannelMode(1, cvInputCalibrate[number]>>2);
+  //com.sendPairMessage();
+  //com.sendChannelMode(1, cvInputCalibrate[number]>>2);
   }
 }
 void fillEeprom(){
@@ -187,6 +187,7 @@ uint32_t mapVOct(uint16_t value){
   uint32_t out=map(value,inMin,inMax,outMin,outMax);
   //  Serial.println(out);
   if(out>=31000) out=31000;
+  if(out<=1386) out=1386;
   return out;
 }
 #define GRAIN_MAP_POINTS 8
@@ -247,7 +248,7 @@ void setup(void) {
   com.attachClockCallback(&clockCall);
   com.attachChannelModeCallback(&channelModeCall);
   com.attachChannelCVCallback(&channelCVCall);
-  com.attachChannelTriggerCallback(&channelTriggerCall);
+    com.attachChannelTriggerCallback(&channelTriggerCall);
   /*
   for(int i=0;i<11;i++){
    Serial.print(cvInputCalibrate[i]);
@@ -311,10 +312,12 @@ void loop() {
   
   hw.updateKnobs();
   hw.updateDisplay();
+   com.update(); 
    hw.updateButtons(); 
   UI();
   updateSound();
-  com.update();
+ 
+ // pinMode(1,INPUT_PULLUP);
 
   /*
     if(clr<7) clr++;

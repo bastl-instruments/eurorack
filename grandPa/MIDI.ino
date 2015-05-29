@@ -23,7 +23,7 @@ unsigned char sideChannel=0;
 unsigned char sideNote=1;
 unsigned char sideDecay;
 //int pitchBendNow;   
-int sampleRateNow;
+uint16_t sampleRateNow;
 unsigned char setting;
 int attackInterval, releaseInterval;
 //long legatoPosition;
@@ -125,7 +125,7 @@ void initMidi(){
   //Serial.begin(9600);
   readMidiChannel();
   //Serial.end();
-  Serial.begin(MIDI_BAUD);
+  //Serial.begin(MIDI_BAUD);
 
 }
 #define SIDE_CHANNEL 1022
@@ -187,6 +187,7 @@ long lastClockPosition, clockLength;
 //boolean pb;
 boolean side;
 int bytesAvailable;
+/*
 void readMidi(){
 
 
@@ -198,6 +199,7 @@ void readMidi(){
     else handleByte(Serial.read());
   }
 }
+*/
 boolean noteOnStatus=false, noteOffStatus=false, ccStatus=false, firstByte=true;
 
 unsigned char number, value;
