@@ -24,12 +24,14 @@ void GPE_HW::init() {
 
 
 void GPE_HW::update(){
-	for(int i=0;i<5;i++){
+	for(int i=0;i<6;i++){
 		lastCVStates[i]=CVStates[i];
 		CVStates[i] = analogRead(i)>>2;
 	}
+	/*
 	lastCVStates[5]=CVStates[5];
 	if(digitalRead(19)) CVStates[5]=255;
+	*/
 	/*
 	if(fastAnalogRead::isConversionFinished()){
 		lastCVStates[currentAnalogChannel]=CVStates[currentAnalogChannel];
@@ -49,12 +51,12 @@ void GPE_HW::update(){
 	else						switchState = false;
 }
 
-
+const uint8_t cvMap[6]={0,1,2,3,5,4};
 uint8_t GPE_HW::getCVValue(uint8_t number) {
-	return CVStates[number];
+	return CVStates[cvMap[number]];
 }
 uint8_t GPE_HW::getLastCVValue(uint8_t number) {
-	return lastCVStates[number];
+	return lastCVStates[cvMap[number]];
 }
 bool GPE_HW::getSwitchState() {
 	return switchState;

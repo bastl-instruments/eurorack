@@ -98,8 +98,10 @@ PROGMEM prog_uint16_t noteSampleRateTable[65]={1386,
 uint8_t expanderValue[8]={
   0,0,0,0,0,0,0,0};
 uint16_t cvInputCalibrate[12]={
-  0, 100, 201, 302, 403, 504, 605, 706, 808, 910, 1023,1023} 
+  0, 100, 202, 304, 406, 508, 610, 712, 815, 917, 1012,1023} 
 ;
+// 101, 204, 306, 409, 511, 616, 719, 823, 924
+//0, 100, 202, 304, 406, 508, 610, 712, 815, 917, 1012, 
 /*
 void channelModeCall(uint8_t channel, uint8_t value){
  	//
@@ -217,7 +219,11 @@ uint32_t curveMap(uint16_t value, uint8_t numberOfPoints, prog_uint16_t * tableM
 void clockCall(uint8_t _number){
 }
 void setup(void) {
-
+  /*
+   for(int i=0;i<11;i++) cvInputCalibrate[i]=word(EEPROM.read(100+(2*i)+1),EEPROM.read(100+(2*i)));
+ Serial.begin(38400);
+  for(int i=0;i<11;i++) Serial.print(cvInputCalibrate[i]), Serial.print(", "); // comment out here
+  */
   hw.initialize();
 
   initSdCardAndReport();
@@ -225,8 +231,18 @@ void setup(void) {
   //
  // if(!EEPROM.read(1000)) ;//wave.setSampleRate(22050), wave.resume();
  // else EEPROM.write(1000,0),currentPreset=EEPROM.read(E_PRESET);//,currentBank=EEPROM.read(E_BANK);
+ 
+   if(EEPROM.read(43)!=43 || EEPROM.read(42)!=42 || EEPROM.read(41)!=109){
+     EEPROM.write(43,43);
+     EEPROM.write(42,42);
+     EEPROM.write(41,109);
+     fillEeprom();
+   }
+   
   currentPreset=EEPROM.read(E_PRESET);
+  
   for(int i=0;i<11;i++) cvInputCalibrate[i]=word(EEPROM.read(100+(2*i)+1),EEPROM.read(100+(2*i)));
+  
   MID_SET=cvInputCalibrate[8];
   LOW_SET=MID_SET-30;
   HI_SET=MID_SET+30;
@@ -244,11 +260,14 @@ void setup(void) {
   hw.freezeAllKnobs();
   // timer2setup();
 
-  com.init(38400);
+
+
+   com.init(38400);
   com.attachClockCallback(&clockCall);
   com.attachChannelModeCallback(&channelModeCall);
   com.attachChannelCVCallback(&channelCVCall);
     com.attachChannelTriggerCallback(&channelTriggerCall);
+    
   /*
   for(int i=0;i<11;i++){
    Serial.print(cvInputCalibrate[i]);

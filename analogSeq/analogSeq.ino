@@ -132,14 +132,14 @@ uint16_t tuneInputTable[60]={0,17,34,51,68,85,102,119,136,153,170,188,
 uint16_t tuneTable[12]={ 0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4095,4095};
 #define TUNE_POINTS 11
 void loadTable(){
-	for(int i=0;i<11;i++){
-		tuneTable[i]=word(EEPROM.read(i*2),EEPROM.read(1+(i*2)));
+	for(int i=0;i<12;i++){
+		cvOutCalibrate[i]=word(EEPROM.read(100+(i*2)),EEPROM.read(100+1+(i*2)));
 	}
 }
 void saveTable(){
-	for(int i=0;i<11;i++){
-		EEPROM.write(i*2,highByte(tuneTable[i]));
-		EEPROM.write(1+(i*2),lowByte(tuneTable[i]));
+	for(int i=0;i<12;i++){
+		EEPROM.write(100+(i*2),highByte(cvOutCalibrate[i]));
+		EEPROM.write(100+1+(i*2),lowByte(cvOutCalibrate[i]));
 	}
 }
 uint8_t signalToNote(uint16_t signal){
@@ -313,9 +313,19 @@ void loadSettings(){
 	scale=EEPROM.read(3);
 	range=EEPROM.read(4);
 	major=EEPROM.read(5);
+	loadTable();
 }
 bool interaction;
+uint8_t selekt;
 void buttonCall(uint8_t number){
+/*
+	if(number==0 && hw.buttonState(0)) cvOutCalibrate[selekt]--, saveTable();
+	if(number==1 && hw.buttonState(1)) cvOutCalibrate[selekt]++, saveTable();
+	if(number==2 && hw.buttonState(2)) cvOutCalibrate[selekt]-=30, saveTable();
+	if(number==3 && hw.buttonState(3)) cvOutCalibrate[selekt]+=30, saveTable();
+	if(number==4 && hw.buttonState(4)) selekt++, Serial.println(selekt),Serial.println(cvOutCalibrate[selekt]);
+	if(number==5 && hw.buttonState(5)) selekt--, Serial.println(selekt),Serial.println(cvOutCalibrate[selekt]);
+*/
 	if(number==8){
 		hw.freezeAllKnobs();
 		if(!hw.buttonState(number)){
@@ -395,6 +405,7 @@ void setup(){
 	hw.init(&buttonCall,&clockCall);
 	dacInit();
 	Serial.begin(38400);
+	//saveTable();
 	loadSettings();
 
 }
@@ -656,6 +667,10 @@ void loop()
 	lastTime=hw.getElapsedBastlCycles();
 	//out=line(out);
 	realOut=out;
+
+	//selekt=map(hw.getKnobValue(0),0,1024,0,12);
+
+	//out=cvOutCalibrate[selekt];
 	writeDAC(out);
 
 }

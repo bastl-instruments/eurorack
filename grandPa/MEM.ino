@@ -1,6 +1,6 @@
 
 PROGMEM prog_uint16_t clearTo[]={
-  877, 0, 0,0,  0,128,0,1022, 4 , 82,48};
+  877, 0, 0,0,  0,128,0,1022, 4 , 82,48 };
 /*
 // 4= 0010
  //13 = 1011 -  sync ON, shiftDir OFF,tuned ON,repeat ON, 

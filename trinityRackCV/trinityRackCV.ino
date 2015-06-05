@@ -6,21 +6,30 @@
 
  to do
 
-think how to finish automation 3rd parameter
-combo for reseting sequence
  midi expansion support
+ expansion support (reset in)
 
 
 
- to test
-  random rate mapping
- handsake + selfrepair ?
- sync indication // lichy rychlej?
- universality and compatibility with other trinity modules
-  tune random CV stuff
+
+ #to test
 
 
- tested
+ lfo cv sync -deeper
+ random rate mapping
+ combo for reseting sequence
+ sync indication
+ tune random CV stuff
+
+
+
+ #tested
+  handsake + selfrepair ?
+odd automation
+  lfo sync
+  automation sync
+  automation erase
+   lfo range
  syncing with clock event
   CV input
   looping adsr doesnt trigger on its own - embed it to the library iteself
@@ -91,7 +100,8 @@ uint32_t gateTime;
 bool gate[6];
 
 uint32_t _time;
-
+uint32_t lfoClockInDuration[6];
+uint32_t lastLfoTime[6];
 #define TRIGGER_MODE 1
 #define GATE_MODE 2
 #define CV_MODE 3
@@ -109,6 +119,11 @@ uint32_t _time;
 #define CV_ASSING_0 4
 #define CV_ASSING_1 5
 #define CV_ASSING_2 6
+
+#define LFO_SYNC_BIT 4
+#define LFO_ODD_BIT 5
+#define AUT_SYNC_BIT 6
+#define AUT_ODD_BIT 7
 
 uint8_t selectedChannel=0;
 
@@ -133,7 +148,8 @@ void buttonCall(uint8_t v) {
 #define LFOMAP_POINTS 5
 #define ADSRMAP_POINTS 5
 
-uint16_t LFOMap[10]={0,63,127,191,255,   10,500,1000,3000,10000};
+uint16_t LFOMap[10]={0,63,127,191,255,   10,500,1000,2000,5000}; //novinka tune here
+uint16_t LFOMap2[10]={0,63,127,191,255,   100,1000,5000,10000,30000};
 uint16_t ADSRMap[10]={0,63,127,191,255,  10,500,1000,3000,10000};
 
 uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
@@ -237,11 +253,12 @@ void reflectModeChange(uint8_t channel){
 }
 
 uint32_t clockInDuration, lastTime;
-uint8_t currentStepNumber;
+uint8_t currentStepNumber[6]={0,0,0,0,0,0};
 bool wshape=false;
 const uint16_t usefulLengths[16]={4,3,2,1,2,3,4,6,8,16,24,32,48,64,128,256};
+const uint16_t usefulLengthsEven[11]={4,2,1,2,4,8,16,32,64,128,256};
 bool randomLfo[6];
-
+bool odd[6];
 void reflectValueChange(uint8_t channel, uint8_t value){
 	uint8_t rate=0;
 	uint8_t form=0;
@@ -258,7 +275,8 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		//hardware.setDAC(channel,channelValue[channel][2]);
 		buffer[channel].interpolateMode(true);
 		buffer[channel].setInterpolationAmount(channelValue[channel][1]);
-
+		channelSync[channel]=bitRead(channelValue[channel][SETTINGS_BYTE],AUT_SYNC_BIT);
+		odd[channel]=bitRead(channelValue[channel][SETTINGS_BYTE],AUT_ODD_BIT);
 		break;
 	case LFO_MODE:
 		rate=channelValue[channel][0];
@@ -267,20 +285,32 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 
 
 		buffer[channel].interpolateMode(false);
-		if( bitRead(channelValue[channel][SETTINGS_BYTE],CV_ASSING_0) ){
+		channelSync[channel]=bitRead(channelValue[channel][SETTINGS_BYTE],LFO_SYNC_BIT);
+		if(bitRead(channelValue[channel][SETTINGS_BYTE],SYNC_BIT)){
+			channelSync[channel]=false;
+		}
+		else{
 			rate+=hardware.getCVValue(channel);
 		}
 
-		if( bitRead(channelValue[channel][SETTINGS_BYTE],CV_ASSING_2) ){
-			shape+=hardware.getCVValue(channel);
-		}
 
-		channelSync[channel]=bitRead(channelValue[channel][SETTINGS_BYTE],SYNC_BIT);
+		odd[channel]=bitRead(channelValue[channel][SETTINGS_BYTE],LFO_ODD_BIT);
+
 		if(channelSync[channel]){
 
-			syncFactor[channel]=usefulLengths[15-(rate>>4)];
-			if((15-(rate>>4))<4) syncFast[channel]=true;
-			else syncFast[channel]=false;
+			if(odd[channel]){
+				syncFactor[channel]=usefulLengths[15-(rate>>4)];
+				if((15-(rate>>4))<4) syncFast[channel]=true;
+				else syncFast[channel]=false;
+			}
+			else{
+
+				syncFactor[channel]=usefulLengthsEven[map(rate,0,255,0,11)];
+				if(map(rate,0,255,0,11)<3) syncFast[channel]=true;
+				else syncFast[channel]=false;
+			}
+
+
 
 			if(syncFast[channel]) LFO[channel].setBastlCyclesPerPeriod(clockInDuration/syncFactor[channel]),buffer[channel].setBastlCyclesPerPeriod(clockInDuration/syncFactor[channel]);
 			else LFO[channel].setBastlCyclesPerPeriod(clockInDuration*syncFactor[channel]),buffer[channel].setBastlCyclesPerPeriod(clockInDuration*syncFactor[channel]);
@@ -288,8 +318,33 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		}
 		else{
 		//	LFO[channel].setBastlCyclesPerPeriod((256-channelValue[channel][0])<<6);
-			 LFO[channel].setBastlCyclesPerPeriod(curveMap(255-rate,LFOMAP_POINTS,LFOMap));
-			buffer[channel].setBastlCyclesPerPeriod(curveMap(255-rate,LFOMAP_POINTS,LFOMap));
+			if(bitRead(channelValue[channel][SETTINGS_BYTE],SYNC_BIT)){
+				if(odd[channel]){
+					syncFactor[channel]=usefulLengths[15-(rate>>4)];
+					if((15-(rate>>4))<4) syncFast[channel]=true;
+					else syncFast[channel]=false;
+				}
+				else{
+					syncFactor[channel]=usefulLengthsEven[map(rate,0,255,0,11)];
+					if(map(rate,0,255,0,11)<3) syncFast[channel]=true;
+					else syncFast[channel]=false;
+				}
+
+
+				if(syncFast[channel]) LFO[channel].setBastlCyclesPerPeriod(lfoClockInDuration[channel]/syncFactor[channel]),buffer[channel].setBastlCyclesPerPeriod(lfoClockInDuration[channel]/syncFactor[channel]);
+				else LFO[channel].setBastlCyclesPerPeriod(lfoClockInDuration[channel]*syncFactor[channel]),buffer[channel].setBastlCyclesPerPeriod(lfoClockInDuration[channel]*syncFactor[channel]);
+			}
+			else{
+
+				if(!odd[channel]){
+					 LFO[channel].setBastlCyclesPerPeriod(curveMap(255-rate,LFOMAP_POINTS,LFOMap2));
+					 buffer[channel].setBastlCyclesPerPeriod(curveMap(255-rate,LFOMAP_POINTS,LFOMap2));
+				}
+				else{
+					LFO[channel].setBastlCyclesPerPeriod(curveMap(255-rate,LFOMAP_POINTS,LFOMap));
+					buffer[channel].setBastlCyclesPerPeriod(curveMap(255-rate,LFOMAP_POINTS,LFOMap));
+				}
+			}
 		}
 
 		buffer[channel].setSmootingAmount(form);
@@ -297,8 +352,8 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		//make sofisticated map
 		LFO[channel].setResolution(255);//channelValue[channel][1]>>3);
 		if(value!=0){
-		switch(map(shape,0,255,0,7)){ //
-		case 0:
+		switch(map(shape,0,255,0,6)){ //
+		case 1:
 			LFO[channel].setWaveform(SAW);
 			LFO[channel].setFlop(0);
 			LFO[channel].setXOR(form);
@@ -307,7 +362,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 			wshape=false;
 			randomLfo[channel]=false;
 			break;
-		case 1:
+		case 0:
 			LFO[channel].setWaveform(TRIANGLE);
 			LFO[channel].setFlop(0);
 			LFO[channel].setXOR(form);
@@ -319,7 +374,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		case 2:
 			LFO[channel].setWaveform(SAW);
 			LFO[channel].setFlop(0);
-			res=form>>4;
+			res=9-(form>>5);
 			if(res>7){
 				res=(15-res)-7;
 				LFO[channel].setResolution((1<<res));
@@ -334,16 +389,8 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 			wshape=true;
 			randomLfo[channel]=false;
 			break;
+
 		case 3:
-			LFO[channel].setWaveform(SAW);
-			LFO[channel].setFlop((1<<4)+1);
-			LFO[channel].setXOR(form);
-			LFO[channel].setResolution(255);
-			//,false,true,FOLDING);
-			wshape=false;
-			randomLfo[channel]=false;
-			break;
-		case 4:
 			LFO[channel].setWaveform(TRIANGLE);//
 			LFO[channel].setFlop(1<<4);
 			LFO[channel].setXOR(form);
@@ -352,7 +399,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 			wshape=false;
 			randomLfo[channel]=false;
 			break;
-		case 5:
+		case 4:
 			LFO[channel].setWaveform(SAW);
 			LFO[channel].setFlop(1<<4);
 			LFO[channel].setXOR(form);
@@ -361,7 +408,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 			wshape=false;
 			randomLfo[channel]=false;
 			break;
-		case 6:
+		case 5:
 
 			if(channelValue[channel][2]>=254) buffer[channel].loopRandom(true);
 			else buffer[channel].loopRandom(false);
@@ -379,7 +426,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		break;
 	case ADSR_MODE:
 		buffer[channel].interpolateMode(false);
-		channelSync[channel]=bitRead(channelValue[channel][SETTINGS_BYTE],SYNC_BIT);
+		channelSync[channel]=false;//bitRead(channelValue[channel][SETTINGS_BYTE],SYNC_BIT);
 		if( bitRead(channelValue[channel][SETTINGS_BYTE],LOOP_BIT) ){
 
 		}
@@ -394,7 +441,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		}
 		}
 		if(channelSync[channel]){
-
+/*
 			uint8_t syncFactor=usefulLengths[(channelValue[channel][0]>>4)];
 			if(value==0){
 			if(((channelValue[channel][0]>>4))<3) envelope[channel].setAttackRate(clockInDuration/syncFactor);
@@ -410,7 +457,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 			if(((channelValue[channel][1]>>4))<3) envelope[channel].setHoldRate(clockInDuration/syncFactor);
 			else envelope[channel].setHoldRate(clockInDuration*syncFactor);
 			}
-
+*/
 		}
 		else{
 			if(value==1) envelope[channel].setSustainLevel((float)channelValue[channel][1]/255.0);
@@ -472,7 +519,7 @@ bool channelRecord[6];
 void channelInterpolateFromCall(uint8_t channel,uint8_t number){
 	writeToStep[channel]=number;
 	channelRecord[channel]=false;
-	line[channel].set(number); //number
+	//line[channel].set(number); //number
 }
 void channelInterpolateToCall(uint8_t channel,uint8_t _number){
 	if((writeToStep[channel]>=0) && (writeToStep[channel]<=31)) buffer[channel].setStepValue(writeToStep[channel],_number);
@@ -482,7 +529,7 @@ void channelInterpolateToCall(uint8_t channel,uint8_t _number){
 
 void channeInterpolateCall(uint8_t channel,uint8_t number){
 	channelRecord[channel]=true;
-	buffer[channel].setStepValue(currentStepNumber,number);
+	buffer[channel].setStepValue(currentStepNumber[channel],number);
 	buffer[channel].interpolateMode(true);
 	channelCVCall(channel,number);
 	if(selectedChannel==channel) channelCVCall(6,number);
@@ -497,36 +544,45 @@ void channelValueCall(uint8_t channel, uint8_t value, uint8_t number){
 	reflectValueChange(channel,value);
 }
 uint16_t syncStepNumber;
+const uint8_t syncPhase[6]={0,64,127,0,64,127};
 void clockInCall(){
 
 	clockInDuration=hardware.getElapsedBastlCyclesLong()-lastTime;
 	lastTime=hardware.getElapsedBastlCyclesLong();
 	//if(currentStepNumber<255) currentStepNumber++;
 	//else
-	if(currentStepNumber<31) currentStepNumber++;
-	else currentStepNumber=0;
+	for(int i=0;i<6;i++){
+		if((channelMode[i]==INTERPOLATE_MODE && bitRead(channelValue[i][SETTINGS_BYTE],AUT_SYNC_BIT)) || (channelMode[i]==LFO_MODE && channelSync[i])){
+			uint8_t _numberOfSteps=0;
+			if(odd[i]) _numberOfSteps=(channelValue[i][2]>>3);
+			else _numberOfSteps=1<<map(channelValue[i][2],0,255,0,5);
+			if(currentStepNumber[i]<_numberOfSteps) currentStepNumber[i]++;
+			else currentStepNumber[i]=0;
+		}
+	}
 
 	if(syncStepNumber<256) syncStepNumber++;
 	else syncStepNumber=0;
 
-	if(channelMode[selectedChannel]==INTERPOLATE_MODE) com.sendStep(currentStepNumber);
+	if(channelMode[selectedChannel]==INTERPOLATE_MODE && bitRead(channelValue[selectedChannel][SETTINGS_BYTE],AUT_SYNC_BIT)) com.sendStep(currentStepNumber[selectedChannel]);
 	for(int i=0;i<6;i++){
 
 		if(selectedChannel==i && channelMode[i]!=INTERPOLATE_MODE){
 			if(channelSync[i]){
 				if( syncStepNumber%4 == 0){ //syncFactor
-					com.sendStep(currentStepNumber);
+					com.sendStep(syncStepNumber);
 				}
 			}
 		}
 
-		if(channelMode[i]==INTERPOLATE_MODE){
+		if(channelMode[i]==INTERPOLATE_MODE && bitRead(channelValue[selectedChannel][SETTINGS_BYTE],AUT_SYNC_BIT)){
 			buffer[i].setBastlCyclesPerPeriod(clockInDuration);
-			buffer[i].setStep(currentStepNumber);
+			buffer[i].setStep(currentStepNumber[i]);
 		}
 		else if(channelSync[i]){
 			if(syncFast[i]){
-				//LFO[i].setToStep(0,hardware.getElapsedBastlCyclesLong());
+				LFO[i].setToStep(syncPhase[i],hardware.getElapsedBastlCyclesLong());
+				//LFO[i].setBastlCyclesPerPeriod(clockInDuration);
 				buffer[i].sync();
 				envelope[i].sync();
 				reflectValueChange(i,0);
@@ -534,7 +590,8 @@ void clockInCall(){
 			else{
 				if(syncStepNumber%syncFactor[i]==0){
 					buffer[i].sync();
-					//LFO[i].setToStep(0,hardware.getElapsedBastlCyclesLong());
+					LFO[i].setToStep(syncPhase[i],hardware.getElapsedBastlCyclesLong());
+					//LFO[i].setBastlCyclesPerPeriod(clockInDuration);
 					envelope[i].sync();
 					reflectValueChange(i,0);
 				}
@@ -585,7 +642,9 @@ void setup() {
 }
 
 uint16_t testTime=0;
+
 void renderOutput(){
+
 	uint8_t selectedOutput=0;
 	for(int i=0;i<6;i++){
 		uint8_t out=0;
@@ -610,30 +669,62 @@ void renderOutput(){
 				}
 				break;
 			case INTERPOLATE_MODE:
-				//buffer[i].update();
+				buffer[i].update();
 				if(!channelRecord[i]){
 					out=buffer[i].getCurrentValue();
 					hardware.setDAC(i,out);
 				}
+				if(!bitRead(channelValue[i][SETTINGS_BYTE],AUT_SYNC_BIT)){
+					if((hardware.getCVValue(i)>64) && gate[i]==false){
+						gate[i]=true; //int clock
+						uint8_t _numberOfSteps=0;
+						if(odd[i]) _numberOfSteps=(channelValue[i][2]>>3);
+						else _numberOfSteps=1<<map(channelValue[i][2],0,255,0,5);
+						if(currentStepNumber[i]<_numberOfSteps) currentStepNumber[i]++;
+						else currentStepNumber[i]=0;
+						lfoClockInDuration[i]=hardware.getElapsedBastlCyclesLong()-lastLfoTime[i];
+						lastLfoTime[i]=hardware.getElapsedBastlCyclesLong();
+						if(i==selectedChannel) com.sendStep(currentStepNumber[i]);
+						buffer[i].setBastlCyclesPerPeriod(lfoClockInDuration[i]);
+						buffer[i].setStep(currentStepNumber[i]);
+					}
+					else if((hardware.getCVValue(i)<=64) && gate[i]==true) gate[i]=false;
+				}
+
+				//,envelope[i].gate(gate[i]);
 				break;
 			case LFO_MODE:
+				if(bitRead(channelValue[i][SETTINGS_BYTE],SYNC_BIT)){
+					if((hardware.getCVValue(i)>64) && gate[i]==false){
+						gate[i]=true; //int clock
+						if(currentStepNumber[i]<255) currentStepNumber[i]++;
+						else currentStepNumber[i]=0;
+						if(i==selectedChannel) com.sendStep(currentStepNumber[i]);
+						lfoClockInDuration[i]=hardware.getElapsedBastlCyclesLong()-lastLfoTime[i];
+						lastLfoTime[i]=hardware.getElapsedBastlCyclesLong();
+						if(syncFast[i]){
+							//LFO[i].setToStep(syncPhase[i],hardware.getElapsedBastlCyclesLong());
+							//LFO[i].setBastlCyclesPerPeriod(clockInDuration);
+							buffer[i].sync();
+							reflectValueChange(i,0);
+						}
+						else{
+							if(syncStepNumber%syncFactor[i]==0){
+								buffer[i].sync();
+							//	LFO[i].setToStep(syncPhase[i],hardware.getElapsedBastlCyclesLong());
+								//LFO[i].setBastlCyclesPerPeriod(clockInDuration);
+								reflectValueChange(i,0);
+							}
+						}
 
-				if( bitRead(channelValue[i][SETTINGS_BYTE],CV_ASSING_0) ) {
-					if(hardware.getCVValue(i)!=hardware.getLastCVValue(i)){
-						reflectValueChange(i,0);
+
 					}
-				}
-				if( bitRead(channelValue[i][SETTINGS_BYTE],CV_ASSING_1) ) {
-					form=channelValue[i][1]+hardware.getCVValue(i);
-					if(form>255) form=255;
-				}
-				else form=channelValue[i][1];
-				if( bitRead(channelValue[i][SETTINGS_BYTE],CV_ASSING_2) ) {
-					if(hardware.getCVValue(i)!=hardware.getLastCVValue(i)){
-						reflectValueChange(i,2);
-					}
+					else if((hardware.getCVValue(i)<=64) && gate[i]==true) gate[i]=false;
 				}
 
+				else if(hardware.getCVValue(i)!=hardware.getLastCVValue(i)){
+					reflectValueChange(i,0);
+				}
 
 				if(randomLfo[i]){
 					buffer[i].update();
@@ -642,7 +733,7 @@ void renderOutput(){
 				else{
 
 					LFO[i].step();//testTime
-					out=LFO[i].getValue(testTime);//hardware.getElapsedBastlCyclesLong());
+					out=LFO[i].getValue();//hardware.getElapsedBastlCyclesLong()); //reflectValueChange
 
 					if(wshape){
 					//	out=out>>(form>>5);
@@ -681,8 +772,7 @@ void renderOutput(){
 }
 uint32_t time;
 void updateHW(){
-hardware.isr_updateClockIn();
-	hardware.isr_updateADC();
+	hardware.isr_updateClockIn();
 	hardware.isr_updateDAC();
 	hardware.isr_updateSelect();
 }
@@ -697,7 +787,7 @@ void loop() {
 		updateHW();
 	}
 	com.update();
-
+	hardware.isr_updateADC();
 
 
 
@@ -711,13 +801,13 @@ void loop() {
 	Serial.println();
 delay(100);
 */
-	/*
+
 
 if(hardware.getElapsedBastlCyclesLong()-time>100){
 		time=hardware.getElapsedBastlCyclesLong();
-		//clockInCall();
+		clockInCall();
 	}
-*/
+
 
 }
 
