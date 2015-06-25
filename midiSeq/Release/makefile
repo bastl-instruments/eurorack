@@ -48,56 +48,56 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 LSS += \
-analogSeq.lss \
+midiSeq.lss \
 
 FLASH_IMAGE += \
-analogSeq.hex \
+midiSeq.hex \
 
 EEPROM_IMAGE += \
-analogSeq.eep \
+midiSeq.eep \
 
 SIZEDUMMY += \
 sizedummy \
 
 
 # All Target
-all: analogSeq.elf secondary-outputs
+all: midiSeq.elf secondary-outputs
 
 # Tool invocations
-analogSeq.elf: $(OBJS) $(USER_OBJS)
+midiSeq.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: AVR C++ Linker'
-	avr-g++ -lc -lm -Wl,-Map,analogSeq.map,--cref -mrelax -Wl,--gc-sections -L"/Users/dasvaclav/Documents/workspace/arduino-base/Release" -mmcu=atmega328p -o "analogSeq.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lc
+	avr-g++ -lc -lm -Wl,-Map,midiSeq.map,--cref -mrelax -Wl,--gc-sections -L"/Users/dasvaclav/Documents/workspace/arduino-base/Release" -mmcu=atmega328p -o "midiSeq.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lc
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-analogSeq.lss: analogSeq.elf
+midiSeq.lss: midiSeq.elf
 	@echo 'Invoking: AVR Create Extended Listing'
-	-avr-objdump -h -S analogSeq.elf  >"analogSeq.lss"
+	-avr-objdump -h -S midiSeq.elf  >"midiSeq.lss"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-analogSeq.hex: analogSeq.elf
+midiSeq.hex: midiSeq.elf
 	@echo 'Create Flash image (ihex format)'
-	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex analogSeq.elf  "analogSeq.hex"
+	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex midiSeq.elf  "midiSeq.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-analogSeq.eep: analogSeq.elf
+midiSeq.eep: midiSeq.elf
 	@echo 'Create eeprom image (ihex format)'
-	-avr-objcopy -j .eeprom --no-change-warnings --change-section-lma .eeprom=0 -O ihex analogSeq.elf  "analogSeq.eep"
+	-avr-objcopy -j .eeprom --no-change-warnings --change-section-lma .eeprom=0 -O ihex midiSeq.elf  "midiSeq.eep"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-sizedummy: analogSeq.elf
+sizedummy: midiSeq.elf
 	@echo 'Invoking: Print Size'
-	-avr-size --format=avr --mcu=atmega328p analogSeq.elf
+	-avr-size --format=avr --mcu=atmega328p midiSeq.elf
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(C_UPPER_DEPS)$(S_DEPS)$(LSS)$(C_DEPS)$(FLASH_IMAGE)$(CC_DEPS)$(ELFS)$(C++_DEPS)$(OBJS)$(CXX_DEPS)$(ASM_DEPS)$(EEPROM_IMAGE)$(INO_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(CPP_DEPS) analogSeq.elf
+	-$(RM) $(C_UPPER_DEPS)$(S_DEPS)$(LSS)$(C_DEPS)$(FLASH_IMAGE)$(CC_DEPS)$(ELFS)$(C++_DEPS)$(OBJS)$(CXX_DEPS)$(ASM_DEPS)$(EEPROM_IMAGE)$(INO_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(CPP_DEPS) midiSeq.elf
 	-@echo ' '
 
 secondary-outputs: $(LSS) $(FLASH_IMAGE) $(EEPROM_IMAGE) $(SIZEDUMMY)

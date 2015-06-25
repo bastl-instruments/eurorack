@@ -39,11 +39,20 @@ const unsigned char dacNumber[8]={DACA,DACB,DACC,DACD,DACE,DACF,DACG,DACH};
 
 const unsigned char analogPin[6]={ANALOG_PIN_1,ANALOG_PIN_2,ANALOG_PIN_3,ANALOG_PIN_4,ANALOG_PIN_5,ANALOG_PIN_6};
 
-void trinityRackCV_HW::init(void(*clockInCallback)()) {
+void trinityRackCV_HW::init(void(*clockInCallback)(),void(*resetInCallback)(uint8_t _number)) {
 
 	cli();
 
 	bit_dir_inp(CLOCK_IN_PIN);
+
+
+	bit_dir_outp(MUX_SEL_1);
+	bit_dir_outp(MUX_SEL_2);
+	bit_dir_outp(MUX_SEL_3);
+
+	bit_dir_inp(MUX_READ);
+	bit_set(MUX_READ);
+
 	bit_set(CLOCK_IN_PIN);
 
 	bit_dir_outp(LOAD_PIN);
@@ -57,6 +66,7 @@ void trinityRackCV_HW::init(void(*clockInCallback)()) {
 
 	// store callback pointer for changed buttons
 	 this->clockInCallback = clockInCallback;
+	 this->resetInCallback = resetInCallback;
 
 	// Disable Timer1 interrupt
 	//TIMSK1 &= ~_BV(TOIE1);
@@ -166,9 +176,51 @@ void trinityRackCV_HW::zeroDACs(){
 }
 
 
+void trinityRackCV_HW::isr_updateReset(){
+	if(muxChannel<5) muxChannel++;
+	else muxChannel=0;
+// 0=000 1=001 2=010 3=011 4=100 5=101 6=110 7=111
+	switch(muxChannel){
+	case 0: //4
+		bit_clear(MUX_SEL_1);
+		bit_clear(MUX_SEL_2);
+		bit_set(MUX_SEL_3);
+		break;
+	case 1: //6
+		bit_clear(MUX_SEL_1);
+		bit_set(MUX_SEL_2);
+		bit_set(MUX_SEL_3);
+		break;
+	case 2: //5
+		bit_set(MUX_SEL_1);
+		bit_clear(MUX_SEL_2);
+		bit_set(MUX_SEL_3);
+		break;
+	case 3: //7
+		bit_set(MUX_SEL_1);
+		bit_set(MUX_SEL_2);
+		bit_set(MUX_SEL_3);
+		break;
+	case 4: //3
+		bit_set(MUX_SEL_1);
+		bit_set(MUX_SEL_2);
+		bit_clear(MUX_SEL_3);
+		break;
+	case 5: //2
+		bit_clear(MUX_SEL_1);
+		bit_set(MUX_SEL_2);
+		bit_clear(MUX_SEL_3);
+		break;
+
+	}
 
 
-
+	bool newState=!bit_read_in(MUX_READ);
+	if( resetInCallback!=0){
+		if(newState && !muxState[muxChannel]) resetInCallback(muxChannel);
+		muxState[muxChannel]=newState;
+	}
+}
 
 void trinityRackCV_HW::isr_updateClockIn(){
 	if(clockInCallback!=0){

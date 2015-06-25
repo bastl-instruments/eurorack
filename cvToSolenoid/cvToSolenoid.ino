@@ -49,7 +49,7 @@ uint32_t triggerLength;
 
 void loop()
 {
-  uint16_t newTriggerLength=analogRead(POT_PIN)>>1;
+  uint16_t newTriggerLength=analogRead(POT_PIN)>>2;
   if(newTriggerLength!=0 && triggerLength==0){
     for(int i=0;i<NUMBER_OF_CHANNELS;i++){
       triggerState[i]=false;

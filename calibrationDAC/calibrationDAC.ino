@@ -185,20 +185,29 @@ void setup(){
 	//dacInit();
 
 }
-bool mode=true;
+uint8_t mode=1;
 
 uint32_t waitTime;
+uint32_t measureTime;
+uint32_t measureInterval=100;
+uint32_t measureResult[3];
+uint32_t measuredTime[3][10];
+
+uint32_t measureUP[3];
+#include <fastAnalogRead.h>
+const uint8_t tune[]={0,2,4,5, 7,9,11,7, 12,12,12,12, 11,11,11,11, 9,9,9,9, 7,7,7,7, 5,9,5,2, 4,7,4,0, 2,2,2,2, 7,7,7,7, 5,9,5,2, 4,7,4,0, 2,2,2,2, 0,0,0,0};
 void loop()
 {
-/*
-	hw.updateKnobs();
-	hw.updateButtons();
-	hw.updateDisplay();
+
+	if(mode!=2){
+		hw.updateKnobs();
+		hw.updateButtons();
+		hw.updateDisplay();
+	}
 
 
-
-	if(mode){
-
+	switch(mode){
+	case 0:{
 		hw.setColor(RED);
 		uint8_t voltage=map(hw.knobValue(0),0,1024,0,11);
 		hw.displayNumber(voltage/2);
@@ -217,13 +226,14 @@ void loop()
 
 
 		mcpDacSend(tuneTable[voltage]);
-
 	}
-	else{
-
+	break;
+	case 1:
+	{
 	//	hw.displayChar('c');
 		if(hw.buttonState(FN)){
 			hw.setColor(BLUE);
+
 		//	pinMode(1,OUTPUT);
 			//com.init(38400);
 			mcpDacSend(0);
@@ -255,14 +265,89 @@ void loop()
 		}
 		else hw.setColor(GREEN);
 		com.update();
+	}
+		break;
+		case 2:{
+			if(hw.buttonState(UP)){
+				for(int i=0;i<56;i++){
+					mcpDacSend(map(tune[i],0,12,tuneTable[2],tuneTable[4]));
+					delay(250);
+				}
+				hw.updateButtons();
+			}
+			else{
+			hw.setColor(BLUE);
+			hw.updateDisplay();
+			bool inState;
+
+			hw.updateButtons();
+			bit_dir_inp(C,5);
+			for(int i=0;i<3;i++){
+				mcpDacSend(tuneTable[(i*2)+2]);
+				delay(10);
+				for(int j=0;j<8;j++){
+					measureTime=millis();
+					inState=bit_read_in(C,5);
+					uint8_t period=0;
+					while(((millis()-measureTime)<measureInterval) && period<4){
+						bool newState=bit_read_in(C,5);
+						if(newState && !inState){
+							if(period==0){
+								measureUP[i]=micros();
+								period++;
+							}
+							else{
+
+								measuredTime[i][period]=micros()-measureUP[i];
+								measureUP[i]=micros();
+								period++;
+							}
+
+							//measureUP[i]=millis();
+
+						}
+						inState=newState;
+					}
+					for(int k=0;k<4;k++){
+						measureResult[i]+=measuredTime[i][k];
+					}
+					measureResult[i]/=4;//(period-1);
+
+				}
+			}
+			if(measureResult[0]==0 || measureResult[1]==0 || measureResult[2]==0){
+				hw.displayChar('e');
+			}
+				else{
+
+			long difference1=measureResult[0]-(2*measureResult[1]);
+			long difference2=measureResult[1]-(2*measureResult[2]);
+
+			long finalError=(difference1+difference2)/2;
+			if(abs(finalError)<20) hw.displayNumber(5),hw.setDot(true);
+			else hw.displayNumber(constrain(map(finalError,-500,500,0,9),0,9)), hw.setDot(false);
+			Serial.print(measureResult[0]), Serial.print(", "), Serial.print(measureResult[1]),Serial.print(", "), Serial.println(measureResult[2]);
+
+
+			}
+			for(int i=0;i<3;i++) measureResult[i]=0;
+
+		}
+		}
+		break;
 
 	}
+
+
+
+
 	if(hw.justPressed(PAGE)){
-		mode=!mode;
+		if(mode<2) mode++;
+		else mode=0;
 	}
-*/
-	com.sendChannelTrigger(1,1);
-	delay(80);
+
+//	com.sendChannelTrigger(1,1);
+//	delay(80);
 
 /*
 

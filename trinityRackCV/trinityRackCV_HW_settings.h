@@ -30,7 +30,11 @@ const uint8_t ANALOG_PIN_6 = 2;
 #define SELECT_1 B,0
 #define SELECT_2 B,1
 
+#define MUX_SEL_1 D,4
+#define MUX_SEL_2 D,5
+#define MUX_SEL_3 D,6
 
+#define MUX_READ D,7
 
 
 // hardware update frequency

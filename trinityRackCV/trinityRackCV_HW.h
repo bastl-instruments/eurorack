@@ -15,7 +15,7 @@ class trinityRackCV_HW : public IHWLayer {
 public:
 	// sets up all the pins, timers and SPI interface
 	// call this before using any other method from this class
-	void init(void(*clockInCallback)());
+	void init(void(*clockInCallback)(),void(*resetInCallback)(uint8_t _number));
 
 	/*** CV in***/
 	uint8_t getCVValue(uint8_t index);
@@ -78,6 +78,7 @@ public:
 	void isr_updateDAC();
 	void isr_updateClockIn();
 	void isr_updateSelect();
+	void isr_updateReset();
 
 	inline void incrementBastlCycles() {bastlCycles++;}
 
@@ -91,7 +92,10 @@ private:
 	/** CLOCK IN **/
 	bool clockInState;
 	void (*clockInCallback)();
+	void (*resetInCallback)(uint8_t _number);
 	uint8_t selectedChannel;
+	bool muxState[6];
+	uint8_t muxChannel;
 	/** CV out */
 	static const uint8_t numbDACs = 8;
 	uint8_t dacCount;

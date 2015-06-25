@@ -10,85 +10,102 @@
 #include "midiSeqHW.h"
 #include <shiftRegisterFast.h>
 #include <avr/pgmspace.h>
-#include <fastAnalogRead.h>
+//#include <fastAnalogRead.h>
+midiSeqHW hw;
+
 //#define PIN B,5
-#define BUTTON_JUMP_PIN C,4
+#define CLK_IN_PIN C,5
 
-#define KNOB_MOVED_TOLERANCE 1
-#define GATE_BYTE 0
-#define GATE_BIT_1 7
-#define GATE_BIT_2 6
-#define GATE_BIT_3 5
-#define GATE_BIT_4 4
-#define GATE_BIT_5 3
-#define GATE_BIT_6 2
-#define GATE_BIT_7 1
-#define GATE_BIT_8 0
+#define BUTTON_PIN_A D,7
+#define BUTTON_PIN_B D,6
+#define BUTTON_PIN_C D,5
+
+#define BUTTON_PIN_D C,4
+#define BUTTON_PIN_E C,3
+#define BUTTON_PIN_F C,2
+
+#define BUTTON_MODE C,0
+#define BUTTON_LEFT B,0
+#define BUTTON_RIGHT C,1
+
+//const uint8_t buttonPin[9]={BUTTON_PIN_A,BUTTON_PIN_B,BUTTON_PIN_C,BUTTON_PIN_D,BUTTON_PIN_E,BUTTON_PIN_F,BUTTON_MODE,BUTTON_LEFT,BUTTON_RIGHT};
 
 
-const uint8_t gateBit[8]={GATE_BIT_1,GATE_BIT_2,GATE_BIT_3,GATE_BIT_4, GATE_BIT_5,GATE_BIT_6,GATE_BIT_7,GATE_BIT_8};
 
-void midiSeqHW::setGate(uint8_t _gate,bool _state){
-	bitWrite(shiftHash[GATE_BYTE],7-gateBit[_gate],_state);
-}
+#define LED_GATE_A 16
+#define LED_GATE_B 20
+#define LED_GATE_C 22
+#define LED_CLK 23
 
-#define LED_BYTE 1
+#define GATE_A 18
+#define GATE_B 19
+#define GATE_C 21
+
+#define CLK 17
+
+#define LED_BIT_A 14
+#define LED_BIT_B 9
+#define LED_BIT_C 0
+#define LED_BIT_D 13
+#define LED_BIT_E 10
+#define LED_BIT_F 1
+
 #define LED_BIT_1 6
-#define LED_BIT_2 4
-#define LED_BIT_3 2
-#define LED_BIT_4 0
-#define LED_BIT_5 7
-#define LED_BIT_6 5
-#define LED_BIT_7 3
-#define LED_BIT_8 1
+#define LED_BIT_2 5
+#define LED_BIT_3 4
+#define LED_BIT_4 3
+#define LED_BIT_5 2
 
-const uint8_t ledBit[8]={LED_BIT_1,LED_BIT_2,LED_BIT_3,LED_BIT_4, LED_BIT_5,LED_BIT_6,LED_BIT_7,LED_BIT_8};
+#define LED_BIT_V_1 7
+#define LED_BIT_V_2 8
+#define LED_BIT_V_3 11
+#define LED_BIT_V_4 12
+
+#define H_LED_SHIFT 6
+#define V_LED_SHIFT 11
+#define GATE_LED_SHIFT 15
+#define GATE_SHIFT 18
+#define CLK_SHIFT 22
+#define CLK_LED_SHIFT 21
+
+const uint8_t outBit[24]={
+		LED_BIT_A,LED_BIT_B,LED_BIT_C,LED_BIT_D,LED_BIT_E,LED_BIT_F,
+		LED_BIT_1,LED_BIT_2,LED_BIT_3,LED_BIT_4,LED_BIT_5,
+		LED_BIT_V_1,LED_BIT_V_2,LED_BIT_V_3,LED_BIT_V_4,
+		LED_GATE_A,LED_GATE_B,LED_GATE_C,
+		GATE_A,GATE_B,GATE_C,
+		LED_CLK,CLK
+};
+
+
 
 void midiSeqHW::setLed(uint8_t _led,bool _state){
-	bitWrite(shiftHash[LED_BYTE],7-ledBit[_led],_state);
+	bitWrite(shiftHash[outBit[_led]/8],7-(outBit[_led]%8),_state);
+}
+void midiSeqHW::dimLed(uint8_t _led,bool _state){
+	bitWrite(dimHash[outBit[_led]/8],7-(outBit[_led]%8),_state);
+}
+void midiSeqHW::setGateOut(uint8_t _number, bool _state){
+	setLed(GATE_SHIFT+_number,_state);
+	setLed(GATE_LED_SHIFT+_number,_state);
+}
+void midiSeqHW::setClkOut(bool _state){
+	setLed(CLK_SHIFT,_state);
+	setLed(CLK_LED_SHIFT,_state);
+}
+void midiSeqHW::setHorLed(uint8_t _number, bool _state){
+	setLed(H_LED_SHIFT+_number,_state);
+}
+void midiSeqHW::setVerLed(uint8_t _number, bool _state){
+	setLed(V_LED_SHIFT+_number,_state);
+}
+void midiSeqHW::dimHorLed(uint8_t _number, bool _state){
+	dimLed(H_LED_SHIFT+_number,_state);
+}
+void midiSeqHW::dimVerLed(uint8_t _number, bool _state){
+	dimLed(V_LED_SHIFT+_number,_state);
 }
 
-#define BI_LED_A_BYTE 3
-
-#define BI_LED_A_1_C 5
-#define BI_LED_A_1_A 4
-#define BI_LED_A_2_C 2
-#define BI_LED_A_2_A 3
-#define BI_LED_A_3_C 1
-#define BI_LED_A_3_A 0
-
-
-
-
-#define BI_LED_B_BYTE 2
-#define BI_LED_B_1_C 5
-#define BI_LED_B_1_A 4
-#define BI_LED_B_2_C 1
-#define BI_LED_B_2_A 0
-#define BI_LED_B_3_C 2
-#define BI_LED_B_3_A 3
-
-#define GATE_OUT_BYTE 2
-#define GATE_OUT_BIT 7
-
-#define SHIFT_LED_BYTE 2
-#define SHIFT_LED_BIT 6
-
-const uint8_t biLedBit[12]= { BI_LED_A_1_C , BI_LED_A_1_A , BI_LED_A_2_C , BI_LED_A_2_A , BI_LED_A_3_C , BI_LED_A_3_A , BI_LED_B_1_C , BI_LED_B_1_A , BI_LED_B_2_C , BI_LED_B_2_A , BI_LED_B_3_C , BI_LED_B_3_A};
-
-
-
-void midiSeqHW::setGateOut(bool _state){
-	bitWrite(shiftHash[GATE_OUT_BYTE],GATE_OUT_BIT,_state);
-}
-
-void midiSeqHW::setShiftLed(bool _state){
-	bitWrite(shiftHash[SHIFT_LED_BYTE],SHIFT_LED_BIT,_state);
-}
-
-void midiSeqHW::selectKnob(uint8_t _knob){
-	selectedKnob=knobBit[_knob];
-}
 
 
 //using namespace fastAnalogRead;
@@ -96,7 +113,6 @@ void midiSeqHW::selectKnob(uint8_t _knob){
 //#include <SdFat.h>
 
 // Declaration of instance (for use in interrupt service routine)
-midiSeqHW hw;
 
 
 #define UINT16_MAX 65535
@@ -108,20 +124,34 @@ void midiSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockInCa
 
 	shiftRegFast::setup();
 
-	bit_dir_outp(AMUX_SELECT_0);
-	bit_dir_outp(AMUX_SELECT_1);
-	bit_dir_outp(AMUX_SELECT_2);
+	//bit_dir_outp(PIN);
 
-	bit_dir_inp(BUTTON_PIN);
+	bit_dir_inp(CLK_IN_PIN);
 
-	bit_set(BUTTON_PIN);
+	bit_dir_inp(BUTTON_PIN_A);
+	bit_dir_inp(BUTTON_PIN_B);
+	bit_dir_inp(BUTTON_PIN_C);
 
-	bit_dir_inp(MIXED_PIN);
-	bit_set(MIXED_PIN);
-	bit_dir_inp(BUTTON_JUMP_PIN);
-	bit_set(BUTTON_JUMP_PIN);
+	bit_dir_inp(BUTTON_PIN_D);
+	bit_dir_inp( BUTTON_PIN_E);
+	bit_dir_inp(BUTTON_PIN_F);
 
-	bit_dir_outp(PIN);
+	bit_dir_inp(BUTTON_MODE);
+	bit_dir_inp(BUTTON_LEFT);
+	bit_dir_inp(BUTTON_RIGHT);
+
+	bit_set(BUTTON_PIN_A);
+	bit_set(BUTTON_PIN_B);
+	bit_set(BUTTON_PIN_C);
+
+	bit_set(BUTTON_PIN_D);
+	bit_set(BUTTON_PIN_E);
+	bit_set(BUTTON_PIN_F);
+
+	bit_set(BUTTON_MODE);
+	bit_set(BUTTON_LEFT);
+	bit_set(BUTTON_RIGHT);
+
 
 	// store callback pointer for changed buttons
 	 this->buttonChangeCallback = buttonChangeCallback;
@@ -138,28 +168,15 @@ void midiSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockInCa
 	OCR2A = (F_CPU/1024)/(updateFreq);
 	TCNT2  = 0;
 
-	fastAnalogRead::init(); // for analog read
-	knobCount=0;
-	fastAnalogRead::connectChannel(knobCount);
-	fastAnalogRead::startConversion();
-	knobFreezeHash=255;
-	knobMovedHash=0;
-
-
+	//fastAnalogRead::init(); // for analog read
+	//knobCount=0;
+	//fastAnalogRead::connectChannel(knobCount);
+	//fastAnalogRead::startConversion();
 	sei();
 }
 
 
-/**** LEDS ****/
 
-void midiSeqHW::printLEDStates() {
-
-}
-
-
-void midiSeqHW::setLED(uint8_t number, bool state) {
-
-}
 
 
 
@@ -170,98 +187,80 @@ void midiSeqHW::setLED(uint8_t number, bool state) {
 #define SHIFT_B 5
 
 
-uint16_t midiSeqHW::getCV(){
-	return mixedValues[0];
-}
-
-
 void midiSeqHW::isr_updateButtons() {
-
-	uint8_t i=buttonSelect;//buttonBit[buttonSelect];
+//buttonBit[buttonSelect];
 //isAnalog[i]=true;
 
-	fastAnalogRead::connectChannel(MIXED_CHANNEL);
-	fastAnalogRead::startConversion();
-	while(!fastAnalogRead::isConversionFinished()){} ;
-	            //=fastAnalogRead::getConversionResult();
+	//fastAnalogRead::connectChannel(MIXED_CHANNEL);
+	//fastAnalogRead::startConversion();
+	lastButtonHash=buttonHash;
 
+	bitWrite(buttonHash,0,!bit_read_in(BUTTON_PIN_A));
+	bitWrite(buttonHash,1,!bit_read_in(BUTTON_PIN_B));
+	bitWrite(buttonHash,2,!bit_read_in(BUTTON_PIN_C));
 
-	bool newState=!bit_read_in(BUTTON_PIN);
+	bitWrite(buttonHash,3,!bit_read_in(BUTTON_PIN_D));
+	bitWrite(buttonHash,4,!bit_read_in(BUTTON_PIN_E));
+	bitWrite(buttonHash,5,!bit_read_in(BUTTON_PIN_F));
+
+	bitWrite(buttonHash,6,!bit_read_in(BUTTON_MODE));
+	bitWrite(buttonHash,7,!bit_read_in(BUTTON_LEFT));
+	bitWrite(buttonHash,8,!bit_read_in(BUTTON_RIGHT));
+
 	if(buttonChangeCallback!=0){
-		if(newState != bitRead(buttonHash,buttonBit[i])){
-			bitWrite(buttonHash,buttonBit[i],newState);
-			buttonChangeCallback(buttonBit[i]);
+		for(uint8_t i=0;i<9;i++){
+			if(bitRead(lastButtonHash,i) != bitRead(buttonHash,i)){
+				buttonChangeCallback(i);
+			}
 		}
 	}
 
 
-	buttonSelect++;
-	if(buttonSelect>7) buttonSelect=0;
-	i=buttonSelect;//buttonBit[buttonSelect];
+//	while(!fastAnalogRead::isConversionFinished()){} ;
+	            //=fastAnalogRead::getConversionResult();
+
+
 
 }
 bool midiSeqHW::buttonState(uint8_t _but){
 	return bitRead(buttonHash,_but);//buttonBit[_but]);
 }
-bool midiSeqHW::justPressed(uint8_t _but){
-	return bitRead(justPressedHash,buttonBit[_but]);
-}
-bool midiSeqHW::justReleased(uint8_t _but){
-	return bitRead(justReleasedHash,buttonBit[_but]);
-}
 
-void midiSeqHW::compareButtonStates(){
-	if(buttonChangeCallback!=0){
 
-		for(int i=0;i<2;i++){
-			if(buttonStates[i]!=newButtonStates[i]) buttonStates[i]=newButtonStates[i],buttonChangeCallback(i);
+uint8_t dimCycle=0;
+void midiSeqHW::isr_updateTriggerStates(){
+	if(dimCycle<8) dimCycle++;
+	else dimCycle=0;
+	uint8_t outHash[3];
+	for(uint8_t i=0;i<3;i++) outHash[i]=shiftHash[i];
+	if(dimCycle==0){
+
+	}
+	else{
+		for(uint8_t i=0;i<3;i++){
+			//outHash[i]=~(dimHash[i]|shiftHash[i]);
+			for(uint8_t j=0;j<8;j++){
+				if(bitRead(dimHash[i],j)) bitWrite(outHash[i],j,false);
+			}
 		}
 	}
-}
 
 
-bool midiSeqHW::getButtonState(uint8_t number) {
-	return buttonStates[number];
-}
-
-
-
-
-void midiSeqHW::setBit(uint8_t _bit, bool _value){
-	bitWrite(shiftHash[_bit/4],_bit%8,_value);
-}
-
-void midiSeqHW::dimLed(uint8_t _led, bool _state){
-	bitWrite(ledDimHash,7-ledBit[_led],_state);
-}
-
-void midiSeqHW::isr_updateTriggerStates(){
-
-	shiftRegFast::write_8bit(biLedHashA);//shiftHash[3]);
-	shiftRegFast::write_8bit(biLedHashB);//shiftHash[2]);
-	shiftRegFast::write_8bit(ledOutHash);
-	shiftRegFast::write_8bit(shiftHash[0]);
+	shiftRegFast::write_8bit(outHash[2]);
+	shiftRegFast::write_8bit(outHash[1]);
+	shiftRegFast::write_8bit(outHash[0]);
 
 	shiftRegFast::enableOutput();
 
 }
-void midiSeqHW::resetTriggers(){
-	for(int i=0;i<6;i++) triggerCountdown[i]=0;
-	trigState=0;
-	//shiftRegFast::write_8bit(trigState);
-	//shiftRegFast::enableOutput();
 
-}
+
 void midiSeqHW::isr_updateClockIn(){
 	if(clockInCallback!=0){
-		static bool clockInState[2];
-		bool newState=bit_read_in(INPUT_1);
-		if(newState && !clockInState[0]) clockInCallback(0);
-		clockInState[0]=newState;
-
-		newState=bit_read_in(INPUT_2);
-		if(newState && !clockInState[1]) clockInCallback(1);
-		clockInState[1]=newState;
+		static bool clockInState;
+		bool newState=bit_read_in(CLK_IN_PIN);
+		if(newState && !clockInState) clockInCallback(0);
+		clockInState=newState;
 	}
 }
 

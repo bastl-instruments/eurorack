@@ -20,59 +20,9 @@ public:
 	// call this before using any other method from this class
 	void init(void(*buttonChangeCallback)(uint8_t number), void(*clockInCallback)(uint8_t number));
 
-	/***KNOBS***/
-
-	//
-	virtual uint16_t getKnobValue(uint8_t index);
 
 
-	/***LEDS***/
-
-	// disabled
-	virtual void setLED(uint8_t number, bool state);
-
-	// disabled
-	virtual void setLED(uint8_t number, uint8_t number2, uint8_t number3 = 0) {}
-
-	// print the state arrays to the Serial terminal
-	void printLEDStates();
-
-	// set color of RGB led
-	void setColor(uint8_t _COLOR);
-
-
-	/***BUTTONS***/
-
-	// the the state of a button identified by its id
-	//virtual IHWLayer::ButtonState getButtonState(uint8_t number);
-//	virtual IHWLayer::ButtonState
-	bool getButtonState(uint8_t number);
-
-	// print the read button states to serial terminal
-	void printButtonStates();
-	/***TRIGGER***/
-	void setTrigger(uint8_t number, TriggerState state, uint16_t pulseWidth=0);
-
-	bool getTriggerState(uint8_t number);
-
-
-
-
-	/***RAM***/
-
-	// write a byte to the given address
-	virtual void writeSRAM(long address, uint8_t data){}
-
-	// write a number of bytes starting at the given address
-	virtual void writeSRAM(long address, uint8_t* buf, uint16_t len){}
-
-	// read the byte stored at the given address
-	virtual uint8_t readSRAM(long address){return 0;}
-
-	// read a number of bytes starting from the given address
-	virtual void readSRAM(long address, uint8_t* buf, uint16_t len){}
-
-
+	bool buttonState(uint8_t _but);
 
 
 	/**TIMING**/
@@ -107,68 +57,29 @@ public:
 	virtual void readEEPROM(uint8_t pageNumb, uint8_t* byteArray, uint16_t numbBytes){}
 	virtual void readEEPROMDirect(uint16_t address, uint8_t* byteArray, uint16_t numbBytes){}
 	virtual bool isEEPROMBusy(){return true;}
-	void setBit(uint8_t _bit, bool _value);
-	void setGate(uint8_t _gate, bool _state);
-	void setLed(uint8_t _led, bool _state);
-	void dimLed(uint8_t _led, bool _state);
-	void setBiLed(uint8_t _led,bool _state, bool _color);
-	void setGateOut(bool _state);
-	void setShiftLed(bool _state);
-	void dimBiLed(uint8_t _led, bool _state);
-	void dimShiftLed(bool _state){shiftLedDim=_state;};
-	void selectKnob(uint8_t _knob);
-	uint8_t shiftHash[4];
-	bool justPressed(uint8_t _but);
-	bool justReleased(uint8_t _but);
-	bool buttonState(uint8_t _but);
-	bool jumpState(){return _jumpState;};
-	uint16_t getCV();
-	uint16_t getPotA();
-	uint16_t getPotB();
-	uint16_t getLastPotA();
-	uint16_t getLastPotB();
 
-	bool trigAState(){return trigStateA;};
-	bool trigBState(){return trigStateB;};
-	bool resetState(){return rstState;};
-	bool _jumpState;
+	void setLed(uint8_t _led, bool _state);
+	void setGateOut(uint8_t _number, bool _state);
+	void selectKnob(uint8_t _knob);
+
+	void setClkOut(bool _state);
+	void setHorLed(uint8_t _number, bool _state);
+	void setVerLed(uint8_t _number, bool _state);
+	void dimLed(uint8_t _led, bool _state);
+	void dimHorLed(uint8_t _led, bool _state);
+	void dimVerLed(uint8_t _led, bool _state);
 
 private:
 	/**TIMING**/
 
 	uint32_t bastlCycles;
-	bool inBetween(uint8_t value, uint8_t border1, uint8_t border2);
-
-
-	uint8_t buttonSelect;
-	/**BUTTONS**/
-	uint8_t knobFreezeHash;
-	uint8_t knobMovedHash;
-	bool shiftLedDim;
 	uint16_t buttonHash;
-	uint8_t justPressedHash;
-	uint8_t justReleasedHash;
+	uint16_t lastButtonHash;
+	uint8_t shiftHash[3];
+	uint8_t dimHash[3];
 
-	uint8_t ledDimHash;
-	uint8_t biLedDimHash;
-	uint8_t ledOutHash;
-	uint8_t ledDimCount;
+	/**BUTTONS**/
 
-	uint8_t selectedKnob;
-	bool newButtonStates[2];
-	bool buttonStates[2];
-	bool trigStateA;
-	bool trigStateB;
-	bool rstState;
-	bool shiftState;
-	uint16_t knobValues[8];
-	uint16_t mixedValues[8];
-	uint16_t lastMixedValues[8];
-
-	uint16_t lastKnobValues[6];
-	uint8_t knobFreezeValues[6];
-	uint8_t knobCount;
-	void compareButtonStates();
 	void (*buttonChangeCallback)(uint8_t number);
 	void (*clockInCallback)(uint8_t number);
 
