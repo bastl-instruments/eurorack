@@ -391,6 +391,27 @@ void buttonCall(uint8_t number){
 		}
 	}
 }
+#define _POINT 0
+#define _MINUS 1
+#define _PLUS 2
+uint8_t whichPoint=0;
+void interpolateCall(uint8_t channel, uint8_t number){
+	switch(channel){
+		case _POINT:
+			saveTable();
+			whichPoint=number;
+			writeDAC(cvOutCalibrate[number]);
+			break;
+		case _MINUS:
+			tuneTable[whichPoint]-=number;
+			writeDAC(cvOutCalibrate[whichPoint]);
+			break;
+		case _PLUS:
+			tuneTable[whichPoint]+=number;
+			writeDAC(cvOutCalibrate[whichPoint]);
+			break;
+	}
+}
 void setup(){
 /*
 	hw.initialize();
@@ -402,9 +423,14 @@ void setup(){
 
 
 	*/
+
 	hw.init(&buttonCall,&clockCall);
 	dacInit();
-	Serial.begin(38400);
+	//Serial.begin(38400);
+
+	com.init(38400);
+		//com.attachChannelCVCallback(&channelCVCall);
+	com.attachChannelInterpolateCallback(&interpolateCall);
 	//saveTable();
 	loadSettings();
 
@@ -639,7 +665,7 @@ void renderLeds(){
 void loop()
 {
 
-
+	com.update();
 
 	renderLeds();
 	renderCTRLknobs();

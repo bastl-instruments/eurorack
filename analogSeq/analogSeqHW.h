@@ -152,7 +152,7 @@ public:
 	bool justReleased(uint8_t _but);
 	bool buttonState(uint8_t _but);
 	bool jumpState(){return _jumpState;};
-	uint16_t getCV();
+	uint16_t getCV(uint8_t _number);
 	uint16_t getPotA();
 	uint16_t getPotB();
 	uint16_t getLastPotA();
@@ -191,6 +191,7 @@ private:
 	bool trigStateB;
 	bool rstState;
 	bool shiftState;
+	bool minMajGateState;
 	uint16_t knobValues[8];
 	uint16_t mixedValues[8];
 	uint16_t lastMixedValues[8];

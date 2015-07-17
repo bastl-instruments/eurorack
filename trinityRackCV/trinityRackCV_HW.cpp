@@ -175,11 +175,21 @@ void trinityRackCV_HW::zeroDACs(){
   }
 }
 
-
+uint8_t muxC[6]={2,7,6, 3,5,4};
 void trinityRackCV_HW::isr_updateReset(){
 	if(muxChannel<5) muxChannel++;
 	else muxChannel=0;
 // 0=000 1=001 2=010 3=011 4=100 5=101 6=110 7=111
+	for(int i=0;i<3;i++){
+		if(bitRead(muxC[muxChannel],0)) bit_set(MUX_SEL_1);
+		else bit_clear(MUX_SEL_1);
+		if(bitRead(muxC[muxChannel],1)) bit_set(MUX_SEL_2);
+		else bit_clear(MUX_SEL_2);
+		if(bitRead(muxC[muxChannel],2)) bit_set(MUX_SEL_3);
+		else bit_clear(MUX_SEL_3);
+
+	}
+	/*
 	switch(muxChannel){
 	case 0: //4
 		bit_clear(MUX_SEL_1);
@@ -187,11 +197,12 @@ void trinityRackCV_HW::isr_updateReset(){
 		bit_set(MUX_SEL_3);
 		break;
 	case 1: //6
+
 		bit_clear(MUX_SEL_1);
 		bit_set(MUX_SEL_2);
 		bit_set(MUX_SEL_3);
 		break;
-	case 2: //5
+	case 2: //5 - sedi
 		bit_set(MUX_SEL_1);
 		bit_clear(MUX_SEL_2);
 		bit_set(MUX_SEL_3);
@@ -200,6 +211,12 @@ void trinityRackCV_HW::isr_updateReset(){
 		bit_set(MUX_SEL_1);
 		bit_set(MUX_SEL_2);
 		bit_set(MUX_SEL_3);
+
+		bit_clear(MUX_SEL_1);
+		bit_set(MUX_SEL_2);
+		bit_clear(MUX_SEL_3);
+
+
 		break;
 	case 4: //3
 		bit_set(MUX_SEL_1);
@@ -207,13 +224,16 @@ void trinityRackCV_HW::isr_updateReset(){
 		bit_clear(MUX_SEL_3);
 		break;
 	case 5: //2
+
 		bit_clear(MUX_SEL_1);
 		bit_set(MUX_SEL_2);
-		bit_clear(MUX_SEL_3);
+		bit_set(MUX_SEL_3);
+
+
 		break;
 
 	}
-
+*/
 
 	bool newState=!bit_read_in(MUX_READ);
 	if( resetInCallback!=0){
@@ -224,7 +244,7 @@ void trinityRackCV_HW::isr_updateReset(){
 
 void trinityRackCV_HW::isr_updateClockIn(){
 	if(clockInCallback!=0){
-		bool newState=!bit_read_in(CLOCK_IN_PIN);
+		bool newState=bit_read_in(CLOCK_IN_PIN);
 		if(newState && !clockInState) clockInCallback();
 		clockInState=newState;
 	}

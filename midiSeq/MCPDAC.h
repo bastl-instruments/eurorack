@@ -12,31 +12,25 @@
  * similar chips that work with the same protocol.
  */
 
-#define CHANNEL_A false
-#define CHANNEL_B true
-#define GAIN_LOW false
-#define GAIN_HIGH true
+
 
 
 class MCPDACClass {
 
-	public:
-		boolean ldac;
-		boolean gainA;
-		boolean gainB;
-		boolean shutdownA;
-		boolean shutdownB;
-		unsigned int cspin;
-		unsigned int ldacpin;
+
 
 	public:
-		void begin();
-		void begin(unsigned int cspin);
-		void begin(unsigned int cspin, unsigned int ldacpin);
-		void setGain(bool chan, bool gain);
-		void shutdown(bool chan, bool sd);
-		void setVoltage(bool channel, unsigned int mv);
-		void update();
+
+		void init(uint8_t _cspin, uint8_t _cspin2);
+
+		void writeDAC(uint8_t channel, uint16_t voltage);
+
+
+	private:
+
+	uint8_t csPin;
+	uint8_t csPin2;
+
 };
 
-extern MCPDACClass MCPDAC;
+

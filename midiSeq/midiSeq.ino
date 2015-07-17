@@ -17,6 +17,7 @@ int main(void) {
 
 #include <EEPROM.h>
 #include <MIDI.h>
+#include <SPI.h>
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial, MIDI) ;
 #include <MIDInoteBuffer.h>
 //#include<spiShared.h>
@@ -82,18 +83,16 @@ void handleNoteOn(byte channel, byte pitch, byte velocity)
 	setGate(true);
 
 		buffer.addNoteToBuffer(pitch,velocity);
-		if(pitch>=36 && pitch<=96) writeDAC(curveMap(pitch-36,TUNE_POINTS, tuneTable));
+		//if(pitch>=36 && pitch<=96) dac.writeDAC(channel,curveMap(pitch-36,TUNE_POINTS, tuneTable));
 		//digitalWrite(8,LOW);
-
-
 	//digitalWrite(8,HIGH);
 }
 
 void handleNoteOff(byte channel, byte pitch, byte velocity)
 {
 	buffer.removeNoteFromBuffer(pitch);
-	if(buffer.getNumberOfNotesInBuffer()>0) writeDAC(curveMap(buffer.getNoteFromBuffer(0)-36,TUNE_POINTS, tuneTable));
-	else setGate(false);
+	//if(buffer.getNumberOfNotesInBuffer()>0) dac.writeDAC(curveMap(buffer.getNoteFromBuffer(0)-36,TUNE_POINTS, tuneTable));
+//	else setGate(false);
 	noteOn[pitch]=false;
 }
 
@@ -134,8 +133,14 @@ void buttonCall(uint8_t number){
 void clockCall(uint8_t number){
 
 }
+
 void setup(){
-	dacInit();
+	//dacInit();
+	 dac.init(10,9);
+	for(int i=0;i<4;i++){
+		 dac.writeDAC(i,2000);
+	}
+
 
 	MIDI.begin(MIDI_CHANNEL_OMNI);
     MIDI.setHandleNoteOn(handleNoteOn);

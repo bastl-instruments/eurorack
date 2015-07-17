@@ -3,10 +3,12 @@
  to do
 
  midi expansion support - asi ne
- reset expander pin mapping
+adsr hold mode musí přeskočit sustain nebo ho nastavit na nulu
+
 
  #to test
 
+ reset expander pin mapping
  retrigger ADSR
  lfo cv sync -deeper
  random rate mapping
@@ -90,6 +92,7 @@ void stepperStep() {
 	synchronizer.doStep();
 }
 */
+
 uint32_t gateTime;
 bool gate[6];
 
@@ -271,8 +274,10 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		//hardware.setDAC(channel,channelValue[channel][2]);
 		buffer[channel].interpolateMode(true);
 		buffer[channel].setInterpolationAmount(channelValue[channel][1]);
+
 		channelSync[channel]=bitRead(channelValue[channel][SETTINGS_BYTE],AUT_SYNC_BIT);
 		odd[channel]=bitRead(channelValue[channel][SETTINGS_BYTE],AUT_ODD_BIT);
+		//if(odd[channel]) buffer[channel].setNumberOfSteps();
 		break;
 	case LFO_MODE:
 		rate=channelValue[channel][0];
@@ -302,7 +307,6 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 				else syncFast[channel]=false;
 			}
 			else{
-
 				syncFactor[channel]=usefulLengthsEven[map(rate,255,0,0,11)];
 				if(map(rate,255,0,0,11)<3) syncFast[channel]=true;
 				else syncFast[channel]=false;
@@ -355,7 +359,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		case 1:
 			LFO[channel].setWaveform(SAW);
 			LFO[channel].setFlop(0);
-			LFO[channel].setXOR(form);
+			LFO[channel].setXOR(255-form);
 			LFO[channel].setResolution(255);
 			//,false,false,FOLDING);
 			wshape[channel]=false;
@@ -377,11 +381,11 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 			if(form>127){
 			//	res=(15-res)-7;
 				//LFO[channel].setResolution((1<<res));
-				LFO[channel].setXOR(0);
+				LFO[channel].setXOR(255);
 			}
 			else{
 				//LFO[channel].setResolution((1<<res));
-				LFO[channel].setXOR(255);
+				LFO[channel].setXOR(0);
 			}
 
 			//,true,false,FOLDING);
@@ -473,6 +477,7 @@ void reflectValueChange(uint8_t channel, uint8_t value){
 		}
 		if( bitRead(channelValue[channel][SETTINGS_BYTE],HOLD_BIT) ){
 			envelope[channel].setHold(true);
+			//setSustainLevel((float)channelValue[channel][1]/255.0);
 		}
 		else envelope[channel].setHold(false);
 		break;
@@ -582,16 +587,21 @@ void clockInCall(){
 	//if(currentStepNumber<255) currentStepNumber++;
 	//else
 	for(int i=0;i<6;i++){
-		if((channelMode[i]==INTERPOLATE_MODE && bitRead(channelValue[i][SETTINGS_BYTE],AUT_SYNC_BIT)) || (channelMode[i]==LFO_MODE && channelSync[i])){
+		if((channelMode[i]==INTERPOLATE_MODE && bitRead(channelValue[i][SETTINGS_BYTE],AUT_SYNC_BIT)) ){
 			uint8_t _numberOfSteps=0;
-			if(odd[i]) _numberOfSteps=(channelValue[i][2]>>3)+1;
-			else _numberOfSteps=1<<map(channelValue[i][2],0,255,0,5);
+			if(odd[i]) _numberOfSteps=(channelValue[i][2]>>3), buffer[i].setNumberOfSteps(_numberOfSteps);
+			else _numberOfSteps=(1<<map(channelValue[i][2],0,255,1,5))-1,buffer[i].setNumberOfSteps(_numberOfSteps);
+			if(currentStepNumber[i]<_numberOfSteps) currentStepNumber[i]++;
+			else currentStepNumber[i]=0;
+		}
+		if((channelMode[i]==LFO_MODE && channelSync[i])){
+			uint8_t _numberOfSteps=syncFactor[i]-1;
 			if(currentStepNumber[i]<_numberOfSteps) currentStepNumber[i]++;
 			else currentStepNumber[i]=0;
 		}
 	}
 
-	if(syncStepNumber<256) syncStepNumber++;
+	if(syncStepNumber<255) syncStepNumber++;
 	else syncStepNumber=0;
 
 	if(channelMode[selectedChannel]==INTERPOLATE_MODE && bitRead(channelValue[selectedChannel][SETTINGS_BYTE],AUT_SYNC_BIT)) com.sendStep(currentStepNumber[selectedChannel]);
@@ -599,9 +609,10 @@ void clockInCall(){
 
 		if(selectedChannel==i && channelMode[i]!=INTERPOLATE_MODE){
 			if(channelSync[i]){
-				if( syncStepNumber%4 == 0){ //syncFactor
-					com.sendStep(syncStepNumber);
+				if( currentStepNumber[i]%4 == 0){ //syncFactor
+					com.sendStep(currentStepNumber[i]);
 				}
+
 			}
 		}
 
@@ -618,7 +629,7 @@ void clockInCall(){
 				reflectValueChange(i,0);
 			}
 			else{
-				if(syncStepNumber%syncFactor[i]==0){
+				if((syncStepNumber%(syncFactor[i]))==0){ // novinka
 					buffer[i].sync();
 					LFO[i].setToStep(syncPhase[i],hardware.getElapsedBastlCyclesLong());
 					//LFO[i].setBastlCyclesPerPeriod(clockInDuration);
@@ -713,8 +724,8 @@ void renderOutput(){
 					if((hardware.getCVValue(i)>64) && gate[i]==false){
 						gate[i]=true; //int clock
 						uint8_t _numberOfSteps=0;
-						if(odd[i]) _numberOfSteps=(channelValue[i][2]>>3);
-						else _numberOfSteps=1<<map(channelValue[i][2],0,255,0,5);
+						if(odd[i]) _numberOfSteps=(channelValue[i][2]>>3), buffer[i].setNumberOfSteps(_numberOfSteps);
+						else _numberOfSteps=(1<<map(channelValue[i][2],0,255,1,5))-1, buffer[i].setNumberOfSteps(_numberOfSteps);
 						if(currentStepNumber[i]<_numberOfSteps) currentStepNumber[i]++;
 						else currentStepNumber[i]=0;
 						lfoClockInDuration[i]=hardware.getElapsedBastlCyclesLong()-lastLfoTime[i];
@@ -722,6 +733,7 @@ void renderOutput(){
 						if(i==selectedChannel) com.sendStep(currentStepNumber[i]);
 						buffer[i].setBastlCyclesPerPeriod(lfoClockInDuration[i]);
 						buffer[i].setStep(currentStepNumber[i]);
+
 					}
 					else if((hardware.getCVValue(i)<=64) && gate[i]==true) gate[i]=false;
 				}
@@ -745,7 +757,7 @@ void renderOutput(){
 							reflectValueChange(i,0);
 						}
 						else{
-							if(syncStepNumber%syncFactor[i]==0){
+							if(syncStepNumber%(syncFactor[i]-1)==0){
 								buffer[i].sync();
 							//	LFO[i].setToStep(syncPhase[i],hardware.getElapsedBastlCyclesLong());
 								//LFO[i].setBastlCyclesPerPeriod(clockInDuration);

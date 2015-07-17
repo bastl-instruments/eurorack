@@ -179,7 +179,10 @@ uint8_t colorBit[NUMBER_OF_COLORS]= {
 
 unsigned char analogPin[6]={
   ANALOG_PIN_1, ANALOG_PIN_2, ANALOG_PIN_3,  ANALOG_PIN_4, ANALOG_PIN_5, ANALOG_PIN_6};
-
+#define TRIG_A_PIN B,0
+#define TRIG_B_PIN B,1
+#define RST_PIN C,2
+#define MIN_MAJ_GATE_PIN C,3
 void analogSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockInCallback)(uint8_t number)) {
 
 	cli();
@@ -195,9 +198,19 @@ void analogSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockIn
 	bit_set(BUTTON_PIN);
 
 	bit_dir_inp(MIXED_PIN);
-	bit_set(MIXED_PIN);
+	//bit_set(MIXED_PIN);
 	bit_dir_inp(BUTTON_JUMP_PIN);
 	bit_set(BUTTON_JUMP_PIN);
+	bit_dir_inp(TRIG_A_PIN);
+	bit_dir_inp(TRIG_B_PIN);
+	bit_dir_inp(RST_PIN);
+	bit_dir_inp(MIN_MAJ_GATE_PIN);
+	bit_set(TRIG_A_PIN);
+	bit_set(TRIG_B_PIN);
+	bit_set(RST_PIN);
+	bit_set(MIN_MAJ_GATE_PIN);
+
+
 /*
 	bit_dir_inp(INPUT_1);
 	bit_dir_inp(INPUT_2);
@@ -217,7 +230,7 @@ void analogSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockIn
 	bit_set(LED_R_PIN);
 	*/
 
-	bit_dir_outp(PIN);
+	//bit_dir_outp(PIN);
 
 	// store callback pointer for changed buttons
 	 this->buttonChangeCallback = buttonChangeCallback;
@@ -273,27 +286,28 @@ void analogSeqHW::setColor(unsigned char _COLOR){
 
 
 /**** BUTTONS ****/
-#define TRIG_A 3
-#define TRIG_B 4
-#define RST 0
-#define SHIFT_B 5
 
-const uint8_t mixedBit[8]={ 3,7,0,4,5,6,2,1};
-uint16_t analogSeqHW::getCV(){
-	return mixedValues[0];
+
+const uint8_t mixedBit[8]={ 0,1,2,3,4,5,6,7};
+
+		//3,7,6,4,5,0,2,1};
+
+const uint8_t cvCoordinate[6]={2,4,1,3,0};
+uint16_t analogSeqHW::getCV(uint8_t _number){
+	return mixedValues[cvCoordinate[_number]];
 }
 uint16_t analogSeqHW::getPotA(){
-	return mixedValues[1];
+	return mixedValues[7];
 }
 uint16_t analogSeqHW::getPotB(){
-	return mixedValues[2];
+	return mixedValues[6];
 }
 
 uint16_t analogSeqHW::getLastPotA(){
-	return lastMixedValues[1];
+	return lastMixedValues[7];
 }
 uint16_t analogSeqHW::getLastPotB(){
-	return lastMixedValues[2];
+	return lastMixedValues[6];
 }
 
 
@@ -301,68 +315,72 @@ bool isAnalog[8]={false,false,true,false,false,false,true,true};
 void  analogSeqHW::dimBiLed(uint8_t _led, bool _state){
 	bitWrite(biLedDimHash,_led,_state);
 }
+
+#define SHIFT_B 5
 void analogSeqHW::isr_updateButtons() {
 
 	uint8_t i=buttonSelect;//buttonBit[buttonSelect];
 //isAnalog[i]=true;
 
-	fastAnalogRead::connectChannel(MIXED_CHANNEL);
-	fastAnalogRead::startConversion();
+	if(i==SHIFT_B){
+		bit_set(MIXED_PIN);
+		fastAnalogRead::connectChannel(MIXED_CHANNEL);
+		fastAnalogRead::startConversion();
 
-	while(!fastAnalogRead::isConversionFinished()){} ;
-	lastMixedValues[mixedBit[i]]=mixedValues[mixedBit[i]];
-	mixedValues[mixedBit[i]]=fastAnalogRead::getConversionResult();
-	if(!isAnalog[i]){
-
-
-	//	bit_dir_inp(MIXED_PIN);
+		while(!fastAnalogRead::isConversionFinished()){} ;
+		lastMixedValues[mixedBit[i]]=mixedValues[mixedBit[i]];
+		mixedValues[mixedBit[i]]=fastAnalogRead::getConversionResult();
 
 		bool newState;
 		if(mixedValues[mixedBit[i]]>512) newState=false;
 		else newState=true;
-
-		if(i==TRIG_A){
-			//bit_read_in(MIXED_PIN);
-			if(newState && !trigStateA){
-				if(clockInCallback!=0){
-					clockInCallback(1);
-				}
-			}
-			trigStateA=newState;
-		}
-		if(i==TRIG_B){
 		//bool newState=bit_read_in(MIXED_PIN);
-			if(newState && !trigStateB){
-				if(clockInCallback!=0){
-					clockInCallback(2);
-				}
+		if(newState != shiftState){
+			shiftState=newState;
+			bitWrite(buttonHash,8,shiftState);
+			if(buttonChangeCallback!=0){
+				buttonChangeCallback(8);
 			}
-			trigStateB=newState;
 		}
-		if(i==RST){
-			//bool newState=bit_read_in(MIXED_PIN);
-			if(newState && !rstState){
-				if(clockInCallback!=0){
-					clockInCallback(0);
-				}
-			}
-			rstState=newState;
-		}
-		if(i==SHIFT_B){
-			//bool newState=bit_read_in(MIXED_PIN);
-			if(newState != shiftState){
-				shiftState=newState;
-				bitWrite(buttonHash,8,shiftState);
-				if(buttonChangeCallback!=0){
-					buttonChangeCallback(8);
-				}
-			}
+		bit_clear(MIXED_PIN);
 
-		}
-		//bit_clear(MIXED_PIN);
+	}
+	else{
+		fastAnalogRead::connectChannel(MIXED_CHANNEL);
+		fastAnalogRead::startConversion();
+
+		while(!fastAnalogRead::isConversionFinished()){} ;
+		lastMixedValues[mixedBit[i]]=mixedValues[mixedBit[i]];
+		mixedValues[mixedBit[i]]=fastAnalogRead::getConversionResult();
 	}
 
-	bool newState=!bit_read_in(BUTTON_PIN);
+
+	bool newState=!bit_read_in(TRIG_A_PIN);
+	if(newState && !trigStateA){
+		if(clockInCallback!=0){
+			clockInCallback(1);
+		}
+	}
+	trigStateA=newState;
+
+	newState=!bit_read_in(TRIG_B_PIN);
+	if(newState && !trigStateB){
+		if(clockInCallback!=0){
+			clockInCallback(2);
+		}
+	}
+	trigStateB=newState;
+	newState=!bit_read_in(RST_PIN);
+	if(newState && !rstState){
+		if(clockInCallback!=0){
+			clockInCallback(0);
+		}
+	}
+	rstState=newState;
+
+	minMajGateState=!bit_read_in(MIN_MAJ_GATE_PIN);
+
+	newState=!bit_read_in(BUTTON_PIN);
 	if(buttonChangeCallback!=0){
 		if(newState != bitRead(buttonHash,buttonBit[i])){
 			bitWrite(buttonHash,buttonBit[i],newState);
@@ -398,8 +416,8 @@ void analogSeqHW::isr_updateButtons() {
 
 	}
 	*/
-	if(isAnalog[i]) bit_clear(MIXED_PIN);
-	else bit_set(MIXED_PIN);
+	//if(isAnalog[i]) bit_clear(MIXED_PIN);
+	//else bit_set(MIXED_PIN);
 
 }
 bool analogSeqHW::buttonState(uint8_t _but){
@@ -633,7 +651,7 @@ uint16_t analogSeqHW::getBastlCyclesPerSecond() {
 ISR(TIMER2_COMPA_vect) { //56us :)
 
 
-	bit_set(PIN);
+	//bit_set(PIN);
 	hw.incrementBastlCycles();
 	//hardware.isr_updateClockIn();
 	//hardware.isr_updateKnobs();
@@ -642,7 +660,7 @@ ISR(TIMER2_COMPA_vect) { //56us :)
 	hw.isr_updateButtons();      // ~1ms
 	//hardware.isr_updateNextLEDRow();   // ~84us
 
-	bit_clear(PIN);
+//	bit_clear(PIN);
 
 
 }

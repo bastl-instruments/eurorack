@@ -16,86 +16,42 @@
 #include <SPI.h>
 #include "MCPDAC.h"
 
-MCPDACClass MCPDAC;
 
-void MCPDACClass::begin()
+void MCPDACClass::init(uint8_t _cspin, uint8_t _cspin2)
 {
-	this->begin(10);
-}
 
-void MCPDACClass::begin(unsigned int cspin)
-{
-	this->ldac = false;
-	this->begin(cspin,0);
-}
-
-void MCPDACClass::begin(unsigned int cspin, unsigned int ldacpin)
-{
-	this->ldac = true;
-	this->cspin = cspin;
-	this->ldacpin = ldacpin;
-	this->shutdownA = false;
-	this->shutdownB = false;
-	this->gainA = false;
-	this->gainB = false;
-	pinMode(this->ldacpin,OUTPUT);
-	digitalWrite(this->ldacpin,HIGH);
-	pinMode(this->cspin,OUTPUT);
-	digitalWrite(this->cspin,HIGH);
+	csPin = _cspin;
+	csPin2 = _cspin2;
+	//this->ldacpin = ldacpin;
+	pinMode(csPin,OUTPUT);
+	digitalWrite(csPin,HIGH);
+	pinMode(csPin2,OUTPUT);
+	digitalWrite(csPin2,HIGH);
 	SPI.begin();
 }
 
-void MCPDACClass::setGain(bool chan, bool gain)
-{
-	if(chan == CHANNEL_A)
-	{
-		this->gainA = gain;
-	} else {
-		this->gainB = gain;
-	}
-}
 
-void MCPDACClass::shutdown(bool chan, bool sd)
+void MCPDACClass::writeDAC(uint8_t channel, uint16_t voltage)
 {
-	if(chan == CHANNEL_A)
-	{
-		this->shutdownA = sd;
-	} else {
-		this->shutdownB = sd;
+	uint8_t _csPin=0;
+	if(channel/2){
+		_csPin=csPin2;
 	}
-}
-
-void MCPDACClass::setVoltage(bool channel, unsigned int mv)
-{
+	else{
+		_csPin=csPin;
+	}
 	unsigned int command;
-	if(channel == CHANNEL_A)
-	{
-		command = 0x0000;
-		command |= this->shutdownA ? 0x0000 : 0x1000;
-		command |= this->gainA ? 0x0000 : 0x2000;
-		command |= (mv & 0x0FFF);
-		SPI.setDataMode(SPI_MODE0);
-		digitalWrite(this->cspin,LOW);
-		SPI.transfer(command>>8);
-		SPI.transfer(command&0xFF);
-		digitalWrite(this->cspin,HIGH);
-	} else {
-		command = 0x8000;
-		command |= this->shutdownB ? 0x0000 : 0x1000;
-		command |= this->gainB ? 0x0000 : 0x2000;
-		command |= (mv & 0x0FFF);
-		SPI.setDataMode(SPI_MODE0);
-		digitalWrite(this->cspin,LOW);
-		SPI.transfer(command>>8);
-		SPI.transfer(command&0xFF);
-		digitalWrite(this->cspin,HIGH);
-	}
+	if(channel%2==0) command = 0x0000;
+	else command = 0x8000;
+	command |= 0x1000;
+	command |= 0x0000 ;
+	command |= (voltage & 0x0FFF);
+
+	SPI.setDataMode(SPI_MODE0);
+	digitalWrite(csPin,LOW);
+	SPI.transfer(command>>8);
+	SPI.transfer(command&0xFF);
+	digitalWrite(csPin,HIGH);
+
 }
 
-void MCPDACClass::update()
-{
-	if(this->ldac==false)
-		return;
-	digitalWrite(this->ldacpin,LOW);
-	digitalWrite(this->ldacpin,HIGH);
-}
