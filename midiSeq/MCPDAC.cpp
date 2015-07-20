@@ -40,7 +40,7 @@ void MCPDACClass::writeDAC(uint8_t channel, uint16_t voltage)
 	else{
 		_csPin=csPin;
 	}
-	unsigned int command;
+	uint16_t command=0;
 	if(channel%2==0) command = 0x0000;
 	else command = 0x8000;
 	command |= 0x1000;
@@ -48,10 +48,10 @@ void MCPDACClass::writeDAC(uint8_t channel, uint16_t voltage)
 	command |= (voltage & 0x0FFF);
 
 	SPI.setDataMode(SPI_MODE0);
-	digitalWrite(csPin,LOW);
+	digitalWrite(_csPin,LOW);
 	SPI.transfer(command>>8);
 	SPI.transfer(command&0xFF);
-	digitalWrite(csPin,HIGH);
+	digitalWrite(_csPin,HIGH);
 
 }
 

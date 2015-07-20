@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <pgHW.h>
 #include <SPI.h>
-//#include <mcpDac.h>
+#include <mcpDac.h>
 #include <calibrationADC_HW.h>
 int main(void) {
 
@@ -55,16 +55,30 @@ uint16_t tuneInputTable[60]={0,17,34,51,68,85,102,119,136,153,170,188,
 
 
 uint16_t tuneTable[12]={ 0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4095,4095};
+uint16_t tuneOutTable[12]={0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4095,4095};
 
 void loadTable(){
 	for(int i=0;i<11;i++){
 		tuneTable[i]=word(EEPROM.read(i*2),EEPROM.read(1+(i*2)));
 	}
 }
+
 void saveTable(){
 	for(int i=0;i<11;i++){
 		EEPROM.write(i*2,highByte(tuneTable[i]));
 		EEPROM.write(1+(i*2),lowByte(tuneTable[i]));
+	}
+}
+#define OUT_OFFSET 111
+void loadOutTable(){
+	for(int i=0;i<11;i++){
+		tuneOutTable[i]=word(EEPROM.read(OUT_OFFSET+(i*2)),EEPROM.read(OUT_OFFSET+1+(i*2)));
+	}
+}
+void saveOutTable(){
+	for(int i=0;i<11;i++){
+		EEPROM.write(OUT_OFFSET+(i*2),highByte(tuneOutTable[i]));
+		EEPROM.write(OUT_OFFSET+1+(i*2),lowByte(tuneOutTable[i]));
 	}
 }
 
@@ -99,13 +113,15 @@ void setup(){
 	com.attachChannelInterpolateCallback(&channelInterpolateCall);
 
     loadTable();
+   // saveOutTable();
+    loadOutTable();
     //com.sendPairMessage();
 
     adc.init();
 
 
     hw.initialize();
-//	mcpDacInit();
+	mcpDacInit();
 	//dacInit();
 
 }
@@ -124,6 +140,7 @@ void calibrateDevice(){
 		else hw.setDot(false);
 		com.sendPairMessage();
 		com.sendChannelInterpolate(_POINT,i);
+		mcpDacSend(tuneOutTable[i]);
 		thePoint=255;
 		acceptCalibration=false;
 		while(thePoint!=i){
@@ -139,6 +156,10 @@ void calibrateDevice(){
 			while((input>tuneTable[volts])){
 				com.sendPairMessage();
 				com.sendChannelInterpolate(_MINUS,5);
+
+				tuneOutTable[i]-=5;
+				mcpDacSend(tuneOutTable[i]);
+
 				delay(_WAIT);
 				input=adc.readADC();
 				hw.update();
@@ -147,6 +168,10 @@ void calibrateDevice(){
 			while(input<tuneTable[volts]){
 				com.sendPairMessage();
 				com.sendChannelInterpolate(_PLUS,5);
+
+				tuneOutTable[i]+=5;
+				mcpDacSend(tuneOutTable[i]);
+
 				delay(_WAIT);
 				input=adc.readADC();
 				hw.update();
@@ -155,6 +180,9 @@ void calibrateDevice(){
 			while((input>tuneTable[volts])){
 				com.sendPairMessage();
 				com.sendChannelInterpolate(_MINUS,1);
+				tuneOutTable[i]-=1;
+				mcpDacSend(tuneOutTable[i]);
+
 				delay(_WAIT);
 				input=adc.readADC();
 				hw.update();
@@ -163,6 +191,10 @@ void calibrateDevice(){
 			while(input<tuneTable[volts]){
 				com.sendPairMessage();
 				com.sendChannelInterpolate(_PLUS,1);
+
+				tuneOutTable[i]+=1;
+				mcpDacSend(tuneOutTable[i]);
+
 				delay(_WAIT);
 				input=adc.readADC();
 				hw.update();
@@ -171,9 +203,18 @@ void calibrateDevice(){
 			uint16_t higher=input;
 			com.sendPairMessage();
 			com.sendChannelInterpolate(_MINUS,1);
+			tuneOutTable[i]-=1;
+			mcpDacSend(tuneOutTable[i]);
+
 			delay(_WAIT);
 			input=adc.readADC();
-			if(abs(higher-tuneTable[volts]) < abs(tuneTable[volts]-input)) com.sendPairMessage(),com.sendChannelInterpolate(_PLUS,1);
+			if(abs(higher-tuneTable[volts]) < abs(tuneTable[volts]-input)){
+				com.sendPairMessage(),com.sendChannelInterpolate(_PLUS,1);
+				tuneOutTable[i]+=1;
+				mcpDacSend(tuneOutTable[i]);
+			}
+			saveOutTable();
+			//loadOutTable();
 			hw.setColor(GREEN);
 			hw.update();
 			delay(10);
@@ -181,6 +222,7 @@ void calibrateDevice(){
 	}
 }
 //#define DEBUG
+
 void loop()
 {
 #ifndef DEBUG
@@ -189,6 +231,7 @@ void loop()
 	hw.displayNumber(volts/2);
 	if((volts%2)==1) hw.setDot(true);
 	else hw.setDot(false);
+	mcpDacSend(tuneOutTable[volts]);
 	if(hw.buttonState(BUTTON_A)&&hw.justPressed(BUTTON_B)){ //average?
 		hw.setColor(RED);
 		hw.update();

@@ -130,16 +130,14 @@ void buttonCall(uint8_t number){
 		}
 	}
 }
+bool flop=false;
 void clockCall(uint8_t number){
-
+	flop=!flop;
 }
 
 void setup(){
 	//dacInit();
-	 dac.init(10,9);
-	for(int i=0;i<4;i++){
-		 dac.writeDAC(i,2000);
-	}
+
 
 
 	MIDI.begin(MIDI_CHANNEL_OMNI);
@@ -151,11 +149,17 @@ void setup(){
     hw.init(&buttonCall,&clockCall);
     buffer.init();
     buffer.setPolyphony(1);
+
+    dac.init(10,9);
+   	for(int i=0;i<4;i++){
+   		 dac.writeDAC(i,2000);
+   	}
 }
 #define MIDI_CV 0
 #define MIDI_SEQ 1
 #define MIDI_LOOP 2
 #define ARP 3
+uint16_t counter=0;
 void loop()
 {
 	/*
@@ -163,20 +167,29 @@ void loop()
 	writeDAC(i);
 	delay(1);
 	}*/
+	if(counter<4096) counter++;
+	else counter=0;
+	for(int i=0;i<4;i++){
+		 dac.writeDAC(i,counter);
+	}
+	delay(1);
 
     MIDI.read();
+    hw.setClkOut(hw.buttonState(4));
 	for(int i=0;i<3;i++){
+		hw.setGateOut(i,hw.buttonState(i));
 		if(i==selectedChannel) hw.setLed(i,true);
 		else hw.setLed(i,false);
 	//	hw.setLed(i,true);
 	//	if(i==selectedChannel) hw.dimLed(i,true);
 	//	else hw.dimLed(i,false);
 	}
-	for(int i=3;i<6;i++){
+	for(int i=3;i<5;i++){
 		hw.setLed(i,hw.buttonState(i));
 	//	hw.setLed(i,true);
 	//	hw.dimLed(i,hw.buttonState(i));
 	}
+	hw.setLed(5,flop);
 	for(int i=0;i<5;i++){
 		if(i==parameter[mode]) hw.setHorLed(i,true);
 		else hw.setHorLed(i,false);
@@ -209,6 +222,7 @@ void loop()
 		//horizontal=arp_type
 		break;
 	}
+
 }
 
 
