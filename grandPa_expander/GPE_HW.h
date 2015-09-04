@@ -13,7 +13,7 @@ public:
 
 	void init();
 
-	void update();
+	void update(uint8_t i);
 
 
 	uint8_t getCVValue(uint8_t number);

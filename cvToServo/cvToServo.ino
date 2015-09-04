@@ -29,8 +29,55 @@ const uint8_t analogPin[6]={1,2,3,0,4,5};
 uint16_t analogValue[6];
 const uint8_t gatePin[2]={8,9};
 //#define DEBUG
+
+
+#define MEM_OFFSET 34
+uint16_t channelCenter[2]={512,512};
+#define CENTER_1_PIN 12
+#define CENTER_2_PIN 13
+#define SIGNAL_PIN 13
+void calibrate(){
+	 if(!digitalRead(CENTER_1_PIN)){// && !digitalRead(CENTER_2_PIN)) {
+		  channelCenter[0]=analogRead(analogPin[0]);
+		  channelCenter[1]=analogRead(analogPin[3]);
+
+		  EEPROM.write(MEM_OFFSET,lowByte(channelCenter[0]));
+		  EEPROM.write(MEM_OFFSET+1,highByte(channelCenter[0]));
+
+		  EEPROM.write(MEM_OFFSET+2,lowByte(channelCenter[1]));
+		  EEPROM.write(MEM_OFFSET+1+2,highByte(channelCenter[1]));
+
+		  for(int i=0;i<8;i++){
+			  digitalWrite(SIGNAL_PIN,HIGH);
+			  delay(200);
+			  digitalWrite(SIGNAL_PIN,LOW);
+			  delay(200);
+		  }
+	  }
+}
+
+void initCalibrate(){
+	if(EEPROM.read(MEM_OFFSET+10+1)!=13 || EEPROM.read(MEM_OFFSET+10+2)!=145 || EEPROM.read(MEM_OFFSET+10+3)!=109){
+		EEPROM.write(MEM_OFFSET+10+1,13);
+		EEPROM.write(MEM_OFFSET+10+2,145);
+		EEPROM.write(MEM_OFFSET+10+3,109);
+
+		EEPROM.write(MEM_OFFSET,lowByte(channelCenter[0]));
+		EEPROM.write(MEM_OFFSET+1,highByte(channelCenter[0]));
+
+		EEPROM.write(MEM_OFFSET+2,lowByte(channelCenter[1]));
+		EEPROM.write(MEM_OFFSET+1+2,highByte(channelCenter[1]));
+	}
+
+	channelCenter[0]=word(EEPROM.read(MEM_OFFSET+1),EEPROM.read(MEM_OFFSET));
+	channelCenter[1]=word(EEPROM.read(MEM_OFFSET+1+2),EEPROM.read(MEM_OFFSET+2));
+
+}
+//#define DEBUG
+
 void setup()
 {
+	initCalibrate();
 	pinMode(3,OUTPUT);
 	pinMode(4,OUTPUT);
 	pinMode(8,INPUT_PULLUP);
@@ -40,6 +87,11 @@ void setup()
 #ifdef DEBUG
   Serial.begin(9600);
 #endif
+  /*
+  Serial.begin(9600);
+  Serial.println(channelCenter[0]);
+  Serial.println(channelCenter[1]);
+  */
 }
 #define CV 0
 #define ATT 1
@@ -70,12 +122,13 @@ void renderServo(uint8_t ch){
 	if(gate[ch]){
 		angle=analogValue[ch*3+ATT];
 		angle=map(angle,0,1024,0,180);
+		angle=constrain(angle,1,179);
 	}
 	else{
 		att=map(analogValue[ch*3+ATT] ,0,1024,0,360);
 
-		angle=map(analogValue[ch*3+POT] ,0,1024,0,180)+ map(analogValue[ch*3+CV],0,1024,-att,att);
-		angle=constrain(angle,0,180);
+		angle=map(analogValue[ch*3+POT] ,0,1024,0,180)+ map(analogValue[ch*3+CV]-channelCenter[ch],-512,511,-att,att);
+		angle=constrain(angle,1,179);
 
 	   //map(analogValue[ch*3+CV]-512,-512,512,-(analogValue[ch*3+ATT])<<1,(analogValue[ch*3+ATT])<<1);
 		//angle=map(angle,0,1024,0,180);
@@ -87,7 +140,7 @@ long time;
 void loop()
 {
 	for(int i=0;i<2;i++){
-		gate[i]=digitalRead(gatePin[i]);
+		gate[i]=!digitalRead(gatePin[i]);
 	}
 	for(int i=0;i<6;i++){
 		analogValue[i]=analogRead(analogPin[i]);
@@ -97,11 +150,12 @@ void loop()
 		time=millis();
 
 	#ifdef DEBUG
-		test();
+	//	test();
 	#else
 		for(int i=0;i<2;i++){
 			renderServo(i);
 		}
+		calibrate();
 	#endif
 	}
 	//delay(1);

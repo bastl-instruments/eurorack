@@ -20,16 +20,6 @@
  * -written in Arduino + using SDFat library
  *
  * 
- * TODO
- * 
- * - test CV assign and grain sync
- * - card removal pimpUp ?
- * - when synced and no clock available - end position doesnot repeat is good, but...
- * 
- * - longer zero on RATE knob ?
- * BUGS
- * when synced doesnt loop properly
- * looping sometimes doesnt work
  * 
  * 
  * 

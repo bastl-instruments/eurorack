@@ -28,6 +28,14 @@ int main(void) {
 #define OUTPUT_4 D,5
 #define POT_PIN 0
 
+#define EXPANDER_DETECT_PIN 15
+
+
+#define EXP_IN_PIN_1 16
+#define EXP_IN_PIN_2 18
+#define EXP_IN_PIN_3 17
+#define EXP_IN_PIN_4 19
+const uint8_t exp_input[4]={EXP_IN_PIN_1,EXP_IN_PIN_2,EXP_IN_PIN_3,EXP_IN_PIN_4};
 const uint8_t input[4]={
   8,9,10,11};
 const uint8_t output[4]={
@@ -35,6 +43,12 @@ const uint8_t output[4]={
 bool triggerState[4];
 #define NUMBER_OF_CHANNELS 4
 void setup(){
+	pinMode(EXPANDER_DETECT_PIN,INPUT_PULLUP);
+	pinMode(EXP_IN_PIN_1,INPUT);
+	pinMode(EXP_IN_PIN_2,INPUT);
+	pinMode(EXP_IN_PIN_3,INPUT);
+	pinMode(EXP_IN_PIN_4,INPUT);
+
   for(int i=0;i<NUMBER_OF_CHANNELS;i++){
     pinMode(input[i],INPUT_PULLUP);
     pinMode(output[i],OUTPUT);
@@ -46,10 +60,21 @@ void setup(){
 uint32_t triggerTime[4];
 bool outputState[4];
 uint32_t triggerLength;
-
+uint16_t expTriggerLength[4]={0,0,0,0};
 void loop()
 {
-  uint16_t newTriggerLength=analogRead(POT_PIN)>>2;
+
+	if(!digitalRead(EXPANDER_DETECT_PIN)){
+		for(int i=0;i<4;i++){
+			expTriggerLength[i]=analogRead(exp_input[i])>>3;
+		}
+	}
+	else{
+		for(int i=0;i<4;i++){
+			expTriggerLength[i]=0;
+		}
+	}
+  uint16_t newTriggerLength=(analogRead(POT_PIN)>>3);
   if(newTriggerLength!=0 && triggerLength==0){
     for(int i=0;i<NUMBER_OF_CHANNELS;i++){
       triggerState[i]=false;
@@ -58,13 +83,15 @@ void loop()
     }
   }
   triggerLength=newTriggerLength;
-
+/*
   if(triggerLength==0){
     for(int i=0;i<NUMBER_OF_CHANNELS;i++){
       digitalWrite(output[i],!digitalRead(input[i]));
     }
   }
   else{
+
+  */
     for(int i=0;i<NUMBER_OF_CHANNELS;i++){
       bool newState=!digitalRead(input[i]);
       if(newState && !triggerState[i]){
@@ -77,13 +104,13 @@ void loop()
 
     for(int i=0;i<NUMBER_OF_CHANNELS;i++){
       if(outputState[i]){
-        if(millis()-triggerTime[i]>triggerLength){
+        if(millis()-triggerTime[i]>(2+triggerLength+expTriggerLength[i])){
           digitalWrite(output[i],LOW);
           outputState[i]=false;
         }
       }
     }
-  }
+ // }
 
 }
 
