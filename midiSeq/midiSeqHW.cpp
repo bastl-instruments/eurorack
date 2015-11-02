@@ -16,7 +16,24 @@ midiSeqHW hw;
 //#define PIN B,5
 #define CLK_IN_PIN C,5
 
+
+#define BUTTON_PIN B,0
+
+#define BUTT_CO_B 0
+#define BUTT_CO_D 1
+#define BUTT_CO_LEFT 2
+#define BUTT_CO_C 3
+#define BUTT_CO_MODE 4
+#define BUTT_CO_E 5
+#define BUTT_CO_RIGHT 6
+#define BUTT_CO_F 7
+
+#define MUX_PIN_0 D,6
+#define MUX_PIN_1 D,5
+#define MUX_PIN_2 C,0
+
 #define BUTTON_PIN_A D,7
+
 #define BUTTON_PIN_B D,6
 #define BUTTON_PIN_C D,5
 
@@ -67,6 +84,9 @@ midiSeqHW hw;
 #define GATE_SHIFT 18
 #define CLK_SHIFT 22
 #define CLK_LED_SHIFT 21
+#define CLK_PIN C,5
+#define RST_PIN C,1
+
 
 const uint8_t outBit[24]={
 		LED_BIT_A,LED_BIT_B,LED_BIT_C,LED_BIT_D,LED_BIT_E,LED_BIT_F,
@@ -126,9 +146,23 @@ void midiSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockInCa
 
 	//bit_dir_outp(PIN);
 
-	bit_dir_inp(CLK_IN_PIN);
+
 
 	bit_dir_inp(BUTTON_PIN_A);
+	bit_set(BUTTON_PIN_A);
+
+	bit_dir_inp(BUTTON_PIN);
+	bit_set(BUTTON_PIN);
+
+
+	bit_dir_outp(MUX_PIN_0);
+	bit_clear(MUX_PIN_0);
+	bit_dir_outp(MUX_PIN_1);
+	bit_clear(MUX_PIN_1);
+	bit_dir_outp(MUX_PIN_2);
+	bit_clear(MUX_PIN_2);
+
+	/*
 	bit_dir_inp(BUTTON_PIN_B);
 	bit_dir_inp(BUTTON_PIN_C);
 
@@ -151,7 +185,7 @@ void midiSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockInCa
 	bit_set(BUTTON_MODE);
 	bit_set(BUTTON_LEFT);
 	bit_set(BUTTON_RIGHT);
-
+*/
 
 	// store callback pointer for changed buttons
 	 this->buttonChangeCallback = buttonChangeCallback;
@@ -175,6 +209,21 @@ void midiSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockInCa
 	sei();
 }
 
+void midiSeqHW::setClock(bool _master){
+	master=_master;
+	if(master){
+		bit_dir_outp(CLK_PIN);
+		bit_dir_outp(RST_PIN);
+		bit_clear(CLK_PIN);
+		bit_clear(RST_PIN);
+	}
+	else{
+		bit_dir_inp(CLK_PIN);
+		bit_dir_inp(RST_PIN);
+		bit_clear(CLK_PIN);
+		bit_clear(RST_PIN);
+	}
+}
 
 
 
@@ -186,7 +235,19 @@ void midiSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockInCa
 #define RST 0
 #define SHIFT_B 5
 
+void midiSeqHW::setMuxBits(uint8_t _bits){
 
+	if(bitRead(_bits,0)) bit_set(MUX_PIN_0);
+	else bit_clear(MUX_PIN_0);
+
+	if(bitRead(_bits,1)) bit_set(MUX_PIN_1);
+	else bit_clear(MUX_PIN_1);
+
+	if(bitRead(_bits,2)) bit_set(MUX_PIN_2);
+	else bit_clear(MUX_PIN_2);
+	//delay(1);
+}
+uint8_t readOut=0;
 void midiSeqHW::isr_updateButtons() {
 //buttonBit[buttonSelect];
 //isAnalog[i]=true;
@@ -194,18 +255,45 @@ void midiSeqHW::isr_updateButtons() {
 	//fastAnalogRead::connectChannel(MIXED_CHANNEL);
 	//fastAnalogRead::startConversion();
 	lastButtonHash=buttonHash;
-
+	if(readOut<8) readOut++;
+	else readOut=0;
+switch(readOut){
+case 0:
 	bitWrite(buttonHash,0,!bit_read_in(BUTTON_PIN_A));
-	bitWrite(buttonHash,1,!bit_read_in(BUTTON_PIN_B));
-	bitWrite(buttonHash,2,!bit_read_in(BUTTON_PIN_C));
-
-	bitWrite(buttonHash,3,!bit_read_in(BUTTON_PIN_D));
-	bitWrite(buttonHash,4,!bit_read_in(BUTTON_PIN_E));
-	bitWrite(buttonHash,5,!bit_read_in(BUTTON_PIN_F));
-
-	bitWrite(buttonHash,6,!bit_read_in(BUTTON_MODE));
-	bitWrite(buttonHash,7,!bit_read_in(BUTTON_LEFT));
-	bitWrite(buttonHash,8,!bit_read_in(BUTTON_RIGHT));
+	setMuxBits(BUTT_CO_B);
+	break;
+	case 1:
+	bitWrite(buttonHash,1,!bit_read_in(BUTTON_PIN));
+	setMuxBits(BUTT_CO_C);
+	break;
+	case 2:
+	bitWrite(buttonHash,2,!bit_read_in(BUTTON_PIN));
+	setMuxBits(BUTT_CO_D);
+	break;
+	case 3:
+	bitWrite(buttonHash,3,!bit_read_in(BUTTON_PIN));
+	setMuxBits(BUTT_CO_E);
+	break;
+	case 4:
+	bitWrite(buttonHash,4,!bit_read_in(BUTTON_PIN));
+	setMuxBits(BUTT_CO_F);
+	break;
+	case 5:
+	bitWrite(buttonHash,5,!bit_read_in(BUTTON_PIN));
+	setMuxBits(BUTT_CO_MODE);
+	break;
+	case 6:
+	bitWrite(buttonHash,6,!bit_read_in(BUTTON_PIN));
+	setMuxBits(BUTT_CO_LEFT);
+	break;
+	case 7:
+	bitWrite(buttonHash,7,!bit_read_in(BUTTON_PIN));
+	setMuxBits(BUTT_CO_RIGHT);
+	break;
+	case 8:
+	bitWrite(buttonHash,8,!bit_read_in(BUTTON_PIN));
+	break;
+}
 
 	if(buttonChangeCallback!=0){
 		for(uint8_t i=0;i<9;i++){

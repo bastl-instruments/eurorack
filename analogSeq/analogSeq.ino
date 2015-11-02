@@ -2,6 +2,8 @@
 
 #ifdef EXTERNAL_IDE
 #include <Arduino.h>
+#include <utilities.h>
+#include <dacRoutine.h>
 /*
  *
  * TODO
@@ -38,65 +40,13 @@ simpleSerialDecoder com;
 #include <Line.h>
 Line <float> line;
 extern analogSeqHW hw;
-#define DAC_CONFIG 0x30
-#define SS_DAC B,2
+
 //MIDInoteBuffer buffer;
 
-void writeDAC(uint16_t signal) {
 
-  bit_clear(SS_DAC);
-
-  spiWrite(DAC_CONFIG | ((signal >> 8) & 0xF)); // 4 config bits and bits 11-8
-  spiWrite(signal); // bits 7-0
-
-  bit_set(SS_DAC);
-}
-void dacInit(){
-	bit_clear(SCK);
-	bit_clear(MISO);
-	bit_clear(MOSI);
-	bit_set(SS);
-
-	bit_dir_outp(SCK);
-	bit_dir_inp(MISO);
-	bit_dir_outp(MOSI);
-	bit_dir_outp(SS);
-
-
-	// chip select pins
-
-	bit_set(SS_DAC);
-	bit_dir_outp(SS_DAC);
-
-	// Mode
-	SPCR |= _BV(SPE);    // enable SPI
-	setHigh(SPCR,MSTR);   // SPI master mode
-	SPCR &= ~_BV(SPIE);  // SPI interrupts off
-	SPCR &= ~_BV(DORD);  // MSB first
-	SPCR &= ~_BV(CPOL);  // leading edge rising
-	SPCR &= ~_BV(CPHA);  // sample on leading edge
-	SPCR &= ~_BV(SPR1);  // speed = clock/4
-	SPCR &= ~_BV(SPR0);
-	SPSR |= _BV(SPI2X);  // 2X speed
-}
 //MIDInoteBuffer buffer;
 
-bool inBetween(int val1, int val2, int inBet) {
-	bool retVal;
-	if (val1 >= val2) {
-		if (inBet <= val1 && inBet >= val2)
-			retVal = true;
-		else
-			retVal = false;
-	} else if (val1 < val2) {
-		if (inBet >= val1 && inBet <= val2)
-			retVal = true;
-		else
-			retVal = false;
-	}
-	return retVal;
 
-}
 
 #define PAGE 0
 #define FN 2
@@ -166,19 +116,7 @@ uint8_t signalToNote(uint16_t signal){
 
 
 
-uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
-	uint32_t inMin=0, inMax=255, outMin=0, outMax=255;
-	for(int i=0;i<numberOfPoints-1;i++){
-		if(value >= tableMap[i] && value <= tableMap[i+1]) {
-			inMax=tableMap[i+1];
-			inMin=tableMap[i];
-			outMax=tableMap[numberOfPoints+i+1];
-			outMin=tableMap[numberOfPoints+i];
-			i=numberOfPoints+10;
-		}
-	}
-	return map(value,inMin,inMax,outMin,outMax);
-}
+
 #define CHROMATIC 0
 #define MAJOR 1
 #define HARMONIC_MINOR 2

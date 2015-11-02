@@ -120,6 +120,9 @@ void loop() {
 	while((millis()-time)<10){
 		hardware.update(5);
 		if(hardware.getCVValue(5)>=100 && hardware.getLastCVValue(5)<100){
+
+			com.sendPairMessage();
+			com.sendChannelTrigger(2,4);
 			com.sendPairMessage();
 			com.sendChannelTrigger(4,5);
 			//Serial.println("t");

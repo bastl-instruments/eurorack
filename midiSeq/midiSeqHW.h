@@ -68,6 +68,7 @@ public:
 	void dimLed(uint8_t _led, bool _state);
 	void dimHorLed(uint8_t _led, bool _state);
 	void dimVerLed(uint8_t _led, bool _state);
+	void setClock(bool _master);
 
 private:
 	/**TIMING**/
@@ -77,9 +78,9 @@ private:
 	uint16_t lastButtonHash;
 	uint8_t shiftHash[3];
 	uint8_t dimHash[3];
-
+	bool master;
 	/**BUTTONS**/
-
+	void setMuxBits(uint8_t _bits);
 	void (*buttonChangeCallback)(uint8_t number);
 	void (*clockInCallback)(uint8_t number);
 

@@ -32,8 +32,8 @@ int main(void) {
 
 
 #define EXP_IN_PIN_1 16
-#define EXP_IN_PIN_2 18
-#define EXP_IN_PIN_3 17
+#define EXP_IN_PIN_2 17
+#define EXP_IN_PIN_3 18
 #define EXP_IN_PIN_4 19
 const uint8_t exp_input[4]={EXP_IN_PIN_1,EXP_IN_PIN_2,EXP_IN_PIN_3,EXP_IN_PIN_4};
 const uint8_t input[4]={

@@ -167,6 +167,7 @@ void loop()
 	writeDAC(i);
 	delay(1);
 	}*/
+
 	if(counter<4096) counter++;
 	else counter=0;
 	for(int i=0;i<4;i++){
@@ -184,12 +185,12 @@ void loop()
 	//	if(i==selectedChannel) hw.dimLed(i,true);
 	//	else hw.dimLed(i,false);
 	}
-	for(int i=3;i<5;i++){
+	for(int i=3;i<6;i++){
 		hw.setLed(i,hw.buttonState(i));
 	//	hw.setLed(i,true);
 	//	hw.dimLed(i,hw.buttonState(i));
 	}
-	hw.setLed(5,flop);
+	//hw.setLed(5,flop);
 	for(int i=0;i<5;i++){
 		if(i==parameter[mode]) hw.setHorLed(i,true);
 		else hw.setHorLed(i,false);
