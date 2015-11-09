@@ -32,24 +32,25 @@ short wave_type[5] = {
 
 void setup(){
 	Serial.begin(115200);
+/*
 	teensy.initialize();
 	teensy.setLed(0,true);
 	teensy.setLed(3,true);
 	//teensy.setHandleButtonChange(buttons);
 	teensy.setHandleKnobChange(knobs);
 	//teensy.setHandleCVChange(cvs);
-	
-	AudioMemory(8);
+	*/
+	AudioMemory(12);
 	audioShield.enable();
-	audioShield.volume(0.7);
+	audioShield.volume(1);
 
 	waveform1.pulseWidth(1);
-	waveform1.begin(0.7, 80, WAVEFORM_PULSE);
+	waveform1.begin(0.7, 10, WAVEFORM_SAWTOOTH);
 }
 
 void loop(){
-	teensy.update();
-	
+	//teensy.update();
+	/*
 	f=map(teensy.knobValue(0),0,1024,20,400);
 	fcv=teensy.CVValue(0);
 	fcv=fcv-555;
@@ -57,9 +58,9 @@ void loop(){
 	w=teensy.knobValue(1)/1024.0;
 	wcv=(teensy.CVValue(1)-555)/555.0;
 	//waveform1.begin(wave_type[wave]);
-	waveform1.pulseWidth(w+wcv);
-	waveform1.frequency(f+fcv);
-	
+	waveform1.pulseWidth(1);
+	waveform1.frequency(400);
+	*/
 	
 	
 	//delay(1);

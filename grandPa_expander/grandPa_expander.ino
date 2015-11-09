@@ -73,6 +73,8 @@ void renderSwitchChange(){
 	lastSwitchState=hardware.getSwitchState();
 }
 uint8_t i=0;
+uint8_t preventUpdate=0;
+uint32_t time2;
 void loop() {
 	if(i<4) i++;
 	else i=0;
@@ -127,6 +129,40 @@ void loop() {
 			com.sendChannelTrigger(4,5);
 			//Serial.println("t");
 		}
+	}
+
+
+	if((millis()-time2)>150){
+		time2=millis();
+		if(preventUpdate<4) preventUpdate++;
+		else preventUpdate=0;
+		if(preventUpdate<4){
+			if(hardware.getSwitchState()){
+				com.sendPairMessage();
+				com.sendChannelCV(channelMapSwitch[preventUpdate],hardware.getCVValue(preventUpdate));
+				com.sendPairMessage();
+				if(preventUpdate==2) com.sendPairMessage(),com.sendChannelCV(channelMapNoSwitch[preventUpdate],0);
+				else if (preventUpdate==3) com.sendPairMessage(), com.sendChannelCV(channelMapNoSwitch[preventUpdate],255);
+				finalSetting[channelMapSwitch[preventUpdate]]=hardware.getCVValue(preventUpdate);
+			}
+			else{
+				com.sendPairMessage();
+				if(preventUpdate==3){
+					com.sendChannelCV(channelMapNoSwitch[preventUpdate],255-hardware.getCVValue(preventUpdate));
+				}
+				else {
+					com.sendChannelCV(channelMapNoSwitch[preventUpdate],hardware.getCVValue(preventUpdate));
+				}
+				if(preventUpdate==2 || preventUpdate==3) com.sendPairMessage(),com.sendChannelCV(channelMapSwitch[preventUpdate],0);
+				finalSetting[channelMapNoSwitch[preventUpdate]]=hardware.getCVValue(preventUpdate);
+			}
+		}
+		else{
+				com.sendPairMessage();
+				com.sendChannelCV(channelMapNoSwitch[4],hardware.getCVValue(4));
+				finalSetting[channelMapNoSwitch[4]]=hardware.getCVValue(4);
+		}
+
 	}
 	//delay(10);
 

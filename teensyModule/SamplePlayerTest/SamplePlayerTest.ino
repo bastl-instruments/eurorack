@@ -70,6 +70,9 @@ void setup() {
 
 void loop() {
   // Update all the button objects
+   sound0.play(AudioSampleSnare);
+   delay(5);
+  /* sound0.play(AudioSampleSnare);
   button0.update();
 
   // When the buttons are pressed, just start a sound playing.
@@ -84,5 +87,6 @@ void loop() {
   if(!sound0.isPlaying()){
     digitalWrite(10, LOW);
   }
+  */
 }
 
