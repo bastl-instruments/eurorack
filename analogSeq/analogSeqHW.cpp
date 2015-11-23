@@ -25,6 +25,7 @@
 #define GATE_BIT_7 1
 #define GATE_BIT_8 0
 
+#define EXP_5_PIN C,3
 
 const uint8_t gateBit[8]={GATE_BIT_1,GATE_BIT_2,GATE_BIT_3,GATE_BIT_4, GATE_BIT_5,GATE_BIT_6,GATE_BIT_7,GATE_BIT_8};
 
@@ -47,6 +48,7 @@ const uint8_t ledBit[8]={LED_BIT_1,LED_BIT_2,LED_BIT_3,LED_BIT_4, LED_BIT_5,LED_
 void analogSeqHW::setLed(uint8_t _led,bool _state){
 	bitWrite(shiftHash[LED_BYTE],7-ledBit[_led],_state);
 }
+
 
 #define BI_LED_A_BYTE 3
 
@@ -75,6 +77,11 @@ void analogSeqHW::setLed(uint8_t _led,bool _state){
 #define SHIFT_LED_BIT 6
 
 const uint8_t biLedBit[12]= { BI_LED_A_1_C , BI_LED_A_1_A , BI_LED_A_2_C , BI_LED_A_2_A , BI_LED_A_3_C , BI_LED_A_3_A , BI_LED_B_1_C , BI_LED_B_1_A , BI_LED_B_2_C , BI_LED_B_2_A , BI_LED_B_3_C , BI_LED_B_3_A};
+void analogSeqHW::allLedsOff(){
+	shiftHash[LED_BYTE]=0;
+	shiftHash[BI_LED_B_BYTE]=0;
+	shiftHash[BI_LED_A_BYTE]=0;
+}
 
 void analogSeqHW::setBiLed(uint8_t _led,bool _state, bool _color){
 	uint8_t _byte;
@@ -211,6 +218,7 @@ void analogSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockIn
 	bit_set(MIN_MAJ_GATE_PIN);
 
 
+
 /*
 	bit_dir_inp(INPUT_1);
 	bit_dir_inp(INPUT_2);
@@ -296,6 +304,9 @@ const uint8_t cvCoordinate[6]={2,4,1,3,0};
 uint16_t analogSeqHW::getCV(uint8_t _number){
 	return mixedValues[cvCoordinate[_number]];
 }
+uint16_t analogSeqHW::getLastCV(uint8_t _number){
+	return lastMixedValues[cvCoordinate[_number]];
+}
 uint16_t analogSeqHW::getPotA(){
 	return mixedValues[7];
 }
@@ -340,6 +351,11 @@ void analogSeqHW::isr_updateButtons() {
 			bitWrite(buttonHash,8,shiftState);
 			if(buttonChangeCallback!=0){
 				buttonChangeCallback(8);
+			}
+		}
+		if(_jumpState!=_lastJumpState){
+			if(buttonChangeCallback!=0){
+				buttonChangeCallback(9);
 			}
 		}
 		bit_clear(MIXED_PIN);
@@ -419,6 +435,9 @@ void analogSeqHW::isr_updateButtons() {
 	//if(isAnalog[i]) bit_clear(MIXED_PIN);
 	//else bit_set(MIXED_PIN);
 
+}
+bool analogSeqHW::getMinMajState(){
+	 return minMajGateState;
 }
 bool analogSeqHW::buttonState(uint8_t _but){
 	return bitRead(buttonHash,_but);//buttonBit[_but]);
@@ -655,6 +674,7 @@ ISR(TIMER2_COMPA_vect) { //56us :)
 	hw.incrementBastlCycles();
 	//hardware.isr_updateClockIn();
 	//hardware.isr_updateKnobs();
+	hw._lastJumpState=hw._jumpState;
 	hw._jumpState=!bit_read_in(BUTTON_JUMP_PIN);
 	hw.isr_updateTriggerStates();
 	hw.isr_updateButtons();      // ~1ms

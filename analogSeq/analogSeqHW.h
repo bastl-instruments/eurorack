@@ -56,6 +56,7 @@ public:
 	void unfreezeKnob(uint8_t index);
 
 
+
 	/***LEDS***/
 
 	// disabled
@@ -69,6 +70,8 @@ public:
 
 	// set color of RGB led
 	void setColor(uint8_t _COLOR);
+
+	void allLedsOff();
 
 
 	/***BUTTONS***/
@@ -152,16 +155,20 @@ public:
 	bool justReleased(uint8_t _but);
 	bool buttonState(uint8_t _but);
 	bool jumpState(){return _jumpState;};
+	bool lastJumpState(){return _lastJumpState;};
 	uint16_t getCV(uint8_t _number);
+	uint16_t getLastCV(uint8_t _number);
 	uint16_t getPotA();
 	uint16_t getPotB();
 	uint16_t getLastPotA();
 	uint16_t getLastPotB();
+	bool getMinMajState();
 
 	bool trigAState(){return trigStateA;};
 	bool trigBState(){return trigStateB;};
 	bool resetState(){return rstState;};
 	bool _jumpState;
+	bool _lastJumpState;
 
 private:
 	/**TIMING**/
@@ -193,8 +200,8 @@ private:
 	bool shiftState;
 	bool minMajGateState;
 	uint16_t knobValues[8];
-	uint16_t mixedValues[8];
-	uint16_t lastMixedValues[8];
+	uint16_t mixedValues[9];
+	uint16_t lastMixedValues[9];
 
 	uint16_t lastKnobValues[6];
 	uint8_t knobFreezeValues[6];

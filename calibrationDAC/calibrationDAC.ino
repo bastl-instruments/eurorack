@@ -176,7 +176,7 @@ void setup(){
 	//com.attachChannelCVCallback(&channelCVCall);
 	com.attachClockCallback(&clockCall);
 	com.attachChannelModeCallback(&channelModeCall);
-
+	//saveTable();
     loadTable();
     //com.sendPairMessage();
 
@@ -326,7 +326,7 @@ void loop()
 			long finalError=(difference1+difference2)/2;
 			if(abs(finalError)<20) hw.displayNumber(5),hw.setDot(true);
 			else hw.displayNumber(constrain(map(finalError,-500,500,0,9),0,9)), hw.setDot(false);
-			Serial.print(measureResult[0]), Serial.print(", "), Serial.print(measureResult[1]),Serial.print(", "), Serial.println(measureResult[2]);
+		//	Serial.print(measureResult[0]), Serial.print(", "), Serial.print(measureResult[1]),Serial.print(", "), Serial.println(measureResult[2]);
 
 
 			}

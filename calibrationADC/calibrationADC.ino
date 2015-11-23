@@ -33,7 +33,7 @@ simpleSerialDecoder com;
 #define BUTTON_A 4
 #define BUTTON_B 5
 
-#define _WAIT 2
+#define _WAIT 20
 #define _POINT 0
 #define _REFUSE_POINT 3
 #define _MINUS 1
@@ -54,31 +54,31 @@ uint16_t tuneInputTable[60]={0,17,34,51,68,85,102,119,136,153,170,188,
 #define TUNE_POINTS 11
 
 
-uint16_t tuneTable[12]={ 0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4095,4095};
+uint16_t tuneTable[15]={ 2050,2140, 2227,2313, 2403,2492, 2579,2668, 2761,2844, 2931,0,0,0,0};
 uint16_t tuneOutTable[12]={0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4095,4095};
-
+#define OFFSET 100
 void loadTable(){
 	for(int i=0;i<11;i++){
-		tuneTable[i]=word(EEPROM.read(i*2),EEPROM.read(1+(i*2)));
+		tuneTable[i]=word( EEPROM.read(OFFSET + i*2),EEPROM.read(OFFSET+1+(i*2)));
 	}
 }
 
 void saveTable(){
 	for(int i=0;i<11;i++){
-		EEPROM.write(i*2,highByte(tuneTable[i]));
-		EEPROM.write(1+(i*2),lowByte(tuneTable[i]));
+		EEPROM.write(OFFSET + i*2,highByte(tuneTable[i]));
+		EEPROM.write(OFFSET +1+(i*2),lowByte(tuneTable[i]));
 	}
 }
 #define OUT_OFFSET 111
 void loadOutTable(){
 	for(int i=0;i<11;i++){
-		tuneOutTable[i]=word(EEPROM.read(OUT_OFFSET+(i*2)),EEPROM.read(OUT_OFFSET+1+(i*2)));
+	//	tuneOutTable[i]=word(EEPROM.read(OUT_OFFSET+(i*2)),EEPROM.read(OUT_OFFSET+1+(i*2)));
 	}
 }
 void saveOutTable(){
 	for(int i=0;i<11;i++){
-		EEPROM.write(OUT_OFFSET+(i*2),highByte(tuneOutTable[i]));
-		EEPROM.write(OUT_OFFSET+1+(i*2),lowByte(tuneOutTable[i]));
+	//	EEPROM.write(OUT_OFFSET+(i*2),highByte(tuneOutTable[i]));
+	//	EEPROM.write(OUT_OFFSET+1+(i*2),lowByte(tuneOutTable[i]));
 	}
 }
 
@@ -100,7 +100,7 @@ uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
 bool acceptCalibration=false;
 void channelInterpolateCall(uint8_t channel, uint8_t number){
 	if(channel==_POINT) thePoint=number, acceptCalibration=true;
-	if(channel==_REFUSE_POINT) thePoint=number,acceptCalibration=false;
+	if(channel==_REFUSE_POINT) loop();
 }
 void setup(){
 
@@ -111,17 +111,27 @@ void setup(){
 //	com.attachClockCallback(&clockCall);
 //	com.attachChannelModeCallback(&channelModeCall);
 	com.attachChannelInterpolateCallback(&channelInterpolateCall);
-
+//saveTable();
     loadTable();
    // saveOutTable();
-    loadOutTable();
+   // loadOutTable();
     //com.sendPairMessage();
-
+	for(int i=0;i<13;i++) Serial.println(tuneTable[i]);
     adc.init();
 
 
     hw.initialize();
 	mcpDacInit();
+	hw.update();
+	hw.update();
+	hw.update();
+
+	hw.update();
+	hw.update();
+	hw.update();
+	hw.update();
+
+	hw.update();
 	//dacInit();
 
 }
@@ -129,97 +139,132 @@ uint8_t mode=1;
 
 #include <fastAnalogRead.h>
 
-
+#define _LONG_WAIT 10
 void calibrateDevice(){
+/*
+	for(int i=0;i<12;i++){
+		com.sendPairMessage();
+		com.sendChannelInterpolate(_POINT,i);
+		while(acceptCalibration==false){
+			com.update();
+		}
+		acceptCalibration=false;
+		//delay(100);
+	}
+*/
 
-	for(int i=0;i<11;i++){
+	for(int i=0;i<15;i++){
 		hw.setColor(RED);
 		uint8_t volts=i;
 		hw.displayNumber(volts/2);
 		if((volts%2)==1) hw.setDot(true);
 		else hw.setDot(false);
-		com.sendPairMessage();
-		com.sendChannelInterpolate(_POINT,i);
-		mcpDacSend(tuneOutTable[i]);
-		thePoint=255;
 		acceptCalibration=false;
+		com.sendPairMessage();
+		com.sendChannelInterpolate(_POINT,i+10);
+		//mcpDacSend(tuneOutTable[i]);
+		thePoint=255;
+
+		/*
 		while(thePoint!=i){
 			com.update();
 		}
+		*/
 	//	if(acceptCalibration){
 		//while(com.shoudIcalibrateThisVoltate())
+		while(acceptCalibration==false){
+			com.update();
+		}
+		//acceptCalibration=false;
 
-		delay(_WAIT);
+	//	delay(_WAIT);
 		uint16_t input=adc.readADC();
-		if(input==tuneTable[volts]) hw.setColor(GREEN); //done
+		if(input==tuneTable[volts]){
+			hw.setColor(GREEN); //done
+			hw.update();
+			com.sendPairMessage();
+			com.sendChannelInterpolate(_POINT,i+10);
+			delay(200);
+		}
 		else {
 			while((input>tuneTable[volts])){
+				hw.displayNumber(0);
 				com.sendPairMessage();
 				com.sendChannelInterpolate(_MINUS,5);
 
-				tuneOutTable[i]-=5;
-				mcpDacSend(tuneOutTable[i]);
+			//	tuneOutTable[i]-=5;
+			//	mcpDacSend(tuneOutTable[i]);
 
 				delay(_WAIT);
 				input=adc.readADC();
 				hw.update();
 				if(hw.buttonState(UP)) loop();
 			}
+			delay(_LONG_WAIT);
 			while(input<tuneTable[volts]){
+				hw.displayNumber(1);
 				com.sendPairMessage();
 				com.sendChannelInterpolate(_PLUS,5);
 
-				tuneOutTable[i]+=5;
-				mcpDacSend(tuneOutTable[i]);
+				//tuneOutTable[i]+=5;
+				//mcpDacSend(tuneOutTable[i]);
 
 				delay(_WAIT);
 				input=adc.readADC();
 				hw.update();
 				if(hw.buttonState(UP)) loop();
 			}
+			delay(_LONG_WAIT);
 			while((input>tuneTable[volts])){
+				hw.displayNumber(2);
 				com.sendPairMessage();
 				com.sendChannelInterpolate(_MINUS,1);
-				tuneOutTable[i]-=1;
-				mcpDacSend(tuneOutTable[i]);
+				//tuneOutTable[i]-=1;
+				//mcpDacSend(tuneOutTable[i]);
 
 				delay(_WAIT);
 				input=adc.readADC();
 				hw.update();
 				if(hw.buttonState(UP)) loop();
 			}
+			delay(_LONG_WAIT);
 			while(input<tuneTable[volts]){
+				hw.displayNumber(3);
 				com.sendPairMessage();
 				com.sendChannelInterpolate(_PLUS,1);
 
-				tuneOutTable[i]+=1;
-				mcpDacSend(tuneOutTable[i]);
+				//tuneOutTable[i]+=1;
+				//mcpDacSend(tuneOutTable[i]);
 
 				delay(_WAIT);
 				input=adc.readADC();
 				hw.update();
 				if(hw.buttonState(UP)) loop();
 			}
+			delay(_LONG_WAIT);
 			uint16_t higher=input;
 			com.sendPairMessage();
 			com.sendChannelInterpolate(_MINUS,1);
-			tuneOutTable[i]-=1;
-			mcpDacSend(tuneOutTable[i]);
+			//tuneOutTable[i]-=1;
+			//mcpDacSend(tuneOutTable[i]);
 
 			delay(_WAIT);
 			input=adc.readADC();
 			if(abs(higher-tuneTable[volts]) < abs(tuneTable[volts]-input)){
 				com.sendPairMessage(),com.sendChannelInterpolate(_PLUS,1);
 				tuneOutTable[i]+=1;
-				mcpDacSend(tuneOutTable[i]);
+				//mcpDacSend(tuneOutTable[i]);
 			}
-			saveOutTable();
+			//saveOutTable();
 			//loadOutTable();
 			hw.setColor(GREEN);
 			hw.update();
-			delay(10);
+			com.sendPairMessage();
+			com.sendChannelInterpolate(_POINT,i+10);
+			delay(200);
 		}
 	}
+
 }
 //#define DEBUG
 
@@ -231,49 +276,49 @@ void loop()
 	hw.displayNumber(volts/2);
 	if((volts%2)==1) hw.setDot(true);
 	else hw.setDot(false);
-	mcpDacSend(tuneOutTable[volts]);
-	if(hw.buttonState(BUTTON_A)&&hw.justPressed(BUTTON_B)){ //average?
+//	mcpDacSend(tuneOutTable[volts]);
+	if( hw.justPressed(BUTTON_A)){ //average? //updateDisplay
 		hw.setColor(RED);
 		hw.update();
 		tuneTable[volts]=adc.readADC();
 		saveTable();
+		delay(500);
+	}
+
+	if(hw.buttonState(UP)){
+		uint16_t input=adc.readADC();
+		for(int i=0;i<11;i++){
+			if(input>=tuneTable[i]){
+				if(input==tuneTable[i]){
+					hw.displayNumber((i)/2);
+					if(((i)%2)==1) hw.setDot(true);
+					else hw.setDot(false);
+					hw.setColor(GREEN);
+				}
+				else if ( input > (tuneTable[i] + ( (tuneTable[i+1]-tuneTable[i])/2) ) ){
+				//(abs(tuneTable[i]-input)>abs(tuneTable[i+1]-input)){
+
+					hw.displayNumber((i+1)/2);
+					if(((i+1)%2)==1) hw.setDot(true);
+					else hw.setDot(false);
+					hw.setColor(BLUE);
+				}
+				else{
+					hw.displayNumber((i)/2);
+					if(((i)%2)==1) hw.setDot(true);
+					else hw.setDot(false);
+					hw.setColor(RED);
+				}
+				//i=100;
+			}
+
+		}
 	}
 	else{
-
-		if(hw.buttonState(UP)){
-			uint16_t input=adc.readADC();
-			for(int i=0;i<11;i++){
-				if(input>=tuneTable[i]){
-					if(input==tuneTable[i]){
-						hw.displayNumber((i)/2);
-						if(((i)%2)==1) hw.setDot(true);
-						else hw.setDot(false);
-						hw.setColor(GREEN);
-					}
-					else if ( input > (tuneTable[i] + ( (tuneTable[i+1]-tuneTable[i])/2) ) ){
-					//(abs(tuneTable[i]-input)>abs(tuneTable[i+1]-input)){
-
-						hw.displayNumber((i+1)/2);
-						if(((i+1)%2)==1) hw.setDot(true);
-						else hw.setDot(false);
-						hw.setColor(BLUE);
-					}
-					else{
-						hw.displayNumber((i)/2);
-						if(((i)%2)==1) hw.setDot(true);
-						else hw.setDot(false);
-						hw.setColor(RED);
-					}
-					i=100;
-				}
-
-			}
-		}
-		else{
-			hw.setColor(BLACK);
-			if(hw.justPressed(PAGE)) calibrateDevice();
-		}
+		hw.setColor(BLACK);
+		if(hw.justPressed(PAGE)) calibrateDevice();
 	}
+
 
 #endif
 

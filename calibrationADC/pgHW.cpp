@@ -390,8 +390,8 @@ void pgHW::updateButtons(){
 	bitWrite(buttonStateHash,4,bit_read_in(BUT_PIN_BAM_5));
 	bitWrite(buttonStateHash,5,bit_read_in(BUT_PIN_BAM_6));
 		
-//	justReleasedHash=0;
-//    justPressedHash=0;
+	justReleasedHash=0;
+    justPressedHash=0;
     
 	for(int i=0;i<6;i++){ // first read the buttons and update button states
 	bitWrite(justPressedHash,i,false); 
