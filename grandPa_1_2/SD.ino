@@ -7,19 +7,19 @@ int blinkCounter;
 boolean blinkState;
 unsigned char recSound;
 boolean thru;
-unsigned char indexedHash=0;
+unsigned char indexedHash[5];
 uint32_t seekPosition;
 boolean indexed(unsigned char _sound){
-  return bitRead(indexedHash,_sound);
+  return bitRead(indexedHash[_sound/8],_sound%8);
 }
 void indexed(unsigned char _sound,boolean _state){
-  bitWrite(indexedHash,_sound,_state);
+  bitWrite(indexedHash[_sound/8],_sound%8,_state);
 }
 
-long index[NUMBER_OF_SOUNDS];
+long index[36];
 
 void clearIndexes(){
-  indexedHash=0;
+  for(uint8_t i=0;i<5;i++) indexedHash[i]=0;
 }
 void initSdCardAndReport(){
   if (!card.init()) errorLoop();
@@ -49,9 +49,15 @@ void initSdCardAndReport(){
    }
    */
 }
-
+uint8_t actualIndex;
 uint8_t playBegin(char* name,unsigned char _sound) {
-
+  uint8_t _index;
+  if(name[1]>58) _index=name[1]-55;
+   else _index=name[1]-48;
+   
+   return play(_index);
+   
+   /*
   if(indexed(_sound)){
     if (!file.open(&root, index[_sound], O_READ)) {
     //  errorLoop();
@@ -75,7 +81,7 @@ uint8_t playBegin(char* name,unsigned char _sound) {
 
 
   }
-
+*/
 
   /*
   if (!file.open(&root, name, O_READ)) { 
@@ -97,7 +103,29 @@ uint8_t playBegin(char* name,unsigned char _sound) {
   
  // loadValuesFromMemmory(activeSound);
 
-  if (!wave.play(&file)) { //,uint32_t _pos=0
+ 
+}
+
+bool play(uint8_t _index){
+  while(!indexed(_index)){
+   _index++;
+    _index=_index%36;
+  }
+ 
+  actualIndex=_index;
+  if(indexed(_index)){
+      if (!file.open(&root, index[_index], O_READ)) {
+    //  errorLoop();
+   
+      return false;
+    }
+   }
+   else{
+     
+     //name[1]--;
+     //playBegin(name,_sound);
+   }
+    if (!wave.play(&file)) { //,uint32_t _pos=0
     //  PgmPrint("Can't play: ");
     // Serial.println(name);
     file.close();
@@ -107,8 +135,6 @@ uint8_t playBegin(char* name,unsigned char _sound) {
   //wave.pause(); //novinka
   return true;
 }
-
-
 
 
 void error(char* str) {

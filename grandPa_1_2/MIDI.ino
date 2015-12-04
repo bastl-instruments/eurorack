@@ -11,7 +11,7 @@ unsigned char notesInBuffer=ZERO;
 boolean thereIsNoteToPlay;
 
 unsigned char inputChannel;
-#define BUFFER_SIZE 16
+#define BUFFER_SIZE 3
 unsigned char midiBuffer[BUFFER_SIZE];
 #define EMPTY 255
 unsigned char midiVelocity;

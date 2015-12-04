@@ -152,6 +152,7 @@ void analogSeqHW::selectKnob(uint8_t _knob){
 #define BUTTON_BIT_6 5
 #define BUTTON_BIT_7 6
 #define BUTTON_BIT_8 1
+#define ANALOG_EXP_DETECT_PIN B,4
 
 #define MIXED_PIN C,0
 #define MIXED_CHANNEL 0
@@ -217,6 +218,8 @@ void analogSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockIn
 	bit_set(RST_PIN);
 	bit_set(MIN_MAJ_GATE_PIN);
 
+	bit_dir_inp(ANALOG_EXP_DETECT_PIN);
+	bit_set(ANALOG_EXP_DETECT_PIN);
 
 
 /*
@@ -302,10 +305,30 @@ const uint8_t mixedBit[8]={ 0,1,2,3,4,5,6,7};
 
 const uint8_t cvCoordinate[6]={2,4,1,3,0};
 uint16_t analogSeqHW::getCV(uint8_t _number){
-	return mixedValues[cvCoordinate[_number]];
+	if(_number>0){
+		if(expanderConnected){
+			return mixedValues[cvCoordinate[_number]];
+		}
+		else{
+			return 0;
+		}
+	}
+	else{
+		return mixedValues[cvCoordinate[_number]];
+	}
 }
 uint16_t analogSeqHW::getLastCV(uint8_t _number){
-	return lastMixedValues[cvCoordinate[_number]];
+	if(_number>0){
+		if(expanderConnected){
+			return lastMixedValues[cvCoordinate[_number]];
+		}
+		else{
+			return 0;
+		}
+	}
+	else{
+		return lastMixedValues[cvCoordinate[_number]];
+	}
 }
 uint16_t analogSeqHW::getPotA(){
 	return mixedValues[7];
@@ -434,10 +457,16 @@ void analogSeqHW::isr_updateButtons() {
 	*/
 	//if(isAnalog[i]) bit_clear(MIXED_PIN);
 	//else bit_set(MIXED_PIN);
+	bit_dir_inp(ANALOG_EXP_DETECT_PIN);
+	bit_set(ANALOG_EXP_DETECT_PIN);
+	expanderConnected=!bit_read_in(ANALOG_EXP_DETECT_PIN);
 
 }
 bool analogSeqHW::getMinMajState(){
+	if(expanderConnected){
 	 return minMajGateState;
+	}
+	else return false;
 }
 bool analogSeqHW::buttonState(uint8_t _but){
 	return bitRead(buttonHash,_but);//buttonBit[_but]);

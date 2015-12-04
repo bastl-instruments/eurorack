@@ -25,7 +25,7 @@ long whileTime;
 unsigned char lastMoved;
 boolean combo;
 boolean shift;
-
+uint8_t browse=0;
 boolean tuned=true;
 
 #define TUNED_BIT 0 //1
@@ -34,6 +34,8 @@ boolean tuned=true;
 #define SYNC_BIT 3 //1
 #define SHIFT_DIR_BIT 4 //0
 #define EXTRA_BIT 5 //0
+#define SAMPLE_CV_BIT_1 6 //0
+#define SAMPLE_CV_BIT_2 7
 
 
 //1101
@@ -54,12 +56,36 @@ const uint8_t pageOrder[8]={
   0,2,1,3,0,2,1,3};
 uint8_t pageClick;
 uint8_t lastAs=0;
+uint8_t lastSmpl,smpl;
 void UI(){
   if(activeSound!=lastAs) hw.freezeAllKnobs();
   lastAs=activeSound;
   renderCombo();
   // renderHold();
-  if(sync) renderSync();
+  switch(browse){
+  case 0:
+    break;
+  case 1:
+    cvAssign=255;
+    renderSync();
+    break;
+  case 2:
+    cvAssign=255;
+    break;
+  case 3:
+    cvAssign=255;
+    if(wave.isPlaying()){
+      lastSmpl=smpl;
+      smpl=mapSample(hw.getCvValue());
+      uint8_t env=envelopeNow;
+      if(lastSmpl!=smpl) playSound(activeSound);
+     if(notesInBuffer==0){
+        envelopePhase=2;
+        envelopeNow=env;
+     }
+    }
+    break;
+  }
   if(!combo){
     if(hw.justReleased(PAGE)){
       hw.freezeAllKnobs();
@@ -136,11 +162,11 @@ void playSound(unsigned char _sound){
 //boolean revMidi=false;
 void setEnd(unsigned char _sound){
   endPosition=sizeOfFile;
- // if(revMidi) endIndex=startIndex+1, startIndex=0; //, startPosition=0;
+  // if(revMidi) endIndex=startIndex+1, startIndex=0; //, startPosition=0;
   //else {
-    if(cvAssign==7) endIndex=getVar(_sound,END)-(hw.getCvValue()+(expanderValue[7]<<2));
-    else endIndex=getVar(_sound,END)-(expanderValue[7]<<2); //tady
- // }
+  if(cvAssign==7) endIndex=getVar(_sound,END)-(hw.getCvValue()+(expanderValue[7]<<2));
+  else endIndex=getVar(_sound,END)-(expanderValue[7]<<2); //tady
+  // }
 
   if(sustain && endIndex>=1000) endIndex=999;
 
@@ -182,8 +208,8 @@ void loadValuesFromMemmory(unsigned char _sound){
   startPosition=startIndex*startGranule;
   setSetting(_sound);
 
-  if(cvAssign==2) attackInterval=getVar(_sound,ATTACK)+ (hw.getCvValue()>>3) +(expanderValue[2]>>1);
-  else attackInterval=getVar(_sound,ATTACK)+(expanderValue[2]>>1);
+  if(cvAssign==2) attackInterval=(getVar(_sound,ATTACK)+ (hw.getCvValue()>>3) +(expanderValue[2]>>1))>>1;
+  else attackInterval=(getVar(_sound,ATTACK)+(expanderValue[2]>>1))>>1;
   if(cvAssign==3) releaseInterval=getVar(_sound,RELEASE)+ (hw.getCvValue()>>3)  +(expanderValue[3]>>1);
   else releaseInterval=getVar(_sound,RELEASE)+(expanderValue[3]>>1);
   if(releaseInterval>=127) sustain=true;
@@ -252,10 +278,20 @@ void setSetting(unsigned char _sound){
   repeat=bitRead(setting,REPEAT_BIT);
   tuned=false;//bitRead(setting,TUNED_BIT);
   shiftDir=false;//bitRead(setting,SHIFT_DIR_BIT);
-  if(cvAssign!=255) sync=false;
-  else sync=bitRead(setting,SYNC_BIT);
+  //if(cvAssign!=255) sync=false;
+//  else sync=bitRead(setting,SYNC_BIT);
   legato=false;//bitRead(setting,LEGATO_BIT);
-  if(sync) cvAssign=255;
+  
+  browse=0;
+  bitWrite(browse,0,bitRead(setting,6));
+  bitWrite(browse,1,bitRead(setting,7));
+  if(browse==1) sync=true;
+  else{
+    sync=false;
+  }
+    
+  
+  if(browse>0) cvAssign=255;
   else{
     //    cvAssign=0;
     if(bitRead(setting,EXTRA_BIT)) cvAssign=255;
@@ -318,7 +354,7 @@ void renderTweaking(unsigned char _page){
         if(lastCv!=_CV) cvChanged=true;
         lastCv=_CV;
         // if(cvChanged) 
-        attackInterval=getVar(_sound,ATTACK)+_CV;
+        attackInterval=(getVar(_sound,ATTACK)+_CV)>>1;
         break;
       case 3:
         _CV=(hw.getCvValue()>>3);
@@ -383,8 +419,8 @@ void renderTweaking(unsigned char _page){
       break;
     case 1:
       if(!hw.knobFreezed(0) ){ 
-        if(cvAssign==2) attackInterval=getVar(_sound,ATTACK)+_CV;
-        else attackInterval=getVar(_sound,ATTACK)+(expanderValue[2]>>1);
+        if(cvAssign==2) attackInterval=(getVar(_sound,ATTACK)+_CV)>>1;
+        else attackInterval=(getVar(_sound,ATTACK)+(expanderValue[2]>>1))>>1;
       }
       if(!hw.knobFreezed(1)){
         if(cvAssign==3) releaseInterval=getVar(_sound,RELEASE)+_CV;
@@ -413,12 +449,12 @@ void renderTweaking(unsigned char _page){
       break;
     case 3:
       if(!hw.knobFreezed(0)){ //splice here??
-       // if(!revMidi){
-          if(cvAssign==6)  startIndex=getVar(_sound,START)+_CV;
-          else startIndex=getVar(_sound,START)+(expanderValue[6]<<2);
-          //if(startIndex>endIndex) startIndex=endIndex-3;//MINIMAL_LOOP; //novinka
-          startPosition=startIndex*startGranule;
-       // }
+        // if(!revMidi){
+        if(cvAssign==6)  startIndex=getVar(_sound,START)+_CV;
+        else startIndex=getVar(_sound,START)+(expanderValue[6]<<2);
+        //if(startIndex>endIndex) startIndex=endIndex-3;//MINIMAL_LOOP; //novinka
+        startPosition=startIndex*startGranule;
+        // }
         //setEnd(_sound); //novinka
 
       }
@@ -502,6 +538,7 @@ void showValue(int _value, uint8_t _variable){
    if(_value>=1000) hw.lightNumber(1,0),hw.lightNumber(0,1);
    */
 }
+
 void renderCombo(){
 
   boolean _page=hw.buttonState(PAGE);
@@ -511,7 +548,7 @@ void renderCombo(){
     if(currentPreset>=NUMBER_OF_PRESETS-1) loadPreset(0,0);
     else loadPreset(0,currentPreset+1);
     showForWhile(presetName[2]);
-    clearIndexes();
+   // clearIndexes();
     EEPROM.write(E_PRESET,currentPreset);
     hw.freezeAllKnobs();
   }
@@ -521,13 +558,13 @@ void renderCombo(){
     if(currentPreset==0 || currentPreset>=NUMBER_OF_PRESETS) loadPreset(0,NUMBER_OF_PRESETS);
     else loadPreset(0,currentPreset-1);
     showForWhile(presetName[2]);
-    clearIndexes();
+   // clearIndexes();
     EEPROM.write(E_PRESET,currentPreset);
     hw.freezeAllKnobs();
   }
 
   //,showForWhile("pr  "),hw.setDot(1,true),hw.displayChar(ame[2],3),hw.displayChar(presetName[1],2),clearIndexes();
-  // if(hw.buttonState(DOWN) && hw.justPressed(UP)) combo=true, copy(activeSound) ; //copy
+  // if(hw.buttonState(DOWN) && hw.justPressed()) combo=true, copy(activeSound) ; //copy
   //if(hw.buttonState(UP) && hw.justPressed(DOWN)) combo=true, paste(activeSound),hw.freezeAllKnobs(); // paste
 
   shift=hw.buttonState(FN);
@@ -539,15 +576,36 @@ void renderCombo(){
       else showForWhile('e');
       EEPROM.write(E_PRESET,currentPreset);
     }
-    if(hw.justPressed(PAGE)|| hw.justPressed(UP)){
+    if(hw.justPressed(PAGE) || hw.justPressed(UP)){
       combo=true;
       setting=getVar(activeSound,SETTING);
-      int i=0;
-      if(hw.justPressed(PAGE)) i=REPEAT_BIT;
-      if(hw.justPressed(UP)) i=SYNC_BIT, bitWrite(setting,EXTRA_BIT, 1);
-      bitWrite(setting,i,!bitRead(setting,i));
 
-      if(bitRead(setting,i) && i==SYNC_BIT) cvAssign=255;//, clockCounter=1;
+      if(hw.justPressed(PAGE)){
+
+        bitWrite(setting,REPEAT_BIT,!bitRead(setting,REPEAT_BIT));
+      }
+      if(hw.justPressed(UP)){
+        if(browse<3) browse++;
+        else browse=0;
+/*
+        if(browse==0) {
+          //bitWrite(setting,SYNC_BIT,!bitRead(setting,SYNC_BIT));
+         // cvAssign=255;
+        }
+        else if(browse==1){
+          //         i=SYNC_BIT, bitWrite(setting,EXTRA_BIT, 1);
+        }
+        else if(browse==2){
+
+        }
+        else if(browse==3){
+
+        }*/
+        bitWrite(setting,6,bitRead(browse,0));
+        bitWrite(setting,7,bitRead(browse,1));
+
+      }
+      //, clockCounter=1;
 
       setVar(activeSound,SETTING,setting); 
       setSetting(activeSound);
@@ -594,25 +652,29 @@ void renderSmallButtons(){
     if(hw.justPressed(UP) && !hw.buttonState(DOWN)){
       stopSound();
       listNameUp();
-      setVar(activeSound,SAMPLE_NAME_1,name[0]);
+      // setVar(activeSound,SAMPLE_NAME_1,name[0]);
       setVar(activeSound,SAMPLE_NAME_2,name[1]);
       sound=activeSound;
       if(notesInBuffer>0) playSound(sound);
       else showSampleName(),whileShow=true,whileTime=millis();
       if(hw.buttonState(DOWN)) longTime=millis();
       longPress=false;
+      playSound(activeSound);
+      if(notesInBuffer==0) stopEnvelope(),instantLoop=0;
     } 
 
     if(hw.justPressed(DOWN) && !hw.buttonState(UP)){
       stopSound();
       listNameDown();
-      setVar(activeSound,SAMPLE_NAME_1,name[0]);
+      // setVar(activeSound,SAMPLE_NAME_1,name[0]);
       setVar(activeSound,SAMPLE_NAME_2,name[1]);
       sound=activeSound;
       if(notesInBuffer>0) playSound(sound);
       else showSampleName(),whileShow=true,whileTime=millis();
       if(hw.buttonState(UP)) longTime=millis();
       longPress=false;
+      playSound(activeSound);
+      if(notesInBuffer==0) stopEnvelope(),instantLoop=0;
     } 
 
     doIRestartGrandPa();
@@ -674,10 +736,24 @@ void renderBigButtons(){
       sound=i;
       //  if(sound!=activeSound){ 
       hw.freezeAllKnobs();
-      activeSound=sound,interfaceSound=sound, putNoteIn(sound);
+      activeSound=sound,interfaceSound=sound, playSound(activeSound);//putNoteIn(sound);
+      notesInBuffer=1;
       // }
     }
-    if(hw.justReleased(bigButs[i]))  sound=putNoteOut(i),hw.freezeAllKnobs();
+    if(hw.justReleased(bigButs[i])){
+      if(hw.buttonState(bigButs[(i+1)%2])){
+        if( activeSound!=(i+1)%2){
+          hw.freezeAllKnobs();
+          activeSound=(i+1)%2,interfaceSound=(i+1)%2, playSound((i+1)%2);
+        }
+        notesInBuffer=1; 
+      }
+     else{
+       hw.freezeAllKnobs();
+       stopEnvelope(),instantLoop=0;
+       notesInBuffer=0;
+     } 
+    }  
     //if(activeSound==i && notesInBuffer>0) hw.setLed(bigButLed[i],true);
     //else hw.setLed(bigButLed[i],false);
 
@@ -705,7 +781,7 @@ void renderRecordRoutine(){
    if(hw.justPressed(HOLD)) thru=!thru,wave.setAudioThru(thru);
    hw.setLed(HOLD,thru);
    for(int i=0;i<NUMBER_OF_BIG_BUTTONS;i++) {
-   if(hw.justPressed(bigButton[i])) recSound=i,trackRecord(recSound,currentPreset);
+   if(hw.justPressed(bigButton[i])) recSound=i,trackRecord(recSound,current);
    }
    //   displayVolume();
    }
@@ -806,9 +882,13 @@ void renderKnobs(){
         bitWrite(setting,TUNED_BIT, bitRead(cvAssign,0));
         bitWrite(setting,SHIFT_DIR_BIT, bitRead(cvAssign,1));
         bitWrite(setting,LEGATO_BIT, bitRead(cvAssign,2));
-        bitWrite(setting,EXTRA_BIT, 0);
-
-        bitWrite(setting,SYNC_BIT,false);
+     
+//        bitWrite(setting,EXTRA_BIT, 0);
+  //      bitWrite(setting,SYNC_BIT,false);
+        browse=0;
+        bitWrite(setting,6,0);
+        bitWrite(setting,7,0);
+       
         setVar(activeSound,SETTING,setting); 
         setSetting(activeSound);
         //  Serial.println(cvAssign);
@@ -850,7 +930,7 @@ void renderKnobs(){
 
           // if(page == lastPage){
           //if(inBetween( scale(_knobValue,KNOB_BITS,variableDepth[_variable]), scale(hw.lastKnobValue(i),KNOB_BITS,variableDepth[_variable]),was ) ) Serial.println(_knobValue),Serial.println(hw.lastKnobValue(i)),Serial.println(was),hw.unfreezeKnob(i);
-          if(_variable==1 || variable==0){
+          if(1){//_variable==1 || _variable==0 || _variable==4){
             if(inBetween( scale(_knobValue,KNOB_BITS,variableDepth[_variable]), scale(hw.lastKnobValue(i),KNOB_BITS,variableDepth[_variable]),was)) hw.unfreezeKnob(i),hw.setColor(WHITE);//,showForWhile(knobLabel(page,i)),lastMoved==i; //external unfreez
 
           }
@@ -893,12 +973,12 @@ void renderKnobs(){
            }
            }
            */
-           /*
+          /*
             if(_variable==0){
-              
-            }
-            */
-           // || _variable==0)
+           
+           }
+           */
+          // || _variable==0)
           if(_variable==5 ){
             if((was>>4)!=(_value>>4)) {
               lastMoved=i;
@@ -948,6 +1028,8 @@ void renderKnobs(){
 }
 
 
+//uint8_t charShow=0;
+long charShowTime;
 
 void renderDisplay(){
 
@@ -956,9 +1038,33 @@ void renderDisplay(){
     //  hw.displayText("set "); 
     // hw.displayChar(activeSound+49,3);
     //  for(int i=0;i<5;i++)  hw.setLed(bigButton[i],bitRead(setting,i));
-
+    // whileShow=true;
     hw.setLed(bigButLed[0],repeat);
-    hw.setLed(bigButLed[1],bitRead(setting,SYNC_BIT));
+    if((millis()-charShowTime)>200){
+      charShowTime=millis();
+      if(blinkCounter<7) blinkCounter++;
+      else blinkCounter=0;
+    }
+
+    switch(browse){
+    case 0:
+      hw.setLed(bigButLed[1],false);
+      hw.lightNumber(LINES);
+      break;
+    case 1:
+      hw.setLed(bigButLed[1],true);
+      hw.lightNumber(LINES);
+      break;
+    case 2:
+      hw.setLed(bigButLed[1],blinkCounter%2);
+      hw.displayChar(blinkCounter+65);
+      break;
+    case 3:
+      hw.setLed(bigButLed[1],true);
+      hw.displayChar(blinkCounter+65);
+      break;
+    }
+
 
 
     //  hw.setLed(bigButton[5],false);
@@ -970,22 +1076,19 @@ void renderDisplay(){
     if(wave.isPlaying() && activeSound==1) hw.setLed(bigButLed[1],true);
     else hw.setLed(bigButLed[1],false);
   }
-
-  if(instantLoop==2){
-    // hw.displayText("loop"); 
-  }//else if(
-
-  else if(whileShow){
-    if(millis()-whileTime>WHILE_DURATION) whileShow=false,showSampleName(),noDots(),lastMoved=5;
-  }
-  else if(!wave.isPlaying() && !rec) {
-    hw.lightNumber(LINES);
-    // for(int i=0;i<4;i++) hw.lightNumber(LINES,i);
-    noDots();
-  } 
-  else{
-    showSampleName(); 
-    noDots();
+  if(!shift){
+    if(whileShow){
+      if(millis()-whileTime>WHILE_DURATION) whileShow=false,showSampleName(),noDots(),lastMoved=5;
+    }
+    else if(!wave.isPlaying() && !rec) {
+      hw.lightNumber(LINES);
+      // for(int i=0;i<4;i++) hw.lightNumber(LINES,i);
+      noDots();
+    } 
+    else{
+      showSampleName(); 
+      noDots();
+    }
   }
   //showValue(bytesAvailable);
 }
@@ -995,7 +1098,7 @@ void renderDisplay(){
 void showForWhile(char show){
   whileShow=true;
   whileTime=millis();
-  hw.displayChar(show);
+  if(!shift) hw.displayChar(show);
   // hw.displayText(show); 
 }
 
@@ -1012,20 +1115,20 @@ void randomize(unsigned char _sound){
   setVar(_sound,CRUSH,rand(20));
   setVar(_sound,ATTACK,rand(20));
 }
-
+/*
 unsigned char copyMemory[NUMBER_OF_BYTES];
-void copy(unsigned char _sound){
-  showForWhile('c');
-  for(uint8_t i=0;i<NUMBER_OF_BYTES;i++) copyMemory[i]=variable[_sound][i];
-}
-
-void paste(unsigned char _sound){
-  showForWhile('p');
-  for(uint8_t i=0;i<NUMBER_OF_BYTES;i++) variable[_sound][i]=copyMemory[i];
-  indexed(_sound,false);
-  hw.freezeAllKnobs();
-}
-
+ void copy(unsigned char _sound){
+ showForWhile('c');
+ for(uint8_t i=0;i<NUMBER_OF_BYTES;i++) copyMemory[i]=variable[_sound][i];
+ }
+ 
+ void paste(unsigned char _sound){
+ showForWhile('p');
+ for(uint8_t i=0;i<NUMBER_OF_BYTES;i++) variable[_sound][i]=copyMemory[i];
+ indexed(_sound,false);
+ hw.freezeAllKnobs();
+ }
+ */
 void noSound(){
   envelopePhase=3;
   stopSound();
@@ -1038,13 +1141,31 @@ void loadName(unsigned char _sound){
   //for(int i=0;i<2;i++)  name[i]=getVar(_sound,SAMPLE_NAME_1+i);
   name[0]=firstLetter;//getVar(_sound,SAMPLE_NAME_1);
   name[1]=getVar(_sound,SAMPLE_NAME_2);
+  if(browse>1){
+    //    name[1]=getVar(_sound,SAMPLE_NAME_2)+
+    uint8_t  howMany=mapSample(hw.getCvValue());
+    for(uint8_t i=0;i<howMany;i++){
+      name[1]++;
+      if(name[1]>=58 && name[1]<65) name[1]=65;
+      else if(name[1]>=91){
+        name[1]=48; 
+      }
+    }
+
+  }
 }
 
 void showSampleName(){
 
   // hw.displayChar('S',0);
   //  hw.displayChar(' ',1);
-  hw.displayChar(name[1]);
+  if(!shift){
+    
+      if(actualIndex>10) hw.displayChar(actualIndex+55);
+      else hw.displayChar(actualIndex+48);
+    //}
+  }
+  // hw.displayChar(name[1]);
   // hw.displayChar(name[1],3);
 
 }
@@ -1116,8 +1237,8 @@ void channelCVCall(uint8_t channel, uint8_t number){
     break;
   case 2:
 
-    if(cvAssign==2) attackInterval=getVar(_sound,ATTACK)+(hw.getCvValue()>>3);
-    else attackInterval=getVar(_sound,ATTACK)+(expanderValue[2]>>1);
+    if(cvAssign==2) attackInterval=(getVar(_sound,ATTACK)+(hw.getCvValue()>>3))>>1;
+    else attackInterval=(getVar(_sound,ATTACK)+(expanderValue[2]>>1))>>1;
     break;
   case 3:
     if(cvAssign==3) releaseInterval=getVar(_sound,RELEASE)+(hw.getCvValue()>>3);
@@ -1144,18 +1265,18 @@ void channelCVCall(uint8_t channel, uint8_t number){
     break;
   case 6:
     //splice here??
-   // if(!revMidi){
-      if(cvAssign==6)  startIndex=getVar(_sound,START)+(hw.getCvValue())+(expanderValue[6]<<2);
-      else startIndex=getVar(_sound,START)+(expanderValue[6]<<2);
-      //if(startIndex>endIndex) startIndex=endIndex-3;//MINIMAL_LOOP; //novinka
-      startPosition=startIndex*startGranule;
-   // }
+    // if(!revMidi){
+    if(cvAssign==6)  startIndex=getVar(_sound,START)+(hw.getCvValue())+(expanderValue[6]<<2);
+    else startIndex=getVar(_sound,START)+(expanderValue[6]<<2);
+    //if(startIndex>endIndex) startIndex=endIndex-3;//MINIMAL_LOOP; //novinka
+    startPosition=startIndex*startGranule;
+    // }
     //setEnd(_sound); //novinka
     break;
 
     //if(!hw.knobFreezed(3))  
   case 7:
-  //  if(!revMidi)   
+    //  if(!revMidi)   
     setEnd(_sound);
     break;
 
@@ -1167,6 +1288,7 @@ void channelCVCall(uint8_t channel, uint8_t number){
 
   // renderTweaking(channel/2);
 }
+
 
 
 

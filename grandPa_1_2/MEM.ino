@@ -87,7 +87,7 @@ PROGMEM prog_uint16_t maxValue[]={
 
 #define PRESET_SIZE 84  //66 in real
 
-#define NUMBER_OF_SOUNDS 6
+#define NUMBER_OF_SOUNDS 2
 
 #define CHANNEL_BYTE 1023
 
@@ -255,8 +255,8 @@ void loadPreset(unsigned char _bank,unsigned char _preset) {
   _bank=0;
   if(_preset>=NUMBER_OF_PRESETS) _preset=NUMBER_OF_PRESETS-1;
   if(_preset>=200) _preset=0;
-  if(_bank>=200) _bank=0;
-  if(_bank>=NUMBER_OF_BANKS) _bank=NUMBER_OF_BANKS;
+ // if(_bank>=200) _bank=0;
+  //if(_bank>=NUMBER_OF_BANKS) _bank=NUMBER_OF_BANKS;
   //if(_bank<=0) _bank=0;
   if(_preset<10) presetName[2]=_preset+48; 
   else presetName[2]=_preset+65-10; 
@@ -266,6 +266,7 @@ void loadPreset(unsigned char _bank,unsigned char _preset) {
   currentBank=0;
 
   noSound();
+  file.close();
   clearBuffer();
   if(!file.open(&root, presetName, O_READ)){
     clearPreset();
@@ -284,7 +285,7 @@ void loadPreset(unsigned char _bank,unsigned char _preset) {
 }
 
 
-
+/*
 void clearMemmory(){
   for(uint8_t i=0;i<NUMBER_OF_BANKS;i++){
     for(uint8_t j=0;j<NUMBER_OF_PRESETS;j++){
@@ -295,7 +296,7 @@ void clearMemmory(){
     }
   }
 }
-
+*/
 void clearPreset(){
   for(uint8_t i=0;i<NUMBER_OF_SOUNDS;i++){
     clearSound(i);

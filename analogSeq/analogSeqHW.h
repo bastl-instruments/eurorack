@@ -169,6 +169,7 @@ public:
 	bool resetState(){return rstState;};
 	bool _jumpState;
 	bool _lastJumpState;
+	bool expanderState(){ return expanderConnected;};
 
 private:
 	/**TIMING**/
@@ -176,7 +177,7 @@ private:
 	uint32_t bastlCycles;
 	bool inBetween(uint8_t value, uint8_t border1, uint8_t border2);
 
-
+	bool expanderConnected;
 	uint8_t buttonSelect;
 	/**BUTTONS**/
 	uint8_t knobFreezeHash;

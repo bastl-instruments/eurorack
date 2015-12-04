@@ -350,7 +350,7 @@ void clockCall(uint8_t number){
 				if(trigAshift>3) shiftA=trigAshift-3, virtualStep+=shiftA;
 				else shiftA=4-trigAshift, virtualStep-=shiftA;
 				if(virtualStep>=numberOfSteps) virtualStep%=numberOfSteps;
-				if(virtualStep<0) virtualStep=numberOfSteps+step;
+				if(virtualStep<0) virtualStep=numberOfSteps+virtualStep;
 				break;
 			case 2:
 				if(triggerLatency>0){
@@ -364,7 +364,7 @@ void clockCall(uint8_t number){
 				uint8_t shiftB;
 				if(trigBshift>3) shiftB=trigBshift-3, virtualStep+=shiftB;
 				else shiftB=4-trigBshift, virtualStep-=shiftB;
-				if(virtualStep>numberOfSteps) virtualStep%=numberOfSteps;
+				if(virtualStep>=numberOfSteps) virtualStep%=numberOfSteps;
 				if(virtualStep<0) virtualStep=numberOfSteps+virtualStep;
 
 				break;
@@ -475,14 +475,20 @@ void buttonCall(uint8_t number){
 			if(hw.buttonState(8)) booting=false,saveSettings();
 		}
 		if(pair){
-			if(dual) dual=false, numberOfSteps=8;
-			else{
-				dual=true;
-				master=false;
-				com.sendPairMessage();
-				com.sendTrigger(2);
-			//	numberOfSteps=16;
-				interaction=true;
+			if(hw.buttonState(8)){
+				if(dual){
+					dual=false, numberOfSteps=8;
+					com.sendPairMessage();
+					com.sendTrigger(7);
+				}
+				else{
+					dual=true;
+					master=false;
+					com.sendPairMessage();
+					com.sendTrigger(2);
+				//	numberOfSteps=16;
+					interaction=true;
+				}
 			}
 		}
 		hw.freezeAllKnobs();
@@ -672,6 +678,11 @@ void renderCommunication(){
 			myTurn=false;
 		}
 	}
+	else{
+		if(millis()-myTurnTime>100){
+			myTurn=true;
+		}
+	}
 }
 void channelTriggerCall(uint8_t channel, uint8_t number){
 	if(dualMode==0){
@@ -705,6 +716,9 @@ void stepCall(uint8_t number){
 	}
 	else{
 		step=number-10;
+		virtualStep=step-offsetStep; //virtualStep //potreba udelat transfer offsetStep z mastru do slavu....
+		if(virtualStep>=numberOfSteps) virtualStep%=numberOfSteps;
+		if(virtualStep<0) virtualStep=numberOfSteps+virtualStep;
 		slideFrom=realOut;
 		gateTimeStart=hw.getElapsedBastlCycles();
 		if(slide[step]) calculateLine=true,slideTimeStart=hw.getElapsedBastlCycles();
@@ -734,6 +748,7 @@ void triggerCall(uint8_t number){
 	if(number==0) pair=false;
 	if(number==1) pair=true;
 	if(number==2){ //dual mode
+		interaction=true;
 		if(dual==true) dual=false,numberOfSteps=8;
 		else{
 			dual=true,master=true, numberOfSteps=16;
@@ -749,24 +764,43 @@ void triggerCall(uint8_t number){
 		}
 	}
 	if(number==3){
+		master=false;
+		dual=true;
 		dualMode=0;
 		numberOfSteps=16;
 	}
 	if(number==4){
+		master=false;
+		dual=true;
 		dualMode=1;
 		numberOfSteps=16;
 	}
 	if(number==5){
+		master=false;
+		dual=true;
 		dualMode=2;
+		numberOfSteps=8;
+	}
+	if(number==7){
+		if(dual){
+			com.sendPairMessage();
+			com.sendTrigger(7);
+		}
+		dual=false;
+		master=false;
 		numberOfSteps=8;
 	}
 }
 void startCall(uint8_t number){ //slide time
 	potValue[0][1]=number;
+	myTurn=true;
+	myTurnTime=millis();
 
 }
 void stopCall(uint8_t number){ //gate time
 	potValue[1][1]=number;
+	myTurn=true;
+	myTurnTime=millis();
 }
 
 void interpolateCall(uint8_t channel, uint8_t number){
@@ -1102,27 +1136,6 @@ void renderLeds(){
 			}
 			else{
 				if(dual){
-
-/*
-					switch(dualMode){
-						case 0:
-							if(master) _equal=i;
-							else _equal=i+8;
-							break;
-						case 1:
-							_equal=i+8;
-							if(_equal==step2){
-								hw.setLed(i,true);
-								hw.dimLed(i,false);
-							}
-							 _equal=i;
-							break;
-						case 2:
-							 _equal=i;
-							break;
-
-					}
-					*/
 					if(!shift) hw.setLed(i,gate[i]),hw.dimLed(i,true);
 					else hw.setLed(i,slide[i]),hw.dimLed(i,true);
 					if(dualMode==0){
@@ -1416,11 +1429,12 @@ void loop()
 	//delay(1);
 	com.update();
 	renderLatencies();
-
+	//Serial.println(hw.expanderState());
 
 
 	if(!calibrating){
 		renderCvIn();
+		//Serial.println(hw.expanderState());
 		renderLeds();
 		renderCTRLknobs();
 		renderGate();

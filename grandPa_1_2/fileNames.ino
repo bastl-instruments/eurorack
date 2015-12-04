@@ -1,37 +1,68 @@
 //#include <mozzi_rand.h>
 unsigned char searchIndex=1;
 void indexAll(){
-  /*
+  name[0]=firstLetter;
   name[1]=48;
-  while(name[1]<=91){
-
+  
+  for(uint8_t i=0;i<36;i++){
+      uint8_t _index=i;
+      if(_index<10) name[1]=_index+48;
+      else name[1]=_index+55;
+       hw.displayChar(name[1]);
+    hw.updateDisplay();
+     // if(name[1]>58) _index=name[1]-48;
+     // else _index=name[1]-65;
+      
     if (!file.open(&root,name, O_READ)) { 
       // errorLoop();
      // return false;
+     indexed(_index,false); 
+  //   Serial.print("0");
+    hw.setColor(RED);
     }
     else{
-      uint8_t _index;
-      if(name[1]>58) _index=name[1]-48;
-      else _index=name[1]-65;
+       hw.setColor(GREEN);
       index[_index]=root.curPosition()/32-1;
       indexed(_index,true); 
       //indexed(_sound,false); 
+//       Serial.print("1");
     }
-
-
-
-    name[1]++;
-    if(name[1]>=58 && name[1]<65) name[1]=65;
-    else if(name[1]>=91) name[1]=48, loop(); 
-    name[0]=firstLetter;
-
+   // Serial.println(_index);
+    file.close();
+    hw.updateDisplay();
+    delay(50);
   }
-*/
+
+  
+
 }
 void dt(){
   // hw.displayText("SRCH");
 }
 void listNameUp(){
+   name[1]++;
+  if(name[1]>=58 && name[1]<65) name[1]=65;
+  else if(name[1]>=91){
+    name[1]=48; 
+    upWithFirstLetter();
+
+  }
+  
+    uint8_t _index;
+  if(name[1]>58) _index=name[1]-55;
+   else _index=name[1]-48;
+   if(!indexed(_index)) listNameUp();
+  
+  /*
+  uint8_t _index;
+  if(name[1]>58) _index=name[1]-65;
+   else _index=name[1]-48;
+   if(!indexed(_index)){
+      listNameUp();
+   }
+   */
+   
+   /*
   name[1]++;
   if(name[1]>=58 && name[1]<65) name[1]=65;
   else if(name[1]>=91){
@@ -60,10 +91,36 @@ void listNameUp(){
   if(!playBegin(name,activeSound)) listNameUp();
   stopSound();
   searchIndex=1;
+  */
 
 }
 void listNameDown(){
+  
+  name[1]--;
+  if(name[1]<48){
+    name[1]=90;
+    downWithFirstLetter();
 
+  }
+  else if(name[1]<65 && name[1]>58) name[1]=58;
+  
+  uint8_t _index;
+  if(name[1]>58) _index=name[1]-55;
+   else _index=name[1]-48;
+   if(!indexed(_index)) listNameDown();
+   
+   
+  /*
+  uint8_t _index;
+  if(name[1]>58) _index=name[1]-65;
+   else _index=name[1]-48;
+   if(!indexed(_index)){
+      listNameDown();
+   }
+   */
+ 
+   
+/*
   name[1]--;
   if(name[1]<48){
     name[1]=90;
@@ -94,6 +151,7 @@ void listNameDown(){
 
   stopSound();
   searchIndex=1;
+  */
 }
 
 void upWithFirstLetter(){
