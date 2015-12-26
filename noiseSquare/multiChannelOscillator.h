@@ -31,11 +31,21 @@
 // which port should be used to toggle
 #define OSCIL_PORT D
 
-// the length of the event buffer in number of events
-#define EVENT_BUFFER_SIZE 100
+// The length of the event buffer in number of events
+// * The delay introduced by the buffer depends on speed of events.
+//   Assuming events are spaced on average 127 ticks with a prescaler of 64 and 20MHz crystal,
+//   the average delay is EVENT_BUFFER_SIZE * 0.4 ms
+// * Increasing the oscillator frequency has a higher delay than decreasing it
+// * Larger buffers increase the delay, shorter buffers increase the risk of an underrun
+#define EVENT_BUFFER_SIZE 20
 
-// the numbers of channels to handle. This little no influence on performance but avoids accessing unused pins during init()
+// The numbers of channels to handle.
+// This could be derived from the argument of init() but is hardcoded to avoid dynamic allocation
+// of FiFoBuffer inside of init()
 #define NUMB_CHANNELS 8
+
+
+
 
 
 /// **** CODE *** ///
