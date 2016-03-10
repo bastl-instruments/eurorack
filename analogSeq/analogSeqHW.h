@@ -126,7 +126,7 @@ public:
 	// only called by ISR routine.
 	// they would be declared private but this would prevent the ISR from accessing them
 	// there are workarounds for this but as they come at a cost I just left it like this
-
+	void pinInit();
 	void isr_updateButtons();
 	void isr_updateKnobs();
 	void isr_updateTriggerStates();

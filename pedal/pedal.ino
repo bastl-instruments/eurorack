@@ -57,6 +57,61 @@ bool outLedState[2];
 bool outButState[2];
 bool gateState[2];
 bool muxState[2];
+void fastRoutine(){
+	gateState[0]=!bit_read_in(GATE_1_PIN);
+			gateState[1]=!bit_read_in(GATE_2_PIN);
+
+			if(gateState[0]){
+				if(muxState[0]){
+					bit_set(LED_1_PIN);
+					bit_set(OUT_LED_1_PIN);
+					bit_set(MUX_1_PIN);
+				}
+				else{
+					bit_clear(LED_1_PIN);
+					bit_clear(OUT_LED_1_PIN);
+					bit_clear(MUX_1_PIN);
+				}
+			}
+			else{
+				if(!muxState[0]){
+					bit_set(LED_1_PIN);
+					bit_set(OUT_LED_1_PIN);
+					bit_set(MUX_1_PIN);
+				}
+				else{
+					bit_clear(LED_1_PIN);
+					bit_clear(OUT_LED_1_PIN);
+					bit_clear(MUX_1_PIN);
+				}
+			}
+
+
+			if(gateState[1]){
+					if(muxState[1]){
+						bit_set(LED_2_PIN);
+						bit_set(OUT_LED_2_PIN);
+						bit_set(MUX_2_PIN);
+					}
+					else{
+						bit_clear(LED_2_PIN);
+						bit_clear(OUT_LED_2_PIN);
+						bit_clear(MUX_2_PIN);
+					}
+				}
+				else{
+					if(!muxState[1]){
+						bit_set(LED_2_PIN);
+						bit_set(OUT_LED_2_PIN);
+						bit_set(MUX_2_PIN);
+					}
+					else{
+						bit_clear(LED_2_PIN);
+						bit_clear(OUT_LED_2_PIN);
+						bit_clear(MUX_2_PIN);
+					}
+				}
+}
 
 void routine(){
 	switchState[0]=!bit_read_in(SWITCH_1_PIN);
@@ -94,61 +149,9 @@ void routine(){
 			if(butState[1]==true || outButState[1]==true) muxState[1]=false;
 			else muxState[1]=true;
 		}
-
-		gateState[0]=!bit_read_in(GATE_1_PIN);
-		gateState[1]=!bit_read_in(GATE_2_PIN);
-
-		if(gateState[0]){
-			if(muxState[0]){
-				bit_set(LED_1_PIN);
-				bit_set(OUT_LED_1_PIN);
-				bit_set(MUX_1_PIN);
-			}
-			else{
-				bit_clear(LED_1_PIN);
-				bit_clear(OUT_LED_1_PIN);
-				bit_clear(MUX_1_PIN);
-			}
-		}
-		else{
-			if(!muxState[0]){
-				bit_set(LED_1_PIN);
-				bit_set(OUT_LED_1_PIN);
-				bit_set(MUX_1_PIN);
-			}
-			else{
-				bit_clear(LED_1_PIN);
-				bit_clear(OUT_LED_1_PIN);
-				bit_clear(MUX_1_PIN);
-			}
-		}
-
-
-		if(gateState[1]){
-				if(muxState[1]){
-					bit_set(LED_2_PIN);
-					bit_set(OUT_LED_2_PIN);
-					bit_set(MUX_2_PIN);
-				}
-				else{
-					bit_clear(LED_2_PIN);
-					bit_clear(OUT_LED_2_PIN);
-					bit_clear(MUX_2_PIN);
-				}
-			}
-			else{
-				if(!muxState[1]){
-					bit_set(LED_2_PIN);
-					bit_set(OUT_LED_2_PIN);
-					bit_set(MUX_2_PIN);
-				}
-				else{
-					bit_clear(LED_2_PIN);
-					bit_clear(OUT_LED_2_PIN);
-					bit_clear(MUX_2_PIN);
-				}
-			}
+		fastRoutine();
 }
+
 
 void setup(){
 
@@ -193,19 +196,22 @@ void setup(){
 
 	bit_clear(OUT_LED_1_PIN);
 	bit_clear(OUT_LED_2_PIN);
-routine();
-switchState[0]=false;
-switchState[1]=false;
+	routine();
+	switchState[0]=false;
+	switchState[1]=false;
 
 
 }
-
+uint32_t _time;
 void loop()
 {
 
 	routine();
+	while(millis()-_time==0){
+		fastRoutine();
+	}
+	_time=millis();
 
-	delay(1);
 }
 
 

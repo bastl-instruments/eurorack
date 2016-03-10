@@ -11,33 +11,42 @@ extern analogSeqHW hw;
  *
  * TODO
  *
- *
- * tuned CV input implementation
- * cvInputExpander second implementation
+
+
+ * *-oscilator tuner mode
 
  *
+
+
  *
- *
- *
- *
- *
- *  -dual setup
+ *  -dual
  * settings transfer master>slave dual
- * dual setup - sync step
- * dual setup - two cursors
- * cv inputs in dual setup
+ * dual  - sync step
+ * dual  - two cursors
+ * cv inputs in dual
  *
  *
  * test
- * exit dual setup
+ *  * *-input CV calibration -
+ * *	bootup menu -
+ *  * -output CV calibration procedure
+ * random step implementation
+ *  *jump to step by pressing button with FN
+ *  * tuned CV input implementation
+ 	 * negative range
+ 	 *
+ 	  invert minMAJ with expander
+ *
+ *
+ * exit dual
  * - CV input implementation
- * -output CV calibration procedure
+
  *-center position of  step knobs
  *-center -slide time and gate time curveMap
- *-oscilator tuner mode
- *-input CV calibration -
 
- * *	bootup menu -
+
+
+ *
  *	different dual setup visualisation - done
  *	tune input - done
  *
@@ -86,7 +95,7 @@ uint16_t slideMap[10]={0,63,127,191,255,   10,100,500,1000,4000};
 #define GATE_MAP_POINTS 5
 
 uint8_t triggerLatency=2;
-
+bool calibrationAllowed=true;
 uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
 	uint32_t inMin=0, inMax=255, outMin=0, outMax=255;
 	for(int i=0;i<numberOfPoints-1;i++){
@@ -99,6 +108,34 @@ uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
 		}
 	}
 	return map(value,inMin,inMax,outMin,outMax);
+}
+
+//uint16_t cvOutCalibrate[15]={312, 645, 974, 1304, 1634, 1964, 2303, 2627, 2961, 3293, 3625, 0, 0, 0,0};
+//uint16_t tuneIn[15]={480, 503, 525, 548, 571, 594, 617, 640, 662, 685, 708, 0, 0,0,0 };
+uint16_t tuneInNeg[15]={480, 503, 525, 548, 571, 594, 617, 640, 662, 685, 708, 0, 0,0,0 };
+
+uint16_t cvOutCalibrate[15]={85, 456, 837, 1214, 1593, 1974, 2346, 2717, 3093, 3484, 3848, 0, 0, 0,0}; //valentinos popcorn <3
+uint16_t tuneIn[15]={482, 530, 578, 627, 675, 723, 771, 818, 866, 916, 962, 0, 0, 0,0}; //valentinos popcorn <3
+
+
+
+uint32_t dualTableCurveMap(uint16_t value, uint8_t numberOfPoints, uint16_t * tableMap,uint16_t * tableMap2){
+	uint16_t inMin=tuneIn[0], inMax=tuneIn[10], outMin=cvOutCalibrate[0], outMax=cvOutCalibrate[10];
+	for(uint8_t i=0;i<numberOfPoints-1;i++){
+		if(value >= tableMap[i] && value <= tableMap[i+1]) {
+			inMax=tableMap[i+1];
+			inMin=tableMap[i];
+			outMax=tableMap2[i+1];
+			outMin=tableMap2[i];
+			i=numberOfPoints+10;
+		}
+	}
+	return map(value,inMin,inMax,outMin,outMax);
+}
+
+void software_Reset() // Restarts program from beginning but does not reset the peripherals and registers
+{
+  asm volatile ("  jmp 0");
 }
 
 uint8_t numberOfSteps=8;
@@ -120,21 +157,22 @@ uint16_t otherKnobs[8];
 bool otherGates[8];
 bool otherSlides[8];
 
-#define NUMBER_OF_CV_IN_DESTINATIONS 11
+#define NUMBER_OF_CV_IN_DESTINATIONS 12
 
-#define TRANSPOSE 0 //PROPPER MAPPING -bipolar
-#define QUANTIZED_TRANSPOSE 1 //PROPPER MAPPING -bipolar
+#define TRANSPOSE 0 //PROPPER MAPPING -bipolar DONE
+#define QUANTIZED_TRANSPOSE 1 //PROPPER MAPPING -bipolar DONE
 
 #define OFFSET 2 //deep test - potřebuje hlubši definici  -bipolar
-#define RESET_OFFSET 3   //deep test
-#define TRIG_A_SHIFT 4  //deep test
-#define TRIG_B_SHIFT 5 //deep test
-#define SLIDE_TIME 6  //deep test
-#define GATE_TIME 7  //deep test
+#define RESET_OFFSET 3   //deep test -bipolar
+#define TRIG_A_SHIFT 4  //deep test -bipolar
+#define TRIG_B_SHIFT 5 //deep test -bipolar
+#define SLIDE_TIME 6  //deep test -bipolar
+#define GATE_TIME 7  //deep test -bipolar
 
 #define SHIFT_INVERT 8 //deep test -gate
 #define MIN_MAJ 9 //deep test -gate
 #define RESET_TO_4 10 //deep test - has to come prior to trigger - trigger
+#define RANDOM_STEP 11 //TODO
 
 /*
  * GATE_TIME
@@ -143,7 +181,7 @@ bool otherSlides[8];
  * RESET_TO_4
  *
  */
-uint8_t currentCvValue,lastCvValue;
+int currentCvValue,lastCvValue;
 bool currentCvGate=false;
 uint8_t cvInDestination=0;
 uint8_t dualMode=0;
@@ -155,10 +193,6 @@ void setGate(bool state){
 //bool calibrating=false;
 uint8_t selectedNote;
 //void loa
-uint16_t cvOutCalibrate[15]={// 0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4095,0,0,0,0};
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-uint16_t tuneIn[15]={// 0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4095,0,0,0,0};
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 
 #define TUNE_POINTS 11
@@ -166,6 +200,10 @@ void loadTable(){
 	for(int i=0;i<11;i++){
 		cvOutCalibrate[i]=word(EEPROM.read(100+(i*2)),EEPROM.read(100+1+(i*2)));
 		tuneIn[i]=word(EEPROM.read(200+(i*2)),EEPROM.read(200+1+(i*2)));
+	}
+	for(int i=0;i<11;i++){
+		tuneInNeg[i]=constrain(tuneIn[0]-(tuneIn[i]-tuneIn[0]),0,1024);
+
 	}
 }
 void saveTable(){
@@ -251,7 +289,7 @@ uint16_t slideFrom;
 bool calculateLine=false;
 uint16_t out;
 uint16_t realOut;
-uint8_t virtualStep,offsetStep;
+int virtualStep,offsetStep;
 bool jump=false;
 uint32_t scheduleTimeA,scheduleTimeB;
 
@@ -307,6 +345,8 @@ uint8_t resetLatency=0;
 bool scheduleA=false,scheduleB=false, scheduleReset=false,scheduleReset4=false;
 uint32_t scheduleResetTime;
 uint32_t scheduleReset4Time;
+uint16_t expanderOffset;
+uint16_t bitOffset;
 void clockCall(uint8_t number){
 	//Serial.println(number);
 	uint8_t jumpTo=255;
@@ -323,7 +363,7 @@ void clockCall(uint8_t number){
 		switch(number){
 			case 0: //RST
 				if(resetLatency>0){
-					scheduleResetTime=millis();
+					scheduleResetTime=hw.getElapsedBastlCycles();
 					scheduleReset=true;
 				}
 				else{
@@ -333,14 +373,16 @@ void clockCall(uint8_t number){
 
 			case 10:
 				if(cvInDestination==RESET_OFFSET){
-					virtualStep=0;
-					clockCall(4);
+					virtualStep=constrain(map(currentCvValue,0,256,0,numberOfSteps),-7,7);
+					while(virtualStep<0) virtualStep=numberOfSteps+virtualStep;
+					//virtualStep=0;
+					//clockCall(4);
 				}
 				else virtualStep=0;
 				break;
 			case 1:
 				if(triggerLatency>0){
-					scheduleTimeA=millis();
+					scheduleTimeA=hw.getElapsedBastlCycles();
 					scheduleA=true;
 				}
 				else clockCall(11);
@@ -354,7 +396,7 @@ void clockCall(uint8_t number){
 				break;
 			case 2:
 				if(triggerLatency>0){
-					scheduleTimeB=millis();
+					scheduleTimeB=hw.getElapsedBastlCycles();
 					scheduleB=true;
 				}
 				else clockCall(12);
@@ -370,7 +412,7 @@ void clockCall(uint8_t number){
 				break;
 			case 3: //resetTo4
 				if(resetLatency>0){
-					scheduleReset4Time=millis();
+					scheduleReset4Time=hw.getElapsedBastlCycles();
 					scheduleReset4=true;
 				}
 				else{
@@ -381,12 +423,38 @@ void clockCall(uint8_t number){
 				virtualStep=4;
 				break;
 			case 4: //offset
-				offsetStep=map(currentCvValue+hw.getCV(4),0,256,0,numberOfSteps);
+				offsetStep=map(currentCvValue+(expanderOffset>>2)+(bitOffset>>2),0,256,0,numberOfSteps);
 				break;
 			case 5: //offset
-				if(cvInDestination == OFFSET) offsetStep=map((hw.getCV(4)>>2)+currentCvValue,0,256,0,numberOfSteps);
-				else offsetStep=map(hw.getCV(4),0,1024,0,numberOfSteps);
+				if(cvInDestination == OFFSET) offsetStep=map((expanderOffset>>2)+(bitOffset>>2)+currentCvValue,0,256,0,numberOfSteps);
+				else offsetStep=map(expanderOffset+bitOffset,0,1024,0,numberOfSteps); //
 				break;
+
+			case 30:
+				virtualStep=0;
+				break;
+			case 31:
+				virtualStep=1;
+				break;
+			case 32:
+				virtualStep=2;
+				break;
+			case 33:
+				virtualStep=3;
+				break;
+			case 34:
+				virtualStep=4;
+				break;
+			case 35:
+				virtualStep=5;
+				break;
+			case 36:
+				virtualStep=6;
+				break;
+			case 37:
+				virtualStep=7;
+				break;
+
 
 		}
 		step=virtualStep+offsetStep;
@@ -394,7 +462,7 @@ void clockCall(uint8_t number){
 
 	if(number>3){
 		if(step>=numberOfSteps) step%=numberOfSteps;
-		if(step<0) step=numberOfSteps+step;
+		while(step<0) step=numberOfSteps+step;
 
 		slideFrom=realOut;
 		gateTimeStart=hw.getElapsedBastlCycles();
@@ -431,24 +499,66 @@ void saveSettings(){
 	EEPROM.write(7,slideByte);
 	EEPROM.write(8,bootByte);
 }
+#define CONFIRM_BYTE_1 303
+#define CONFIRM_BYTE_2 304
+#define CONFIRM_BYTE_3 305
+#define CONFIRM_BYTE_1_VAL 105
+#define CONFIRM_BYTE_2_VAL 87
+#define CONFIRM_BYTE_3_VAL 214
+#define BOOT_BYTE_DEFAULT 1
 void loadSettings(){
-	quantize=EEPROM.read(0);
-	quantizeType=EEPROM.read(1);
-	cvInDestination=EEPROM.read(2);
-	scale=EEPROM.read(3);
-	range=EEPROM.read(4);
-	major=EEPROM.read(5);
-	gateByte=EEPROM.read(6);
-	slideByte=EEPROM.read(7);
-	bootByte=EEPROM.read(8);
+	//just for testers
+/*
+	quantize=0;
+		quantizeType=0;
+		cvInDestination=0;
+		scale=0;
+		range=0;
+		major=0;
+		gateByte=0;
+		slideByte=0;
+		bootByte=BOOT_BYTE_DEFAULT;
+		saveSettings();
+		EEPROM.write(CONFIRM_BYTE_1,CONFIRM_BYTE_1_VAL);
+		EEPROM.write(CONFIRM_BYTE_2,CONFIRM_BYTE_2_VAL);
+		EEPROM.write(CONFIRM_BYTE_3,CONFIRM_BYTE_3_VAL);
+*/
 
-	for(int i=0;i<8;i++){
-		slide[i]=bitRead(slideByte,i);
-		gate[i]=bitRead(gateByte,i);
+	//check for first time load
+	if(EEPROM.read(CONFIRM_BYTE_1)==CONFIRM_BYTE_1_VAL && EEPROM.read(CONFIRM_BYTE_2)==CONFIRM_BYTE_2_VAL && EEPROM.read(CONFIRM_BYTE_3)==CONFIRM_BYTE_3_VAL ){
+		quantize=EEPROM.read(0);
+		quantizeType=EEPROM.read(1);
+		cvInDestination=EEPROM.read(2);
+		scale=EEPROM.read(3);
+		range=EEPROM.read(4);
+		major=EEPROM.read(5);
+		gateByte=EEPROM.read(6);
+		slideByte=EEPROM.read(7);
+		bootByte=EEPROM.read(8);
+
+		for(int i=0;i<8;i++){
+			slide[i]=bitRead(slideByte,i);
+			gate[i]=bitRead(gateByte,i);
+		}
+		loadTable();
+	}
+	else{
+		quantize=0;
+		quantizeType=0;
+		cvInDestination=0;
+		scale=0;
+		range=1;
+		major=0;
+		gateByte=0;
+		slideByte=0;
+		bootByte=BOOT_BYTE_DEFAULT;
+		saveSettings();
+		saveTable();
+		EEPROM.write(CONFIRM_BYTE_1,CONFIRM_BYTE_1_VAL);
+		EEPROM.write(CONFIRM_BYTE_2,CONFIRM_BYTE_2_VAL);
+		EEPROM.write(CONFIRM_BYTE_3,CONFIRM_BYTE_3_VAL);
 	}
 
-
-	loadTable();
 }
 bool interaction;
 uint8_t selekt;
@@ -456,18 +566,24 @@ bool pair=false;
 
 
 void tuneInput(){
-	for(int i=0;i<11;i++){
+	loadTable();
+//	Serial.println("tune");
+	for(uint8_t i=0;i<11;i++){
 		writeDAC(cvOutCalibrate[i]);
-		showBiLed(0,i%8);
-		delay(10);
+		//uint32_t _time=hw.getElapsedBastlCycles();
+		//while(hw.getElapsedBastlCycles()-_time<100);
+		for(int j=0;j<20;j++) hw.isr_updateButtons();
+
 		tuneIn[i]=hw.getCV(0);
+//		Serial.println(tuneIn[i]);
+
 	}
 	saveTable();
 	showBiLed(0,7);
-	delay(500);
+
 }
 bool vOctTuner=false;
-
+bool fnJump=false;
 void buttonCall(uint8_t number){
 
 	if(number==8){
@@ -492,16 +608,28 @@ void buttonCall(uint8_t number){
 			}
 		}
 		hw.freezeAllKnobs();
-		if(!hw.buttonState(number)){
-			if(interaction) interaction=false;
-			else shift=!shift;
-			com.sendPairMessage();
-			com.sendTrigger(hw.buttonState(8));
+		if(hw.buttonState(number)){
+			for(int i=0;i<8;i++){
+				if(hw.buttonState(i)){
+					clockCall(30+i);
+					fnJump=true;
+				}
+			}
 		}
-		else{
-			interaction=false;
-			com.sendPairMessage();
-			com.sendTrigger(hw.buttonState(8));
+		if(!fnJump){
+			if(!hw.buttonState(number)){
+				if(interaction) interaction=false;
+				else shift=!shift;
+				com.sendPairMessage();
+				com.sendTrigger(hw.buttonState(8));
+			}
+			else{
+
+
+				interaction=false;
+				com.sendPairMessage();
+				com.sendTrigger(hw.buttonState(8));
+			}
 		}
 		cvInMode=false;
 		saveSettings();
@@ -515,11 +643,11 @@ void buttonCall(uint8_t number){
 		}
 	}
 	else if(number==9){
-		jump=hw.jumpState();
+		//jump=hw.jumpState();
 	}
 	else{
 		if(hw.buttonState(8)){
-			if(hw.buttonState(number)){
+			if(hw.buttonState(number) && !fnJump){
 				switch(number){
 				case 0:
 					range=5;
@@ -558,8 +686,8 @@ void buttonCall(uint8_t number){
 			}
 		}
 		else if(booting){
-			if(hw.buttonState(3)) tuneInput();
-			else if(hw.buttonState(7)) vOctTuner=true;
+			if(hw.buttonState(3)) ;//tuneInput();
+			else if(hw.buttonState(7)) EEPROM.write(606,1),software_Reset(), vOctTuner=true;
 			else if(number<3){
 				switch(number){
 				case 0:
@@ -582,7 +710,7 @@ void buttonCall(uint8_t number){
 			else if(hw.buttonState(number)) bitWrite(bootByte,number,!bitRead(bootByte,number));
 		}
 		else{
-			if(hw.buttonState(number)){
+			if(!hw.buttonState(number) && !fnJump){
 				if(shift==false){
 					gate[number]=!gate[number];
 				}
@@ -608,7 +736,7 @@ uint8_t whatToSend;
 void renderCommunication(){
 	uint8_t _hash=0;
 	if(myTurn){
-		if(millis()-myTurnTime>COM_RATE){
+		if(hw.getElapsedBastlCycles()-myTurnTime>COM_RATE){
 			if(master && dualMode==0){
 				if(whatToSend<16) whatToSend++;
 				else whatToSend=0;
@@ -679,12 +807,13 @@ void renderCommunication(){
 		}
 	}
 	else{
-		if(millis()-myTurnTime>100){
+		if(hw.getElapsedBastlCycles()-myTurnTime>100){
 			myTurn=true;
 		}
 	}
 }
 void channelTriggerCall(uint8_t channel, uint8_t number){
+	calibrationAllowed=false;
 	if(dualMode==0){
 		switch(channel){
 			case 0:
@@ -708,9 +837,10 @@ void channelTriggerCall(uint8_t channel, uint8_t number){
 		}
 	}
 	myTurn=true;
-	myTurnTime=millis();
+	myTurnTime=hw.getElapsedBastlCycles();
 }
 void stepCall(uint8_t number){
+	calibrationAllowed=false;
 	if(dualMode==1){
 		step2=number-10;
 	}
@@ -726,25 +856,29 @@ void stepCall(uint8_t number){
 
 }
 void gateCall(uint8_t number){
+	calibrationAllowed=false;
 	for(int i=0;i<8;i++){
 		otherGates[i]=bitRead(number,i);
 	}
 	myTurn=true;
-	myTurnTime=millis();
+	myTurnTime=hw.getElapsedBastlCycles();
 }
 void selectCall(uint8_t number){
+	calibrationAllowed=false;
 	for(int i=0;i<8;i++){
 		otherSlides[i]=bitRead(number,i);
 	}
 	myTurn=true;
-	myTurnTime=millis();
+	myTurnTime=hw.getElapsedBastlCycles();
 }
 void channelValueCall(uint8_t channel, uint8_t value, uint8_t number){
+	calibrationAllowed=false;
 	otherKnobs[channel]=word(value,number);
 	myTurn=true;
-	myTurnTime=millis();
+	myTurnTime=hw.getElapsedBastlCycles();
 }
 void triggerCall(uint8_t number){
+	calibrationAllowed=false;
 	if(number==0) pair=false;
 	if(number==1) pair=true;
 	if(number==2){ //dual mode
@@ -753,7 +887,7 @@ void triggerCall(uint8_t number){
 		else{
 			dual=true,master=true, numberOfSteps=16;
 			myTurn=true;
-			myTurnTime=millis();
+			myTurnTime=hw.getElapsedBastlCycles();
 			interaction=true;
 			for(int i=0;i<3;i++){
 				if(bitRead(bootByte,i)) dualMode=i;
@@ -792,21 +926,23 @@ void triggerCall(uint8_t number){
 	}
 }
 void startCall(uint8_t number){ //slide time
+	calibrationAllowed=false;
 	potValue[0][1]=number;
 	myTurn=true;
-	myTurnTime=millis();
+	myTurnTime=hw.getElapsedBastlCycles();
 
 }
 void stopCall(uint8_t number){ //gate time
+	calibrationAllowed=false;
 	potValue[1][1]=number;
 	myTurn=true;
-	myTurnTime=millis();
+	myTurnTime=hw.getElapsedBastlCycles();
 }
 
 void interpolateCall(uint8_t channel, uint8_t number){
 	//flopy=!flopy;
 //	hw.setShiftLed(flopy);
-
+if(calibrationAllowed){ //1){//
  calibrating=true;
  //if(number>10) calibrating=false;
 	switch(channel){
@@ -821,21 +957,32 @@ void interpolateCall(uint8_t channel, uint8_t number){
 			if(lastNumber==number){
 
 				saveTable();
-				if(number==11){
+				if(number==10){
 					calibrating=false;
 					com.sendPairMessage();
 					com.sendChannelInterpolate(_REFUSE,number);
-					loop();
+					//loop();
+					saveTable();
+					while(!hw.buttonState(3)){
+						showBiLed(0,0);
+						delay(200);
+						hw.allLedsOff();
+						delay(200);
+					}
+
+					tuneInput();
+					showBiLed(0,7);
+					delay(500);
 				 }
 
 			}
 			else{
 
-				if(number>11){
+				if(number>10){
 					 calibrating=false;
 					 com.sendPairMessage();
 					com.sendChannelInterpolate(_REFUSE,number);
-					loop();
+					//loop();
 				 }
 
 			}
@@ -879,6 +1026,7 @@ void interpolateCall(uint8_t channel, uint8_t number){
 			}
 			break;
 	}
+}
 
 }
 const uint8_t tune[]={0,2,4,5, 7,9,11,7, 12,12,12,12, 11,11,11,11, 9,9,9,9, 7,7,7,7, 5,9,5,2, 4,7,4,0, 2,2,2,2, 7,7,7,7, 5,9,5,2, 4,7,4,0, 2,2,2,2, 0,0,0,0};
@@ -888,7 +1036,17 @@ uint32_t measureUP[3];
 uint32_t measuredTime[3][10];
 uint32_t measureResult[3];
 
+
+
 void vOctTune(){
+
+
+
+	hw.pinInit();
+	hw.isr_updateTriggerStates();
+	//hw.isr_updateButtons();
+	//cli();
+	bit_dir_inp(C,5);
 	if(hw.buttonState(3)){
 		for(int i=0;i<56;i++){
 			writeDAC(map(tune[i],0,12,cvOutCalibrate[2],cvOutCalibrate[4]));
@@ -897,15 +1055,23 @@ void vOctTune(){
 	}
 	else{
 	bool inState;
-	bit_dir_inp(C,5);
+
+
 	for(int i=0;i<3;i++){
 		writeDAC(cvOutCalibrate[(i*2)+2]);
 		delay(10);
+
 		for(int j=0;j<8;j++){
-			measureTime=millis();
+
+	//		hw.isr_updateTriggerStates();
+//			hw.isr_updateButtons();
+
+			measureTime=millis();//hw.getElapsedBastlCycles();
 			inState=bit_read_in(B,1);
 			uint8_t period=0;
-			while(((millis()-measureTime)<measureInterval) && period<4){
+			while(((hw.getElapsedBastlCycles()-measureTime)<measureInterval) && period<4){
+
+
 				bool newState=bit_read_in(B,1);
 				if(newState && !inState){
 					if(period==0){
@@ -927,6 +1093,7 @@ void vOctTune(){
 			measureResult[i]/=4;
 		}
 	}
+	//hw.init(&buttonCall,&clockCall);
 	hw.allLedsOff();
 	if(measureResult[0]==0 || measureResult[1]==0 || measureResult[2]==0){
 		showBiLed(1,0);
@@ -937,12 +1104,25 @@ void vOctTune(){
 	long difference2=measureResult[1]-(2*measureResult[2]);
 
 	long finalError=(difference1+difference2)/2;
-	if(abs(finalError)<20) showBiLed(0,4),showBiLed(1,7);
-	else showBiLed(0,constrain(map(finalError,-500,500,0,7),0,7));
+	if(abs(finalError)<20){
+		hw.allLedsOff();
+		hw.setLed(4,true);
+		showBiLed(0,7);
+		showBiLed(1,7);
+
+	}
+	else{
+		hw.allLedsOff();
+		hw.setLed(constrain(map(finalError,-500,500,0,7),0,7),true);
+		showBiLed(0,0);
+		showBiLed(1,0);
+	}
 	//	Serial.print(measureResult[0]), Serial.print(", "), Serial.print(measureResult[1]),Serial.print(", "), Serial.println(measureResult[2]);
 	}
+//	hw.isr_updateTriggerStates();
 	for(int i=0;i<3;i++) measureResult[i]=0;
 	}
+
 
 }
 void bootMenu(){
@@ -960,6 +1140,17 @@ void bootMenu(){
 bool cvInExpMode=false;
 void setup(){
 
+	if(EEPROM.read(606)==1){
+		booting=true;
+		vOctTuner=true;
+		EEPROM.write(606,0);
+		bootMenu();
+	}
+
+
+
+
+	calibrationAllowed=true;
 	hw.init(&buttonCall,&clockCall);
 	dacInit();
 	com.init(38400);
@@ -975,9 +1166,12 @@ void setup(){
 	com.attachChannelTriggerCallback(&channelTriggerCall);
 	//saveTable();
 	loadSettings();
-	//for(int i=0;i<13;i++) Serial.println(cvOutCalibrate[i]);
+
 	delay(10);
-	if(hw.buttonState(8)) booting=true,bootMenu();
+	if(hw.buttonState(8)){
+		booting=true,bootMenu();
+		hw.unfreezeKnob(0),hw.unfreezeKnob(1);
+	}
 	if(!hw.buttonState(8)) hw.unfreezeKnob(0),hw.unfreezeKnob(1);
 
 	if(bitRead(bootByte,4)) triggerLatency=2;
@@ -986,6 +1180,18 @@ void setup(){
 	else resetLatency=0;
 	if(bitRead(bootByte,6)) cvInExpMode=true;
 	else cvInExpMode=false;
+	/*
+	Serial.print("cvOutCalibrate[13]={");
+	for(int i=0;i<13;i++) Serial.print(cvOutCalibrate[i]),Serial.print(", ");
+	Serial.println("};");
+	Serial.print("tuneIn[13]={");
+		for(int i=0;i<13;i++) Serial.print(tuneIn[i]),Serial.print(", ");
+		Serial.println("};");
+	for(int i=0;i<11;i++){
+		//Serial.println(tuneIn[i]);
+	}
+	*/
+	numberOfSteps=8;
 }
 bool mode=true;
 
@@ -998,7 +1204,7 @@ uint8_t cvInAnimationStep=0;
 uint32_t cvInTime;
 #define CV_IN_DURATION 180
 
-
+uint8_t randomNumber;
 
 void renderLeds(){
 	if(!cvInMode) {
@@ -1010,9 +1216,12 @@ void renderLeds(){
 			if(hw.buttonState(8)){
 				if(cvInMode){
 					hw.allLedsOff();
-					if(millis()-cvInTime>CV_IN_DURATION){
-						cvInTime=millis();
+
+					if(hw.getElapsedBastlCycles()-cvInTime>CV_IN_DURATION){
+						cvInTime=hw.getElapsedBastlCycles();
 						cvInAnimationStep++;
+						randomNumber=random(0,8);
+
 					}
 					//hw.setLed(cvInDestination,true);
 					switch(cvInDestination){
@@ -1083,6 +1292,12 @@ void renderLeds(){
 						hw.setLed(4,!(cvInAnimationStep%2));
 						if(cvInAnimationStep%2)  showBiLed(0,0), showBiLed(1,0);
 						break;
+
+					case RANDOM_STEP:
+						hw.setLed(randomNumber,true);
+
+						break;
+
 					}
 				}
 				else{
@@ -1200,7 +1415,7 @@ uint32_t slideTime;
 
 uint16_t lineOut;
 uint16_t renderPitch(){
-	uint16_t _in;
+	int _in;
 	if(dual){
 		if(dualMode==2) _in=hw.getKnobValue(step);
 		else{
@@ -1219,19 +1434,75 @@ uint16_t renderPitch(){
 	}
 
 		if(quantize){
-
 			if(range==5) _in=map(_in,0,1024,0,61);
 			if(range==2) _in=map(_in,0,1024,0,25);
 			if(range==1) _in=map(_in,0,1024,0,13);
+
+			if(cvInDestination==QUANTIZED_TRANSPOSE){
+				uint16_t _cv=hw.getCV(0);
+				if(_cv<tuneIn[0] ){
+
+					if(_cv<=1) _in=0;
+					else{
+						_cv=constrain(_cv,1,tuneInNeg[0]);
+						for(int i=0;i<10;i++){
+							if(_cv<=tuneInNeg[i] && _cv > tuneInNeg[i+1]){
+								uint16_t sixth= (tuneInNeg[i]-tuneInNeg[i+1])/6;
+								uint16_t _min=tuneInNeg[i+1]+sixth/2;
+								//uint16_t _max=tuneIn[i+1]-sixth/2;
+
+								//_cv+=sixth/2;
+								for(int j=0;j<6;j++){
+									if(_cv>=(_min+(j*sixth)) && _cv<(_min+((j+1)*sixth))){
+										_cv=((i+1)*6)-j;
+										j=100, i=100;
+									}
+								}
+								if(i!=100) _cv=((i+1)*6)-6;
+							}
+						}
+						//_cv=map(_cv,tuneIn[0],tuneIn[10],0,61);
+						_cv=constrain(_cv,0,60);
+						_in-=_cv;
+					}
+				}
+				else{
+					_cv=constrain(_cv,tuneIn[0],tuneIn[10]);
+					for(int i=0;i<10;i++){
+						if(_cv>=tuneIn[i] && _cv < tuneIn[i+1]){
+							uint16_t sixth= (tuneIn[i+1]-tuneIn[i])/6;
+							uint16_t _min=tuneIn[i]-sixth/2;
+							//uint16_t _max=tuneIn[i+1]-sixth/2;
+
+							//_cv+=sixth/2;
+							for(int j=0;j<6;j++){
+								if(_cv>=(_min+(j*sixth)) && _cv<(_min+((j+1)*sixth))){
+									_cv=(i*6)+j;
+									j=100, i=100;
+								}
+							}
+							if(i!=100) _cv=(i*6)+6;
+						}
+					}
+					//_cv=map(_cv,tuneIn[0],tuneIn[10],0,61);
+					_in+=_cv;
+				}
+				_in=constrain(_in,0,60);
+			}
+
+
+
 
 			uint8_t _scale=0;
 			bool majorNow=major;
 			if(cvInDestination==MIN_MAJ && currentCvGate) {
 				 majorNow=!major;
 			}
-			if(hw.getMinMajState()){
+
+			if(!hw.getMinMajState()){ //expander
 				majorNow=!major;
 			}
+
 			if(quantizeType==0) _scale=0;
 			else{
 				if(majorNow){
@@ -1246,19 +1517,41 @@ uint16_t renderPitch(){
 			_in=quantizeNote(_scale,_in);
 			_in=cvOutCalibrate[_in/6]+((_in%6)*((cvOutCalibrate[(_in/6)+1]- cvOutCalibrate[_in/6])/6));
 			if(cvInDestination==TRANSPOSE){
+				uint16_t _cv=hw.getCV(0);
+				if(_cv<tuneIn[0] ){
+					_cv=tuneIn[0]+(tuneIn[0]-_cv);
+					_in-=dualTableCurveMap(_cv,11,tuneIn,cvOutCalibrate)-cvOutCalibrate[0];
+					_in=constrain(_in,0,4095);
+				}
+				else{
+					_cv=constrain(_cv,tuneIn[0],tuneIn[10]);
+					_in+=dualTableCurveMap(_cv,11,tuneIn,cvOutCalibrate)-cvOutCalibrate[0];
+					_in=constrain(_in,0,4095);
+				}
 				//_in+=map(currentCvValue,0,255,0,cvOutCalibrate[11]); //LAME - do propper mapping
 				//_in=constrain(_in,0,cvOutCalibrate[11]);
 			}
 		}
 		else{
-			if(cvInDestination==TRANSPOSE){
-				_in+=currentCvValue<<2; //LAME - do propper mapping
-				_in=constrain(_in,0,1023);
-			}
-			if(range==5) _in=map(_in,0,1024,0,cvOutCalibrate[10]);
-			if(range==2) _in=map(_in,0,1024,0,cvOutCalibrate[4]);
-			if(range==1) _in=map(_in,0,1024,0,cvOutCalibrate[2]);
 
+			if(range==5) _in=map(_in,0,1024,cvOutCalibrate[0],cvOutCalibrate[10]);
+			if(range==2) _in=map(_in,0,1024,cvOutCalibrate[0],cvOutCalibrate[4]);
+			if(range==1) _in=map(_in,0,1024,cvOutCalibrate[0],cvOutCalibrate[2]);
+			if(cvInDestination==TRANSPOSE){
+				uint16_t _cv=hw.getCV(0);
+				if(_cv<tuneIn[0] ){
+					_cv=tuneIn[0]+(tuneIn[0]-_cv);
+					_in-=dualTableCurveMap(_cv,11,tuneIn,cvOutCalibrate)-cvOutCalibrate[0];
+					_in=constrain(_in,0,4095);
+				}
+				else{
+					_cv=constrain(_cv,tuneIn[0],tuneIn[10]);
+					_in+=dualTableCurveMap(_cv,11,tuneIn,cvOutCalibrate)-cvOutCalibrate[0];
+					_in=constrain(_in,0,4095);
+				}
+				//_in+=currentCvValue<<2; //LAME - do propper mapping
+				//_in=constrain(_in,0,1023);
+			}
 		}
 		return _in;
 }
@@ -1283,28 +1576,27 @@ void renderGate(){
 	}
 	else _gate=gate[step];
 
-	if(!_gate){
-		hw.setGateOut(false);
-	}
-	else {
-		if(gateTimeActive){
-			if(hw.getElapsedBastlCycles()-gateTimeStart>gateTime){
-				gateState=false;
-				hw.setGateOut(false);
-			}
-			else{
-				gateState=true;
-				hw.setGateOut(true);
-			}
+
+	if(gateTimeActive){
+		if(hw.getElapsedBastlCycles()-gateTimeStart>gateTime){
+			gateState=false;
+			hw.setGateOut(false);
 		}
 		else{
-			gateState=gate[step];
-			hw.setGateOut(gate[step]);
+			gateState=true;
+			if(_gate) hw.setGateOut(true);
+			else hw.setGateOut(false);
 		}
 	}
+	else{
+		gateState=true;
+		if(gate[step]) hw.setGateOut(true);
+		else hw.setGateOut(false);
+	}
+
 
 	for(int i=0;i<8;i++){
-		if(i==step && gate[step]) hw.setGate(i,gateState);
+		if(i==step) hw.setGate(i,gateState);
 		else hw.setGate(i,false);
 	}
 }
@@ -1323,24 +1615,37 @@ void renderCTRLknobs(){
 		else{
 			potValue[1][hw.buttonState(8)]=hw.getPotB()>>2;
 		}
-		if(cvInDestination==TRIG_A_SHIFT) trigAshift=map(potValue[0][0]+currentCvValue+hw.getCV(1),0,240,0,8);
-		else if(cvInDestination==SHIFT_INVERT && currentCvGate) trigAshift=map(potValue[0][0]+hw.getCV(1),0,240,0,8),trigAshift=map(trigAshift,0,7,7,0);
-		else trigAshift=map(potValue[0][0]+(hw.getCV(1)>>2),0,240,0,8);
 
-		if(cvInDestination==TRIG_B_SHIFT) trigBshift=map(potValue[1][0]+currentCvValue,0,240,0,8);
-		else if(cvInDestination==SHIFT_INVERT && currentCvGate) trigBshift=map(potValue[1][0],0,240,0,8),trigBshift=map(trigBshift,0,7,7,0);
-		else trigBshift=map(potValue[1][0],0,240,0,8);
+		uint16_t cv[4];
+		cv[1]=hw.getCV(1);
+		cv[2]=hw.getCV(2);
+		cv[3]=hw.getCV(3);
+
+		if(cvInExpMode){
+			cv[1]=0;//hw.getCV(1);
+			cv[2]=0;//hw.getCV(2);
+			cv[3]=0;
+		}
+
+		if(cvInDestination==TRIG_A_SHIFT) trigAshift=constrain(map((int)potValue[0][0]+currentCvValue+cv[1],0,240,0,8),0,7);
+		else if(cvInDestination==SHIFT_INVERT && currentCvGate) trigAshift=constrain(map(potValue[0][0]+cv[1],0,240,0,8),0,7),trigAshift=map(trigAshift,0,7,7,0);
+		else trigAshift=constrain(map(potValue[0][0]+(cv[1]>>2),0,240,0,8),0,7);
+
+		if(cvInDestination==TRIG_B_SHIFT) trigBshift=constrain(map((int)potValue[1][0]+currentCvValue,0,240,0,8),0,7);
+		else if(cvInDestination==SHIFT_INVERT && currentCvGate) trigBshift=constrain(map(potValue[1][0],0,240,0,8),0,7),trigBshift=map(trigBshift,0,7,7,0);
+		else trigBshift=constrain(map(potValue[1][0],0,240,0,8),0,7);
 
 		if(trigAshift>7) trigAshift=7;
 		if(trigBshift>7) trigBshift=7;
 
-		if(cvInDestination==SLIDE_TIME) slideTime=curveMap(constrain(potValue[0][1]+(hw.getCV(3)>>2)+currentCvValue,0,256),SLIDE_MAP_POINTS,slideMap);//map(potValue[0][1]+currentCvValue+(hw.getCV(3)>>2),0,256,15,2000);
-		else slideTime= curveMap(constrain(potValue[0][1]+(hw.getCV(3)>>2),0,256),SLIDE_MAP_POINTS,slideMap); // map(potValue[0][1]+(hw.getCV(3)>>2),0,256,15,2000); // curveMap
 
-		if(potValue[1][1]+(hw.getCV(2)>>2)>250) gateTimeActive=false;
+		if(cvInDestination==SLIDE_TIME) slideTime=curveMap(constrain((int)potValue[0][1]+(int)(cv[3]>>2)+currentCvValue,0,256),SLIDE_MAP_POINTS,slideMap);//map(potValue[0][1]+currentCvValue+(hw.getCV(3)>>2),0,256,15,2000);
+		else slideTime= curveMap(constrain(potValue[0][1]+(cv[3]>>2),0,256),SLIDE_MAP_POINTS,slideMap); // map(potValue[0][1]+(hw.getCV(3)>>2),0,256,15,2000); // curveMap
+
+		if(potValue[1][1]+(cv[2]>>2)>250) gateTimeActive=false;
 		else gateTimeActive=true;
-		if(cvInDestination==GATE_TIME) gateTime=curveMap(constrain(potValue[1][1]+(hw.getCV(2)>>2)+currentCvValue,0,256),GATE_MAP_POINTS,gateMap);//map(potValue[1][1]+currentCvValue+(hw.getCV(2)>>2),0,256,15,1500);
-		else gateTime=curveMap(constrain(potValue[1][1]+(hw.getCV(2)>>2),0,256),GATE_MAP_POINTS,gateMap);  //map(potValue[1][1]+(hw.getCV(2)>>2),0,256,15,1500); // curveMap
+		if(cvInDestination==GATE_TIME) gateTime=curveMap(constrain((int)potValue[1][1]+(int)(cv[2]>>2)+currentCvValue,0,256),GATE_MAP_POINTS,gateMap);//map(potValue[1][1]+currentCvValue+(hw.getCV(2)>>2),0,256,15,1500);
+		else gateTime=curveMap(constrain(potValue[1][1]+(cv[2]>>2),0,256),GATE_MAP_POINTS,gateMap);  //map(potValue[1][1]+(hw.getCV(2)>>2),0,256,15,1500); // curveMap
 
 		if(lastPV[0]!=potValue[0][1]) interaction=true;
 		lastPV[0]=potValue[0][1];
@@ -1353,17 +1658,23 @@ void renderCvIn(){
 	//implement cvInExpMode!!!
 
 	lastCvValue=currentCvValue;
-	int _cv=map(hw.getCV(0),470,710,0,255);
+	int _cv=map(hw.getCV(0),tuneIn[0],tuneIn[10],0,256);
 
-	_cv=constrain(_cv,0,255);
+	//_cv=constrain(_cv,0,255);
 	currentCvValue=_cv;
 
 	switch(cvInDestination){
 		case OFFSET:
-			if(map(currentCvValue,0,256,0,8)!=map(lastCvValue,0,256,0,8)) clockCall(4);
+			currentCvValue=constrain(currentCvValue,-250,255);
+			lastCvValue=constrain(lastCvValue,-250,255);
+			if(map(currentCvValue,0,256,0,numberOfSteps)!=map(lastCvValue,0,256,0,numberOfSteps)) expanderOffset=hw.getCV(4),clockCall(4);
 			break;
 		case RESET_TO_4:
-			if(lastCvValue<120 && currentCvValue>=120) clockCall(3); //has to happen prior trigger
+			if(lastCvValue<120 && currentCvValue>=120) clockCall(3); //has to happen prior trigger //2.5V reference
+			break;
+
+		case RANDOM_STEP:
+			if(lastCvValue<120 && currentCvValue>=120) clockCall(random(30,38)); //has to happen prior trigger //2.5V reference
 			break;
 	}
 
@@ -1371,8 +1682,31 @@ void renderCvIn(){
 	else currentCvGate=false;
 
 	//offset
-	if(map(hw.getCV(4),0,1024,0,8)!=map(hw.getLastCV(4),0,1024,0,8)) clockCall(5);
+	if(map(hw.getCV(4),0,1024,0,8)!=map(hw.getLastCV(4),0,1024,0,8)) expanderOffset=hw.getCV(4),clockCall(5);
+	if(!cvInExpMode){
+		bitOffset=0;
+	}
+	else{
+		bool lastBit[3],bit[3];
+		for(int i=0;i<3;i++){
+			lastBit[i]=hw.getLastCV(i+1)>128;
+			bit[i]=hw.getCV(i+1)>128;
+		}
+		for(int i=0;i<3;i++){
+			if(lastBit[i]!=bit[i]){
+				if(i<3){
+					bitOffset=0;
+					bitWrite(bitOffset,0,bit[0]);
+					bitWrite(bitOffset,1,bit[1]);
+					bitWrite(bitOffset,2,bit[2]);
+					bitOffset=map(bitOffset,0,7,0,1023);
+					expanderOffset=hw.getCV(4);
+					clockCall(5);
+				}
+			}
+		}
 
+	}
 }
 void renderSlide(){
 	bool _slide;
@@ -1411,22 +1745,31 @@ void renderSlide(){
 }
 void renderLatencies(){
 	if(scheduleA){
-		if(millis()-scheduleTimeA>triggerLatency) clockCall(11), scheduleA=false;
+		if(hw.getElapsedBastlCycles()-scheduleTimeA>triggerLatency) clockCall(11), scheduleA=false;
 	}
 	if(scheduleB){
-		if(millis()-scheduleTimeB>triggerLatency) clockCall(12), scheduleB=false;
+		if(hw.getElapsedBastlCycles()-scheduleTimeB>triggerLatency) clockCall(12), scheduleB=false;
 	}
 	if(scheduleReset){
-		if(millis()-scheduleResetTime>resetLatency) clockCall(10), scheduleB=false;
+		if(hw.getElapsedBastlCycles()-scheduleResetTime>resetLatency) clockCall(10), scheduleB=false;
 	}
 	if(scheduleReset4){
-		if(millis()-scheduleReset4Time>resetLatency) clockCall(13), scheduleB=false;
+		if(hw.getElapsedBastlCycles()-scheduleReset4Time>resetLatency) clockCall(13), scheduleB=false;
 	}
 }
 void loop()
 {
-	//Serial.println(hw.getCV(0));
+//	Serial.println(hw.getCV(1));
 	//delay(1);
+	bool anyButton=false;
+	for(int i=0;i<9;i++){
+		if(hw.buttonState(i)){
+			anyButton=true;
+		}
+	}
+	if(!anyButton) fnJump=false;
+
+	jump=hw.jumpState();
 	com.update();
 	renderLatencies();
 	//Serial.println(hw.expanderState());
@@ -1452,6 +1795,20 @@ void loop()
 	if(dual){
 		renderCommunication();
 	}
+//	Serial.println(hw.getCV(0));
+//	delay(1);
+/*
+	for(int i=0;i<4096;i++) {
+		Serial.print(selekt);
+		Serial.print("  ");
+		Serial.println(cvOutCalibrate[selekt]);
+		selekt=map(hw.getKnobValue(0),0,1024,0,11);
+		out=cvOutCalibrate[selekt];
+		 writeDAC(out);
+		 delay(1);
+				//out=cvOutCalibrate[selekt];
+	}
+	*/
 }
 
 

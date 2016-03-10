@@ -4,7 +4,7 @@
  * 
  * 
  * 
- * picoGranny 2.2
+ * grandPa 1.1
  * eurorack modular
  * by Vaclav Pelousek      http://www.pelousek.net/
  * for Bastl Instruments   http://www.bastl-instruments.com/
@@ -38,7 +38,7 @@
 #include <EEPROM.h>
 #include <avr/pgmspace.h>
 char firstLetter='P';
-
+//const uint8_t firstLetterAddress=245;
 uint16_t MID_SET;
 uint16_t LOW_SET;
 uint16_t HI_SET;
@@ -152,20 +152,31 @@ void fillEeprom(){
 }
 uint8_t mapSample(uint16_t value){
   uint8_t numberOfPoints=11;
-  uint16_t inMin=0, inMax=1024;
+  int inMin=0, inMax=1024;
   uint8_t _note=0;
   for(uint8_t i=0;i<numberOfPoints-1;i++){
-    if(value > cvInputCalibrate[i] && value <= cvInputCalibrate[i+1]) {
+    if(value >= cvInputCalibrate[i] && value < cvInputCalibrate[i+1]) {
       inMax=cvInputCalibrate[i+1];
       inMin=cvInputCalibrate[i];
+      inMax+=100;
+      inMin+=100;
+      value+=100;
       uint16_t sixth=(inMax-inMin) / 6;
-
+      //value+=sixth/2;
+      inMax-=sixth/2;
+     //if(inMin>sixth/2) 
+     inMin-=sixth/2;
+     //else inMin=0;
       for(uint8_t j=0;j<6;j++){
-        if(value > (inMin+(sixth*j)) && value <= (inMin+(sixth*(j+1))))  _note=j, j=6;
+        if(value >= (inMin+(sixth*j)) && value < (inMin+(sixth*(j+1)))) {
+           _note=(i*6)+j;
+           i=100;
+           j=100;
+        }
       }
 
-      _note=(i*6)+_note;
-      i=numberOfPoints+10;
+     if(i!=100)  _note=(i*6)+6, i=100;
+     // i=numberOfPoints+10;
     }
   }
   return _note;
@@ -282,7 +293,7 @@ void setup(void) {
   hw.initialize();
   //  Serial.begin(38400);
   indexAll();
-
+//expanderValue[7]=0;
   /*
   for(int i=0;i<11;i++){
    Serial.print(cvInputCalibrate[i]);
@@ -347,13 +358,13 @@ void loop() {
   hw.updateKnobs();
  com.update(); 
   hw.updateDisplay();
-  com.update(); 
+  //com.update(); 
   hw.updateButtons(); 
-   com.update(); 
+  // com.update(); 
   UI();
-   com.update(); 
+   //com.update(); 
   updateSound();
- com.update(); 
+ //com.update(); 
   //for(int i=0;i<2;i++) Serial.print(hw.knobValue(i));
   //Serial.println();
 

@@ -30,7 +30,7 @@ PROGMEM prog_uint16_t usefulLengths[17]={
 
 void updateSound(){
 
-  if(shiftSpeed<0 ) reverse=true; //&& ll!=0
+  if(shiftSpeed<0 && ll!=0) reverse=true; //&& ll!=0
   else reverse=false;
   // wave.getData();
   if(shiftDir && rand(2)==0) shiftSpeed=-shiftSpeed;

@@ -191,11 +191,9 @@ unsigned char analogPin[6]={
 #define TRIG_B_PIN B,1
 #define RST_PIN C,2
 #define MIN_MAJ_GATE_PIN C,3
-void analogSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockInCallback)(uint8_t number)) {
+void analogSeqHW::pinInit() {
 
-	cli();
-
-	shiftRegFast::setup();
+shiftRegFast::setup();
 
 	bit_dir_outp(AMUX_SELECT_0);
 	bit_dir_outp(AMUX_SELECT_1);
@@ -220,6 +218,13 @@ void analogSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockIn
 
 	bit_dir_inp(ANALOG_EXP_DETECT_PIN);
 	bit_set(ANALOG_EXP_DETECT_PIN);
+}
+
+void analogSeqHW::init(void(*buttonChangeCallback)(uint8_t number),void(*clockInCallback)(uint8_t number)) {
+
+	cli();
+
+	pinInit();
 
 
 /*
@@ -376,11 +381,13 @@ void analogSeqHW::isr_updateButtons() {
 				buttonChangeCallback(8);
 			}
 		}
+		/*
 		if(_jumpState!=_lastJumpState){
 			if(buttonChangeCallback!=0){
 				buttonChangeCallback(9);
 			}
 		}
+		*/
 		bit_clear(MIXED_PIN);
 
 	}

@@ -1,7 +1,9 @@
 //#include <mozzi_rand.h>
 unsigned char searchIndex=1;
 void indexAll(){
-  name[0]=firstLetter;
+ // name[0]=EEPROM.read(firstLetterAddress);
+//  EEPROM.write(firstLetterAddress,firstLetter);
+   name[0]=firstLetter;
   name[1]=48;
   
   for(uint8_t i=0;i<36;i++){
@@ -100,7 +102,6 @@ void listNameDown(){
   if(name[1]<48){
     name[1]=90;
     downWithFirstLetter();
-
   }
   else if(name[1]<65 && name[1]>58) name[1]=58;
   

@@ -153,7 +153,7 @@ void calibrateDevice(){
 	}
 */
 
-	for(int i=0;i<15;i++){
+	for(int i=0;i<11;i++){
 		hw.setColor(RED);
 		uint8_t volts=i;
 		hw.displayNumber(volts/2);

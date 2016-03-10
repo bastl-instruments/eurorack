@@ -32,7 +32,8 @@
 #define OSCIL_PORT D
 
 // the length of the event buffer in number of events
-#define EVENT_BUFFER_SIZE 100
+#define EVENT_BUFFER_SIZE 20 //lower to lower latency
+
 
 // the numbers of channels to handle. This little no influence on performance but avoids accessing unused pins during init()
 #define NUMB_CHANNELS 8
