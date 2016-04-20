@@ -238,9 +238,7 @@ void load(uint8_t preset) {
 
 void clearMemory() {
 
-	EEPROM.write(CLEAR_BYTE_0, CLEAR_VALUE_0);
-	EEPROM.write(CLEAR_BYTE_1, CLEAR_VALUE_1);
-	EEPROM.write(CLEAR_BYTE_2, CLEAR_VALUE_2);
+
 
 	for (int _preset = 0; _preset < 3; _preset++) {
 		load(_preset);
@@ -256,6 +254,10 @@ void clearMemory() {
 		}
 		save(_preset);
 	}
+
+	EEPROM.write(CLEAR_BYTE_0, CLEAR_VALUE_0);
+	EEPROM.write(CLEAR_BYTE_1, CLEAR_VALUE_1);
+	EEPROM.write(CLEAR_BYTE_2, CLEAR_VALUE_2);
 
 }
 void shouldIClearMemory() {

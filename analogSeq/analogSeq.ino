@@ -84,6 +84,8 @@ Line <float> line;
 extern analogSeqHW hw;
 uint8_t bootByte;
 bool booting=false;
+bool interaction=false;
+bool interactionS=false;
 
 //MIDInoteBuffer buffer;
 
@@ -157,7 +159,7 @@ uint16_t otherKnobs[8];
 bool otherGates[8];
 bool otherSlides[8];
 
-#define NUMBER_OF_CV_IN_DESTINATIONS 12
+#define NUMBER_OF_CV_IN_DESTINATIONS 11
 
 #define TRANSPOSE 0 //PROPPER MAPPING -bipolar DONE
 #define QUANTIZED_TRANSPOSE 1 //PROPPER MAPPING -bipolar DONE
@@ -171,8 +173,9 @@ bool otherSlides[8];
 
 #define SHIFT_INVERT 8 //deep test -gate
 #define MIN_MAJ 9 //deep test -gate
-#define RESET_TO_4 10 //deep test - has to come prior to trigger - trigger
-#define RANDOM_STEP 11 //TODO
+#define RANDOM_STEP 10 //TODO
+#define RESET_TO_4 11 //deep test - has to come prior to trigger - trigger
+
 
 /*
  * GATE_TIME
@@ -234,17 +237,17 @@ bool scales[13][12]{
 
 		{1,0,1,0,1,1,0,1,0,1,0,1}, //maj dia
 		{1,0,1,0,1,0,0,1,0,1,0,0}, //maj penta
-		{1,0,0,1,1,0,0,1,0,1,1,0}, //maj blues
+		{1,0,1,1,1,0,0,1,0,1,0,0}, //maj blues C, D, D♯/E♭, E, G, A
 		//{1,0,1,0,1,0,1,0,1,0,1,0}, //whole tone
 		{1,0,0,0,1,0,0,1,0,0,0,0}, //maj chord
 		{1,0,0,0,0,0,0,1,0,0,0,0}, //maj fifth
 		{1,0,0,0,1,0,0,1,0,0,1,0}, //maj +7
 
-		{1,0,1,1,0,1,0,1,0,1,1,0}, //min dia
+		{1,0,1,1,0,1,0,1,1,0,1,0}, //min dia
 		{1,0,0,1,0,1,0,1,0,0,1,0}, //min penta
 		{1,0,0,1,0,1,1,1,0,0,1,0}, //min blues
 		{1,0,0,1,0,0,0,1,0,0,0,0}, //min chord
-		{1,0,0,0,0,0,0,1,0,0,0,0}, //min fifth
+		{1,0,1,0,1,0,1,0,1,0,1,0}, //whole tone scale
 		{1,0,0,1,0,0,0,1,0,0,1,0}, //min +7
 };
 
@@ -337,16 +340,25 @@ void showBiLed(uint8_t _AB, uint8_t _value){
 			hw.setBiLed((_AB*3)+1,true,true);
 			hw.setBiLed((_AB*3)+2,true,true);
 			break;
+
+	case 8:
+			hw.setBiLed((_AB*3)+0,false,false);
+			hw.setBiLed((_AB*3)+1,false,false);
+			hw.setBiLed((_AB*3)+2,false,false);
+			break;
 	}
 
 }
 uint8_t resetLatency=0;
-
+bool gatedPitch=false;
 bool scheduleA=false,scheduleB=false, scheduleReset=false,scheduleReset4=false;
 uint32_t scheduleResetTime;
 uint32_t scheduleReset4Time;
 uint16_t expanderOffset;
 uint16_t bitOffset;
+bool myTurn=false;
+uint32_t myTurnTime;
+
 void clockCall(uint8_t number){
 	//Serial.println(number);
 	uint8_t jumpTo=255;
@@ -423,51 +435,53 @@ void clockCall(uint8_t number){
 				virtualStep=4;
 				break;
 			case 4: //offset
-				offsetStep=map(currentCvValue+(expanderOffset>>2)+(bitOffset>>2),0,256,0,numberOfSteps);
+				offsetStep=map(constrain((int)currentCvValue+(int)(expanderOffset>>2)+(int)(bitOffset>>2),-255,255),0,256,0,numberOfSteps);
 				break;
 			case 5: //offset
-				if(cvInDestination == OFFSET) offsetStep=map((expanderOffset>>2)+(bitOffset>>2)+currentCvValue,0,256,0,numberOfSteps);
+				if(cvInDestination == OFFSET) offsetStep=map(constrain((int)(expanderOffset>>2)+(int)(bitOffset>>2)+(int)currentCvValue,-255,255),0,256,0,numberOfSteps);
 				else offsetStep=map(expanderOffset+bitOffset,0,1024,0,numberOfSteps); //
 				break;
 
 			case 30:
-				virtualStep=0;
+				virtualStep=(0-offsetStep)%numberOfSteps;
 				break;
 			case 31:
-				virtualStep=1;
+				virtualStep=(1-offsetStep)%numberOfSteps;
 				break;
 			case 32:
-				virtualStep=2;
+				virtualStep=(2-offsetStep)%numberOfSteps;
 				break;
 			case 33:
-				virtualStep=3;
+				virtualStep=(3-offsetStep)%numberOfSteps;
 				break;
 			case 34:
-				virtualStep=4;
+				virtualStep=(4-offsetStep)%numberOfSteps;
 				break;
 			case 35:
-				virtualStep=5;
+				virtualStep=(5-offsetStep)%numberOfSteps;
 				break;
 			case 36:
-				virtualStep=6;
+				virtualStep=(6-offsetStep)%numberOfSteps;
 				break;
 			case 37:
-				virtualStep=7;
+				virtualStep=(7-offsetStep)%numberOfSteps;
 				break;
 
 
 		}
 		step=virtualStep+offsetStep;
 	}
-
+	if(step>=numberOfSteps) step=step%numberOfSteps;
+	while(step<0) step=numberOfSteps+step;
 	if(number>3){
-		if(step>=numberOfSteps) step%=numberOfSteps;
-		while(step<0) step=numberOfSteps+step;
+
 
 		slideFrom=realOut;
 		gateTimeStart=hw.getElapsedBastlCycles();
 		if(slide[step]) calculateLine=true,slideTimeStart=hw.getElapsedBastlCycles();
 		if(dual){
+			myTurn=false;
+			myTurnTime=hw.getElapsedBastlCycles();
 			com.sendPairMessage();
 			com.sendStep(step+10);//send(step);
 		}
@@ -484,20 +498,34 @@ uint8_t scale=0;
 bool major=true;
 bool cvInMode=false;
 uint8_t slideByte, gateByte;
+#define PV_00 700
+#define PV_01 701
+#define PV_10 702
+#define PV_11 703
 void saveSettings(){
 	for(int i=0;i<8;i++){
 		bitWrite(slideByte,i,slide[i]);
 		bitWrite(gateByte,i,gate[i]);
 	}
-	EEPROM.write(0,quantize);
-	EEPROM.write(1,quantizeType);
-	EEPROM.write(2,cvInDestination);
-	EEPROM.write(3,scale);
-	EEPROM.write(4,range);
-	EEPROM.write(5,major);
-	EEPROM.write(6,gateByte);
-	EEPROM.write(7,slideByte);
-	EEPROM.write(8,bootByte);
+	if(interaction){
+		EEPROM.write(0,quantize);
+		EEPROM.write(1,quantizeType);
+		EEPROM.write(2,cvInDestination);
+		EEPROM.write(3,scale);
+		EEPROM.write(4,range);
+		EEPROM.write(5,major);
+		EEPROM.write(6,gateByte);
+	}
+	if(shift) EEPROM.write(7,slideByte);
+	else EEPROM.write(8,bootByte);
+
+	if(shift){
+		EEPROM.write(PV_00,lowByte(potValue[0][1]));
+		EEPROM.write(PV_01,highByte(potValue[0][1]));
+		EEPROM.write(PV_10,lowByte(potValue[1][1]));
+		EEPROM.write(PV_11,highByte(potValue[1][1]));
+	}
+
 }
 #define CONFIRM_BYTE_1 303
 #define CONFIRM_BYTE_2 304
@@ -507,7 +535,7 @@ void saveSettings(){
 #define CONFIRM_BYTE_3_VAL 214
 #define BOOT_BYTE_DEFAULT 1
 void loadSettings(){
-	//just for testers
+	//just for
 /*
 	quantize=0;
 		quantizeType=0;
@@ -526,12 +554,12 @@ void loadSettings(){
 
 	//check for first time load
 	if(EEPROM.read(CONFIRM_BYTE_1)==CONFIRM_BYTE_1_VAL && EEPROM.read(CONFIRM_BYTE_2)==CONFIRM_BYTE_2_VAL && EEPROM.read(CONFIRM_BYTE_3)==CONFIRM_BYTE_3_VAL ){
-		quantize=EEPROM.read(0);
-		quantizeType=EEPROM.read(1);
-		cvInDestination=EEPROM.read(2);
-		scale=EEPROM.read(3);
-		range=EEPROM.read(4);
-		major=EEPROM.read(5);
+		quantize=constrain(EEPROM.read(0),0,1);
+		quantizeType=constrain(EEPROM.read(1),0,2);
+		cvInDestination=constrain(EEPROM.read(2),0,NUMBER_OF_CV_IN_DESTINATIONS);
+		scale=constrain(EEPROM.read(3),0,2);
+		range=constrain(EEPROM.read(4),0,2);
+		major=constrain(EEPROM.read(5),0,1);
 		gateByte=EEPROM.read(6);
 		slideByte=EEPROM.read(7);
 		bootByte=EEPROM.read(8);
@@ -540,6 +568,10 @@ void loadSettings(){
 			slide[i]=bitRead(slideByte,i);
 			gate[i]=bitRead(gateByte,i);
 		}
+		potValue[0][1]=word(EEPROM.read(PV_01),EEPROM.read(PV_00));
+		potValue[1][1]=word(EEPROM.read(PV_11),EEPROM.read(PV_10));
+		if(potValue[0][1]>1023 || potValue[0][1]<0) potValue[0][1]=0, saveSettings();
+		if(potValue[1][1]>1023 || potValue[1][1]<0) potValue[1][1]=0, saveSettings();
 		loadTable();
 	}
 	else{
@@ -557,10 +589,16 @@ void loadSettings(){
 		EEPROM.write(CONFIRM_BYTE_1,CONFIRM_BYTE_1_VAL);
 		EEPROM.write(CONFIRM_BYTE_2,CONFIRM_BYTE_2_VAL);
 		EEPROM.write(CONFIRM_BYTE_3,CONFIRM_BYTE_3_VAL);
+		EEPROM.write(PV_00,0);
+		EEPROM.write(PV_01,0);
+		EEPROM.write(PV_10,0);
+		EEPROM.write(PV_11,0);
+
+
 	}
 
 }
-bool interaction;
+
 uint8_t selekt;
 bool pair=false;
 
@@ -572,9 +610,10 @@ void tuneInput(){
 		writeDAC(cvOutCalibrate[i]);
 		//uint32_t _time=hw.getElapsedBastlCycles();
 		//while(hw.getElapsedBastlCycles()-_time<100);
-		for(int j=0;j<20;j++) hw.isr_updateButtons();
-
+		for(int j=0;j<40;j++) hw.isr_updateButtons();
+		delayMicroseconds(2000);
 		tuneIn[i]=hw.getCV(0);
+		delayMicroseconds(2000);
 //		Serial.println(tuneIn[i]);
 
 	}
@@ -616,7 +655,8 @@ void buttonCall(uint8_t number){
 				}
 			}
 		}
-		if(!fnJump){
+		if(interactionS) saveSettings(), interactionS=false; // test !
+		if(!fnJump){ // this can cause miss step also
 			if(!hw.buttonState(number)){
 				if(interaction) interaction=false;
 				else shift=!shift;
@@ -624,15 +664,13 @@ void buttonCall(uint8_t number){
 				com.sendTrigger(hw.buttonState(8));
 			}
 			else{
-
-
 				interaction=false;
 				com.sendPairMessage();
 				com.sendTrigger(hw.buttonState(8));
 			}
 		}
 		cvInMode=false;
-		saveSettings();
+
 	}
 	else if(cvInMode){
 		if(number==3){
@@ -676,8 +714,9 @@ void buttonCall(uint8_t number){
 					if(scale>2) scale=0;
 					break;
 				}
-				saveSettings();
+				//saveSettings();
 				interaction=true;
+				interactionS=true;
 			}
 		}
 		else if(jump){
@@ -686,8 +725,12 @@ void buttonCall(uint8_t number){
 			}
 		}
 		else if(booting){
-			if(hw.buttonState(3)) ;//tuneInput();
-			else if(hw.buttonState(7)) EEPROM.write(606,1),software_Reset(), vOctTuner=true;
+			if(hw.buttonState(7)){
+				//tuneInput();
+				showBiLed(0,7);
+				delay(500);
+				EEPROM.write(606,1),software_Reset(), vOctTuner=true;
+			}
 			else if(number<3){
 				switch(number){
 				case 0:
@@ -717,6 +760,7 @@ void buttonCall(uint8_t number){
 				else{
 					slide[number]=!slide[number];
 				}
+				interactionS=true;
 			}
 		}
 	}
@@ -729,9 +773,8 @@ uint8_t whichPoint=0;
 bool flopy;
 bool calibrating=false;
 uint8_t lastNumber;
-bool myTurn=false;
+
 #define COM_RATE 5
-uint32_t myTurnTime;
 uint8_t whatToSend;
 void renderCommunication(){
 	uint8_t _hash=0;
@@ -742,7 +785,7 @@ void renderCommunication(){
 				else whatToSend=0;
 			}
 			else{
-				if(whatToSend<8) whatToSend++;
+				if(whatToSend<10) whatToSend++;
 				else whatToSend=0;
 			}
 
@@ -809,6 +852,8 @@ void renderCommunication(){
 	else{
 		if(hw.getElapsedBastlCycles()-myTurnTime>100){
 			myTurn=true;
+			myTurnTime=hw.getElapsedBastlCycles();
+			renderCommunication();
 		}
 	}
 }
@@ -817,22 +862,22 @@ void channelTriggerCall(uint8_t channel, uint8_t number){
 	if(dualMode==0){
 		switch(channel){
 			case 0:
-			quantize=number;
+			quantize=constrain(number,0,1);
 				break;
 			case 1:
-			quantizeType=number;
+			quantizeType=constrain(number,0,2);
 				break;
 			case 2:
-			cvInDestination=number;
+			//cvInDestination=number;
 				break;
 			case 3:
-			scale=number;
+			scale=constrain(number,0,2);
 				break;
 			case 4:
-			range=number;
+			range=constrain(number,0,2);
 				break;
 			case 5:
-			major=number;
+			major=constrain(number,0,1);
 				break;
 		}
 	}
@@ -842,7 +887,7 @@ void channelTriggerCall(uint8_t channel, uint8_t number){
 void stepCall(uint8_t number){
 	calibrationAllowed=false;
 	if(dualMode==1){
-		step2=number-10;
+		step2=constrain(number-10,0,15);
 	}
 	else{
 		step=number-10;
@@ -853,6 +898,8 @@ void stepCall(uint8_t number){
 		gateTimeStart=hw.getElapsedBastlCycles();
 		if(slide[step]) calculateLine=true,slideTimeStart=hw.getElapsedBastlCycles();
 	}
+	myTurn=true;
+	myTurnTime=hw.getElapsedBastlCycles();
 
 }
 void gateCall(uint8_t number){
@@ -873,7 +920,7 @@ void selectCall(uint8_t number){
 }
 void channelValueCall(uint8_t channel, uint8_t value, uint8_t number){
 	calibrationAllowed=false;
-	otherKnobs[channel]=word(value,number);
+	otherKnobs[channel]=constrain(word(value,number),0,1023);
 	myTurn=true;
 	myTurnTime=hw.getElapsedBastlCycles();
 }
@@ -1031,25 +1078,34 @@ if(calibrationAllowed){ //1){//
 }
 const uint8_t tune[]={0,2,4,5, 7,9,11,7, 12,12,12,12, 11,11,11,11, 9,9,9,9, 7,7,7,7, 5,9,5,2, 4,7,4,0, 2,2,2,2, 7,7,7,7, 5,9,5,2, 4,7,4,0, 2,2,2,2, 0,0,0,0};
 uint32_t measureTime;
-uint32_t measureInterval=100;
-uint32_t measureUP[3];
+uint32_t measureInterval=1000000;
+uint32_t measureUP[3]={0,0,0};
 uint32_t measuredTime[3][10];
-uint32_t measureResult[3];
+uint32_t measureResult[3]={0,0,0};
 
 
-
+#define NUMBER_OF_MEAUREMENTS 8
 void vOctTune(){
 
 
 
 	hw.pinInit();
 	hw.isr_updateTriggerStates();
+	hw.readyForCvIn();
 	//hw.isr_updateButtons();
 	//cli();
 	bit_dir_inp(C,5);
-	if(hw.buttonState(3)){
+	bit_set(C,5);
+	bit_dir_inp(B,1);
+	bit_set(B,1);
+	bit_dir_inp(C,1);
+	bit_set(C,1);
+	delay(20);
+	if(!bit_read_in(C,1) && measureUP[0]!=0){
 		for(int i=0;i<56;i++){
 			writeDAC(map(tune[i],0,12,cvOutCalibrate[2],cvOutCalibrate[4]));
+			showBiLed(0,i%8);
+			showBiLed(1,7-(i%8));
 			delay(250);
 		}
 	}
@@ -1059,17 +1115,18 @@ void vOctTune(){
 
 	for(int i=0;i<3;i++){
 		writeDAC(cvOutCalibrate[(i*2)+2]);
-		delay(10);
+		delay(20);
 
-		for(int j=0;j<8;j++){
+		//for(int j=0;j<1;j++){
 
 	//		hw.isr_updateTriggerStates();
 //			hw.isr_updateButtons();
 
-			measureTime=millis();//hw.getElapsedBastlCycles();
+			//hw.getElapsedBastlCycles();
 			inState=bit_read_in(B,1);
+			measureTime=micros();
 			uint8_t period=0;
-			while(((hw.getElapsedBastlCycles()-measureTime)<measureInterval) && period<4){
+			while(((micros()-measureTime)<measureInterval) && period<NUMBER_OF_MEAUREMENTS){
 
 
 				bool newState=bit_read_in(B,1);
@@ -1079,7 +1136,6 @@ void vOctTune(){
 						period++;
 					}
 					else{
-
 						measuredTime[i][period]=micros()-measureUP[i];
 						measureUP[i]=micros();
 						period++;
@@ -1087,11 +1143,11 @@ void vOctTune(){
 				}
 				inState=newState;
 			}
-			for(int k=0;k<4;k++){
+			for(int k=0;k<NUMBER_OF_MEAUREMENTS;k++){
 				measureResult[i]+=measuredTime[i][k];
 			}
-			measureResult[i]/=4;
-		}
+			measureResult[i]/=NUMBER_OF_MEAUREMENTS;
+		//}
 	}
 	//hw.init(&buttonCall,&clockCall);
 	hw.allLedsOff();
@@ -1104,7 +1160,7 @@ void vOctTune(){
 	long difference2=measureResult[1]-(2*measureResult[2]);
 
 	long finalError=(difference1+difference2)/2;
-	if(abs(finalError)<20){
+	if(abs(finalError)<30){
 		hw.allLedsOff();
 		hw.setLed(4,true);
 		showBiLed(0,7);
@@ -1113,7 +1169,7 @@ void vOctTune(){
 	}
 	else{
 		hw.allLedsOff();
-		hw.setLed(constrain(map(finalError,-500,500,0,7),0,7),true);
+		hw.setLed(constrain(map(finalError,-600,600,0,9),0,7),true);
 		showBiLed(0,0);
 		showBiLed(1,0);
 	}
@@ -1144,6 +1200,8 @@ void setup(){
 		booting=true;
 		vOctTuner=true;
 		EEPROM.write(606,0);
+		dacInit();
+		loadSettings();
 		bootMenu();
 	}
 
@@ -1180,6 +1238,8 @@ void setup(){
 	else resetLatency=0;
 	if(bitRead(bootByte,6)) cvInExpMode=true;
 	else cvInExpMode=false;
+	if(bitRead(bootByte,3)) gatedPitch=true;
+	else gatedPitch=false;
 	/*
 	Serial.print("cvOutCalibrate[13]={");
 	for(int i=0;i<13;i++) Serial.print(cvOutCalibrate[i]),Serial.print(", ");
@@ -1319,11 +1379,11 @@ void renderLeds(){
 						hw.dimLed(i,false);
 						break;
 					case 4:
-						hw.setLed(i,quantize);
+						hw.setLed(i, quantize || (cvInDestination==QUANTIZED_TRANSPOSE));
 						hw.dimLed(i,false);
 						break;
 					case 5:
-						if(quantize){
+						if( quantize || (cvInDestination==QUANTIZED_TRANSPOSE) ){
 							if(quantizeType==0) hw.setLed(i,false);
 							if(quantizeType==1) hw.setLed(i,true), hw.dimLed(i,true);
 							if(quantizeType==2) hw.setLed(i,true), hw.dimLed(i,false);
@@ -1332,14 +1392,14 @@ void renderLeds(){
 
 						break;
 					case 6:
-						if(quantize && (quantizeType!=0)){
+						if(( quantize || (cvInDestination==QUANTIZED_TRANSPOSE)) && (quantizeType!=0)){
 							hw.setLed(i,major);
 							hw.dimLed(i,false);
 						}
 						else hw.setLed(i,false);
 						break;
 					case 7:
-						if(quantize && (quantizeType!=0)){
+						if((  quantize || (cvInDestination==QUANTIZED_TRANSPOSE))&& (quantizeType!=0)){
 							if(scale==0) hw.setLed(i,false);
 							if(scale==1) hw.setLed(i,true), hw.dimLed(i,true);
 							if(scale==2) hw.setLed(i,true), hw.dimLed(i,false);
@@ -1391,12 +1451,24 @@ void renderLeds(){
 			}
 		}
 		if(!cvInMode){
+			/*
+			for(int i=0;i<3;i++){
+				hw.dimBiLed(i,false);//!hw.trigAState());
+				hw.dimBiLed(i+3,false);//!hw.trigBState());
+			}
+			if(hw.trigAState()) showBiLed(0,8);
+			else showBiLed(0,trigAshift);
+			if(hw.trigBState()) showBiLed(1,8);
+			else showBiLed(1,trigBshift);
+			*/
+
 			for(int i=0;i<3;i++){
 				hw.dimBiLed(i,!hw.trigAState());
 				hw.dimBiLed(i+3,!hw.trigBState());
 			}
 			showBiLed(0,trigAshift);
 			showBiLed(1,trigBshift);
+
 		}
 
 }
@@ -1412,58 +1484,83 @@ bool gateTimeActive;
 uint32_t lastTime;
 uint32_t slideTimeEnd;
 uint32_t slideTime;
-
+int updatedIn;
 uint16_t lineOut;
+#define NEG_POINTS 11
+uint16_t lastQuantizedCV[5];
 uint16_t renderPitch(){
 	int _in;
+	uint8_t _step=byte(step)%numberOfSteps;
 	if(dual){
-		if(dualMode==2) _in=hw.getKnobValue(step);
-		else{
-			if(master){
-				if(step<8) _in=hw.getKnobValue(step);
-				else _in=otherKnobs[step%8];
+		if(dualMode==2){
+			if(gatedPitch){
+				if(gate[_step]) updatedIn=hw.getKnobValue(_step);
+				_in=updatedIn;
 			}
 			else{
-				if(step>=8) _in=hw.getKnobValue(step%8);
-				else _in=otherKnobs[step];
+				_in=hw.getKnobValue(_step);
+			}
+		}
+		else{
+			if(master){
+				if(_step<8) _in=hw.getKnobValue(_step);
+				else _in=otherKnobs[_step%8];
+			}
+			else{
+				if(_step>=8) _in=hw.getKnobValue(_step%8);
+				else _in=otherKnobs[_step];
 			}
 		}
 	}
 	else{
-		_in=hw.getKnobValue(step);
+		if(gatedPitch){
+			if(gate[_step]) updatedIn=hw.getKnobValue(_step);
+			_in=updatedIn;
+		}
+		else{
+			_in=hw.getKnobValue(_step);
+		}
 	}
-
-		if(quantize){
+	//if cv in destination
+		if(quantize || (cvInDestination==QUANTIZED_TRANSPOSE)){
 			if(range==5) _in=map(_in,0,1024,0,61);
 			if(range==2) _in=map(_in,0,1024,0,25);
 			if(range==1) _in=map(_in,0,1024,0,13);
 
 			if(cvInDestination==QUANTIZED_TRANSPOSE){
-				uint16_t _cv=hw.getCV(0);
-				if(_cv<tuneIn[0] ){
 
+				uint16_t _cv=hw.getCV(0);
+				for(uint8_t i=0;i<5;i++){
+					_cv+=lastQuantizedCV[i];
+				}
+				_cv=_cv/6;
+				for(uint8_t i=0;i<4;i++){
+					 lastQuantizedCV[i+1]= lastQuantizedCV[i];
+				}
+				lastQuantizedCV[0]=_cv;
+				if(_cv<tuneIn[0] ){
 					if(_cv<=1) _in=0;
 					else{
 						_cv=constrain(_cv,1,tuneInNeg[0]);
 						for(int i=0;i<10;i++){
-							if(_cv<=tuneInNeg[i] && _cv > tuneInNeg[i+1]){
-								uint16_t sixth= (tuneInNeg[i]-tuneInNeg[i+1])/6;
-								uint16_t _min=tuneInNeg[i+1]+sixth/2;
+							if(_cv>=tuneInNeg[NEG_POINTS-i] && _cv <tuneInNeg[NEG_POINTS-(i+1)] ){
+								uint16_t sixth= (tuneInNeg[NEG_POINTS-(i+1)]-tuneInNeg[NEG_POINTS-i])/6;
+								uint16_t _min=tuneInNeg[NEG_POINTS-i]-sixth/2;
 								//uint16_t _max=tuneIn[i+1]-sixth/2;
 
 								//_cv+=sixth/2;
 								for(int j=0;j<6;j++){
 									if(_cv>=(_min+(j*sixth)) && _cv<(_min+((j+1)*sixth))){
-										_cv=((i+1)*6)-j;
+										_cv=(i*6)+j;
 										j=100, i=100;
 									}
 								}
-								if(i!=100) _cv=((i+1)*6)-6;
+								if(i!=100) _cv=(i*6)+6;
 							}
 						}
 						//_cv=map(_cv,tuneIn[0],tuneIn[10],0,61);
 						_cv=constrain(_cv,0,60);
-						_in-=_cv;
+						_in-=60-_cv;
 					}
 				}
 				else{
@@ -1498,9 +1595,10 @@ uint16_t renderPitch(){
 			if(cvInDestination==MIN_MAJ && currentCvGate) {
 				 majorNow=!major;
 			}
-
-			if(!hw.getMinMajState()){ //expander
-				majorNow=!major;
+			if(hw.expanderState()){
+				if(!hw.getMinMajState()){ //expander
+					majorNow=!major;
+				}
 			}
 
 			if(quantizeType==0) _scale=0;
@@ -1604,52 +1702,53 @@ uint8_t lastPV[2];
 
 void renderCTRLknobs(){
 	if(hw.knobFreezed(0)){
-			if (hw.knobMoved(0) || inBetween(hw.getPotA() >> 2,hw.getLastPotA() >> 2,potValue[0][hw.buttonState(8)])) hw.unfreezeKnob(0);//, interaction=true;
+			if (hw.knobMoved(0) || inBetween(hw.getPotA() >> 2,hw.getLastPotA() >> 2,potValue[0][shift/*hw.buttonState(8)*/])) hw.unfreezeKnob(0);//, interactionS=true;//, interaction=true;
 		}
 		else{
-			potValue[0][hw.buttonState(8)]=hw.getPotA()>>2;
+			potValue[0][shift/*hw.buttonState(8)*/]=hw.getPotA()>>2;
 		}
 		if(hw.knobFreezed(1)){
-			if (hw.knobMoved(1) || inBetween(hw.getPotB() >> 2,hw.getLastPotB() >> 2,potValue[1][hw.buttonState(8)])) hw.unfreezeKnob(1);//,interaction=true;
+			if (hw.knobMoved(1) || inBetween(hw.getPotB() >> 2,hw.getLastPotB() >> 2,potValue[1][shift/*hw.buttonState(8)*/])) hw.unfreezeKnob(1);//, interactionS=true;//,interaction=true;
 		}
 		else{
-			potValue[1][hw.buttonState(8)]=hw.getPotB()>>2;
+			potValue[1][shift/*hw.buttonState(8)*/]=hw.getPotB()>>2;
 		}
 
 		uint16_t cv[4];
-		cv[1]=hw.getCV(1);
-		cv[2]=hw.getCV(2);
-		cv[3]=hw.getCV(3);
-
 		if(cvInExpMode){
 			cv[1]=0;//hw.getCV(1);
 			cv[2]=0;//hw.getCV(2);
 			cv[3]=0;
 		}
+		else{
+			cv[1]=hw.getCV(1);
+			cv[2]=hw.getCV(2);
+			cv[3]=hw.getCV(3);
+		}
 
-		if(cvInDestination==TRIG_A_SHIFT) trigAshift=constrain(map((int)potValue[0][0]+currentCvValue+cv[1],0,240,0,8),0,7);
-		else if(cvInDestination==SHIFT_INVERT && currentCvGate) trigAshift=constrain(map(potValue[0][0]+cv[1],0,240,0,8),0,7),trigAshift=map(trigAshift,0,7,7,0);
+
+		if(cvInDestination==TRIG_A_SHIFT) trigAshift=constrain(map((int)potValue[0][0]+(int)currentCvValue+(int)(cv[1]>>2),0,240,0,8),0,7);
+		else if(cvInDestination==SHIFT_INVERT && currentCvGate) trigAshift=map(constrain(map(potValue[0][0]+(cv[1]>>2),0,240,0,8),0,7),0,7,7,0);//,trigAshift=map(trigAshift,0,7,7,0);
 		else trigAshift=constrain(map(potValue[0][0]+(cv[1]>>2),0,240,0,8),0,7);
 
 		if(cvInDestination==TRIG_B_SHIFT) trigBshift=constrain(map((int)potValue[1][0]+currentCvValue,0,240,0,8),0,7);
-		else if(cvInDestination==SHIFT_INVERT && currentCvGate) trigBshift=constrain(map(potValue[1][0],0,240,0,8),0,7),trigBshift=map(trigBshift,0,7,7,0);
 		else trigBshift=constrain(map(potValue[1][0],0,240,0,8),0,7);
 
 		if(trigAshift>7) trigAshift=7;
 		if(trigBshift>7) trigBshift=7;
 
 
-		if(cvInDestination==SLIDE_TIME) slideTime=curveMap(constrain((int)potValue[0][1]+(int)(cv[3]>>2)+currentCvValue,0,256),SLIDE_MAP_POINTS,slideMap);//map(potValue[0][1]+currentCvValue+(hw.getCV(3)>>2),0,256,15,2000);
-		else slideTime= curveMap(constrain(potValue[0][1]+(cv[3]>>2),0,256),SLIDE_MAP_POINTS,slideMap); // map(potValue[0][1]+(hw.getCV(3)>>2),0,256,15,2000); // curveMap
+		if(cvInDestination==SLIDE_TIME) slideTime=curveMap(constrain((int)potValue[0][1]+(int)(cv[3]>>2)+currentCvValue,0,255),SLIDE_MAP_POINTS,slideMap);//map(potValue[0][1]+currentCvValue+(hw.getCV(3)>>2),0,256,15,2000);
+		else slideTime= curveMap(constrain(potValue[0][1]+(cv[3]>>2),0,255),SLIDE_MAP_POINTS,slideMap); // map(potValue[0][1]+(hw.getCV(3)>>2),0,256,15,2000); // curveMap
 
 		if(potValue[1][1]+(cv[2]>>2)>250) gateTimeActive=false;
 		else gateTimeActive=true;
-		if(cvInDestination==GATE_TIME) gateTime=curveMap(constrain((int)potValue[1][1]+(int)(cv[2]>>2)+currentCvValue,0,256),GATE_MAP_POINTS,gateMap);//map(potValue[1][1]+currentCvValue+(hw.getCV(2)>>2),0,256,15,1500);
-		else gateTime=curveMap(constrain(potValue[1][1]+(cv[2]>>2),0,256),GATE_MAP_POINTS,gateMap);  //map(potValue[1][1]+(hw.getCV(2)>>2),0,256,15,1500); // curveMap
+		if(cvInDestination==GATE_TIME) gateTime=curveMap(constrain((int)potValue[1][1]+(int)(cv[2]>>2)+currentCvValue,0,255),GATE_MAP_POINTS,gateMap);//map(potValue[1][1]+currentCvValue+(hw.getCV(2)>>2),0,256,15,1500);
+		else gateTime=curveMap(constrain(potValue[1][1]+(cv[2]>>2),0,255),GATE_MAP_POINTS,gateMap);  //map(potValue[1][1]+(hw.getCV(2)>>2),0,256,15,1500); // curveMap
 
-		if(lastPV[0]!=potValue[0][1]) interaction=true;
+		if(lastPV[0]!=potValue[0][1]) interactionS=true;
 		lastPV[0]=potValue[0][1];
-		if(lastPV[1]!=potValue[1][1]) interaction=true;
+		if(lastPV[1]!=potValue[1][1]) interactionS=true;
 		lastPV[1]=potValue[1][1];
 		//potValue[1][1]
 }
@@ -1751,16 +1850,17 @@ void renderLatencies(){
 		if(hw.getElapsedBastlCycles()-scheduleTimeB>triggerLatency) clockCall(12), scheduleB=false;
 	}
 	if(scheduleReset){
-		if(hw.getElapsedBastlCycles()-scheduleResetTime>resetLatency) clockCall(10), scheduleB=false;
+		if(hw.getElapsedBastlCycles()-scheduleResetTime>resetLatency) clockCall(10), scheduleReset=false;
 	}
 	if(scheduleReset4){
-		if(hw.getElapsedBastlCycles()-scheduleReset4Time>resetLatency) clockCall(13), scheduleB=false;
+		if(hw.getElapsedBastlCycles()-scheduleReset4Time>resetLatency) clockCall(13), scheduleReset4=false;
 	}
 }
 void loop()
 {
-//	Serial.println(hw.getCV(1));
-	//delay(1);
+	if(step>=numberOfSteps) step=step%numberOfSteps;
+	while(step<0) step=numberOfSteps+step;
+
 	bool anyButton=false;
 	for(int i=0;i<9;i++){
 		if(hw.buttonState(i)){
@@ -1768,47 +1868,24 @@ void loop()
 		}
 	}
 	if(!anyButton) fnJump=false;
-
 	jump=hw.jumpState();
 	com.update();
 	renderLatencies();
-	//Serial.println(hw.expanderState());
-
 
 	if(!calibrating){
 		renderCvIn();
-		//Serial.println(hw.expanderState());
 		renderLeds();
 		renderCTRLknobs();
 		renderGate();
 		out=renderPitch();
 		renderSlide();
-
-
 		lastTime=hw.getElapsedBastlCycles();
-		//out=line(out);
 		realOut=out;
-		//selekt=map(hw.getKnobValue(0),0,1024,0,11);
-		//out=cvOutCalibrate[selekt];
 		writeDAC(out);
 	}
 	if(dual){
 		renderCommunication();
 	}
-//	Serial.println(hw.getCV(0));
-//	delay(1);
-/*
-	for(int i=0;i<4096;i++) {
-		Serial.print(selekt);
-		Serial.print("  ");
-		Serial.println(cvOutCalibrate[selekt]);
-		selekt=map(hw.getKnobValue(0),0,1024,0,11);
-		out=cvOutCalibrate[selekt];
-		 writeDAC(out);
-		 delay(1);
-				//out=cvOutCalibrate[selekt];
-	}
-	*/
 }
 
 

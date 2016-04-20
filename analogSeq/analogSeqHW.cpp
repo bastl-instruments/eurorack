@@ -79,8 +79,9 @@ void analogSeqHW::setLed(uint8_t _led,bool _state){
 const uint8_t biLedBit[12]= { BI_LED_A_1_C , BI_LED_A_1_A , BI_LED_A_2_C , BI_LED_A_2_A , BI_LED_A_3_C , BI_LED_A_3_A , BI_LED_B_1_C , BI_LED_B_1_A , BI_LED_B_2_C , BI_LED_B_2_A , BI_LED_B_3_C , BI_LED_B_3_A};
 void analogSeqHW::allLedsOff(){
 	shiftHash[LED_BYTE]=0;
-	shiftHash[BI_LED_B_BYTE]=0;
 	shiftHash[BI_LED_A_BYTE]=0;
+	for(int i=0;i<7;i++) bitWrite(shiftHash[BI_LED_B_BYTE],i,0);
+	//shiftHash[BI_LED_B_BYTE]=0;
 }
 
 void analogSeqHW::setBiLed(uint8_t _led,bool _state, bool _color){
@@ -469,6 +470,17 @@ void analogSeqHW::isr_updateButtons() {
 	expanderConnected=!bit_read_in(ANALOG_EXP_DETECT_PIN);
 
 }
+void analogSeqHW::readyForCvIn(){
+	uint8_t i=2;
+	if(bitRead(i,0)) bit_set(AMUX_SELECT_0);
+	else bit_clear(AMUX_SELECT_0);
+	if(bitRead(i,1)) bit_set(AMUX_SELECT_1);
+	else bit_clear(AMUX_SELECT_1);
+	if(bitRead(i,2)) bit_set(AMUX_SELECT_2);
+	else bit_clear(AMUX_SELECT_2);
+
+}
+
 bool analogSeqHW::getMinMajState(){
 	if(expanderConnected){
 	 return minMajGateState;
@@ -602,6 +614,7 @@ void analogSeqHW::isr_updateTriggerStates(){
 
 	}
 uint8_t biLedHashA, biLedHashB;
+
 	for(int i=0;i<3;i++){
 		if(bitRead(biLedDimHash,i)){
 
@@ -654,11 +667,16 @@ uint8_t biLedHashA, biLedHashB;
 		bitWrite(biLedHashB,SHIFT_LED_BIT, bitRead(shiftHash[BI_LED_B_BYTE],SHIFT_LED_BIT));
 	}
 	bitWrite(biLedHashB,GATE_OUT_BIT, bitRead(shiftHash[BI_LED_B_BYTE],GATE_OUT_BIT));
-
+	//bit_set(SHIFTREGISTER_RCK);
+	//bit_clear(SHIFTREGISTER_RCK);
 	shiftRegFast::write_8bit(biLedHashA);//shiftHash[3]);
+	//delayMicroseconds(20);
 	shiftRegFast::write_8bit(biLedHashB);//shiftHash[2]);
+	//delayMicroseconds(20);
 	shiftRegFast::write_8bit(ledOutHash);
+	//delayMicroseconds(20);
 	shiftRegFast::write_8bit(shiftHash[0]);
+	//delayMicroseconds(20);
 
 	shiftRegFast::enableOutput();
 /*

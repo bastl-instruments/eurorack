@@ -54,7 +54,7 @@ public:
 	void freezeKnob(uint8_t index);
 	void freezeKnob(uint8_t index, uint8_t value);
 	void unfreezeKnob(uint8_t index);
-
+	void readyForCvIn();
 
 
 	/***LEDS***/
