@@ -116,7 +116,7 @@ void setup(){
    // saveOutTable();
    // loadOutTable();
     //com.sendPairMessage();
-	for(int i=0;i<13;i++) Serial.println(tuneTable[i]);
+	//for(int i=0;i<13;i++) Serial.println(tuneTable[i]);
     adc.init();
 
 
@@ -277,11 +277,12 @@ void loop()
 	if((volts%2)==1) hw.setDot(true);
 	else hw.setDot(false);
 //	mcpDacSend(tuneOutTable[volts]);
-	if( hw.justPressed(BUTTON_A)){ //average? //updateDisplay
-		hw.setColor(RED);
-		hw.update();
+	if(0){// hw.justPressed(BUTTON_A)){ //average? //updateDisplay
+
 		tuneTable[volts]=adc.readADC();
 		saveTable();
+		hw.setColor(RED);
+		hw.update();
 		delay(500);
 	}
 

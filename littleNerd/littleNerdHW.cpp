@@ -11,7 +11,7 @@
 #include <shiftRegisterFast.h>
 #include <avr/pgmspace.h>
 #include <fastAnalogRead.h>
-//#define PIN B,5
+#define PIN B,5
 #define KNOB_MOVED_TOLERANCE 1
 //using namespace fastAnalogRead;
 
@@ -173,9 +173,12 @@ bool littleNerdHW::getButtonState(uint8_t number) {
 
 /**** TRIGGER ****/
 void littleNerdHW::setTrigger(uint8_t number, littleNerdHW::TriggerState state, uint16_t pulseWidth){
+	if(number<7){
 	triggerCountdown[number]=pulseWidth;
-	if(state==ON) bitWrite(trigState,number,1);
+	if(state==ON && pulseWidth==0) bitWrite(trigState,number,1),bitWrite(gateState,number,1);
+	else if(state==ON) bitWrite(trigState,number,1),bitWrite(gateState,number,0);
 	if(state==OFF) bitWrite(trigState,number,0);
+	}
 }
 
 bool littleNerdHW::getTriggerState(uint8_t number){
@@ -231,10 +234,13 @@ void littleNerdHW::isr_updateTriggerStates(){
 	shiftRegFast::write_8bit(trigState);
 	shiftRegFast::enableOutput();
 
-	for(int i=0;i<6;i++){
-		if(triggerCountdown[i]>0){
-			if(triggerCountdown[i]==1) setTrigger(i,OFF,0);
-			triggerCountdown[i]--;
+	for(uint8_t i=0;i<6;i++){
+		if(triggerCountdown[i]==0 && bitRead(trigState,i) && !bitRead(gateState,i)){
+			bitWrite(trigState,i,0);
+		}
+		if(triggerCountdown[i]!=0){
+			if(triggerCountdown[i]==1) triggerCountdown[i]=0,bitWrite(trigState,i,0);//setTrigger(i,OFF,0);
+			if(triggerCountdown[i]!=0) triggerCountdown[i]--;
 		}
 	}
 
@@ -242,6 +248,7 @@ void littleNerdHW::isr_updateTriggerStates(){
 void littleNerdHW::resetTriggers(){
 	for(int i=0;i<6;i++) triggerCountdown[i]=0;
 	trigState=0;
+	gateState=0;
 	//shiftRegFast::write_8bit(trigState);
 	//shiftRegFast::enableOutput();
 
@@ -270,20 +277,21 @@ uint16_t littleNerdHW::getBastlCyclesPerSecond() {
 }
 
 
-/**** INTERRUPT ****/
+/**** INTERRUPT * ***/
 
 ISR(TIMER2_COMPA_vect) { //56us :)
 
 
-//	bit_set(PIN);
+	//bit_set(PIN);
 	hardware.incrementBastlCycles();
+	hardware.isr_updateTriggerStates();
 	hardware.isr_updateClockIn();
 	hardware.isr_updateKnobs();
-	hardware.isr_updateTriggerStates();
+
 	hardware.isr_updateButtons();      // ~1ms
 	//hardware.isr_updateNextLEDRow();   // ~84us
+	//bit_clear(PIN);
 
-//	bit_clear(PIN);
 
 
 }

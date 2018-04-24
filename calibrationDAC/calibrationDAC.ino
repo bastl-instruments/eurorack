@@ -216,12 +216,12 @@ void loop()
 		if(hw.justPressed(BUTTON_A)){
 			if(hw.buttonState(FN)) tuneTable[voltage]-=30;
 			else tuneTable[voltage]--;
-			saveTable();
+			//saveTable();
 		}
 		if(hw.justPressed(BUTTON_B)){
 			if(hw.buttonState(FN)) tuneTable[voltage]+=30;
 			tuneTable[voltage]++;
-			saveTable();
+			//saveTable();
 		}
 
 

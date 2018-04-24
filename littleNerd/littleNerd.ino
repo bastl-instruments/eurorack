@@ -59,6 +59,7 @@ void stepperStep() {
 #define STANDART_TRIGGER 2
 #define TRIGGER_OFF 0
 #define TRIGGER_ON 1
+#define PIN B,5
 
 void noteOn(unsigned char note, unsigned char velocity, unsigned char channel) {
 
@@ -275,15 +276,18 @@ void renderNumberDisplay(uint8_t i, uint8_t index, uint8_t _ch){
 				else hardware.setColor(channelMode[_ch]);
 			}
 			else if(channelMode[_ch]==EUCLID){
+
+
+
 				//if(myMap(parameter[_ch][0]>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])!=myMap(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])){
 				if(myMap(parameter[_ch][0],255,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1)!=myMap(hardware.getKnobValue(i),255,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1)){
-
+					//uint8_t fills=myMap(parameter[_ch][0],255,parameter[_ch][1]>>bitShifter[channelMode[_ch]]);
+					//euclidian[_ch].generateSequence(fills+1,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1);
 					//if(((myMap(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
 					if(((myMap(hardware.getKnobValue(i),255,parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
-
-							else hardware.setColor(BLACK);
-							showTime=hardware.getElapsedBastlCycles();
-							show=true;
+					else hardware.setColor(BLACK);
+					showTime=hardware.getElapsedBastlCycles();
+					show=true;
 				}
 				else hardware.setColor(channelMode[_ch]);
 			}
@@ -293,6 +297,7 @@ void renderNumberDisplay(uint8_t i, uint8_t index, uint8_t _ch){
 		else{
 			if(channelMode[i]==DIVIDER ||channelMode[i]==EUCLID || channelMode[i]==GROOVE ){
 				if((parameter[i][index]>>bitShifter[channelMode[_ch]])!=(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])){
+
 					if((((hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]])+1) % 4) == 0) hardware.setColor(WHITE);
 
 					else hardware.setColor(BLACK);
@@ -435,7 +440,29 @@ void renderMultiplier(uint8_t _ch){
 	//mult[_ch].update(hardware.getElapsedBastlCycles());
 
 }
+static unsigned long x=132456789, y=362436069, z=521288629;
 
+unsigned long xorshift96()
+{ //period 2^96-1
+  // static unsigned long x=123456789, y=362436069, z=521288629;
+  unsigned long t;
+
+  x ^= x << 16;
+  x ^= x >> 5;
+  x ^= x << 1;
+
+  t = x;
+  x = y;
+  y = z;
+  z = t ^ x ^ y;
+
+  return z;
+}
+
+int rand(int maxval)
+{
+  return (int) (((xorshift96() & 0xFFFF) * maxval)>>16);
+}
 
 void clockInChannel(uint8_t _ch){
 
@@ -534,7 +561,7 @@ void clockInChannel(uint8_t _ch){
 		}
 
 		else{ //GROOVE
-			if(random(255)<=parameter[_ch][0]) setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
+			if(rand(255)<=parameter[_ch][0]) setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
 		}
 
 		break;
@@ -564,8 +591,8 @@ void clockInChannel(uint8_t _ch){
 		*/
 		break;
 	case EUCLID:{ // TESTED ! - DODELAT ZOBRAZOVANI MIMO EDIT MOD
-		uint8_t fills=myMap(parameter[_ch][0],255,parameter[_ch][1]>>bitShifter[channelMode[_ch]]);
-		euclidian[_ch].generateSequence(fills+1,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1);
+		//bit_set(PIN);
+
 		if(euclidian[_ch].getCurrentStep()) setAndRecordTrigger(_ch,littleNerdHW::ON,DEFAULT_TRIGGER_LENGTH);
 		/*
 		Serial.print(" steps: ");
@@ -581,6 +608,7 @@ void clockInChannel(uint8_t _ch){
 		Serial.println();
 		*/
 		euclidian[_ch].doStep();
+		//bit_clear(PIN);
 		}
 		break;
 
@@ -659,7 +687,7 @@ void clockCall(uint8_t w) {
  // PROBABILITY MIXER for second channel
 	static uint8_t nextClockFrom;
 	if(nextClockFrom==w) renderClockIn(1);
-	if(random(254)>=probability){
+	if(rand(254)>=probability){
 		nextClockFrom=1;
 	}
 	else {
@@ -797,8 +825,20 @@ void loop() {
 
 	}
 	probability=hardware.getKnobValue(3);
+	for(uint8_t _ch=0;_ch<6;_ch++){
+		if(channelMode[_ch]==EUCLID){
+					//if(myMap(parameter[_ch][0]>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])!=myMap(hardware.getKnobValue(i)>>bitShifter[channelMode[_ch]],15,parameter[_ch][1]>>bitShifter[channelMode[_ch]])){
+		if(myMap(parameter[_ch][0],255,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1)!=myMap(hardware.getKnobValue(_ch),255,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1)){
+			uint8_t fills=myMap(parameter[_ch][0],255,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+2);
+			euclidian[_ch].generateSequence(fills,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1);
+		}
+		if((parameter[_ch][1]>>bitShifter[channelMode[_ch]])!=(hardware.getKnobValue(_ch)>>bitShifter[channelMode[_ch]])){
 
-
+			uint8_t fills=myMap(parameter[_ch][0],255,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+2);
+			euclidian[_ch].generateSequence(fills,(parameter[_ch][1]>>bitShifter[channelMode[_ch]])+1);
+		}
+	}
+}
 }
 
 

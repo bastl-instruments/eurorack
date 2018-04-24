@@ -162,6 +162,7 @@ private:
 
 	/**TRIGGERS**/
 	uint8_t trigState;
+	uint8_t gateState;
 	uint16_t triggerCountdown[8];
 
 

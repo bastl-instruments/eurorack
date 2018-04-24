@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 
-#define BUFFER_SIZE 182
+#define BUFFER_SIZE 160
 
 class eventDelay {
 

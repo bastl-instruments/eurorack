@@ -55,6 +55,11 @@ extern analogSeqHW hw;
  *	1 ready to be defined
  *	tuner, 1 done
 
+for revision fix also
+- active step v dual modu - cv update
+- jump v dual modu
+- trigger invert v dual modu
+
  *
  */
 int main(void) {
@@ -113,7 +118,7 @@ uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
 }
 
 //uint16_t cvOutCalibrate[15]={312, 645, 974, 1304, 1634, 1964, 2303, 2627, 2961, 3293, 3625, 0, 0, 0,0};
-//uint16_t tuneIn[15]={480, 503, 525, 548, 571, 594, 617, 640, 662, 685, 708, 0, 0,0,0 };
+//uint16_t tuneIn[15]={480, 503, 525, 548, 571, 594, 617, 640, 662, 685, 708, 0, 0,0,0 }
 uint16_t tuneInNeg[15]={480, 503, 525, 548, 571, 594, 617, 640, 662, 685, 708, 0, 0,0,0 };
 
 uint16_t cvOutCalibrate[15]={85, 456, 837, 1214, 1593, 1974, 2346, 2717, 3093, 3484, 3848, 0, 0, 0,0}; //valentinos popcorn <3
@@ -203,11 +208,18 @@ void loadTable(){
 	for(int i=0;i<11;i++){
 		cvOutCalibrate[i]=word(EEPROM.read(100+(i*2)),EEPROM.read(100+1+(i*2)));
 		tuneIn[i]=word(EEPROM.read(200+(i*2)),EEPROM.read(200+1+(i*2)));
+		//Serial.print(tuneIn[i]);
+		//Serial.print(", ");
 	}
+	//Serial.println();
 	for(int i=0;i<11;i++){
-		tuneInNeg[i]=constrain(tuneIn[0]-(tuneIn[i]-tuneIn[0]),0,1024);
-
+		//if(tuneIn[i]-tuneIn[0]>0)
+		tuneInNeg[i]=constrain((int)tuneIn[0]-(int)(tuneIn[i]-tuneIn[0]),0,1024);
+	//	Serial.print(tuneInNeg[i]);
+		//Serial.print(", ");
 	}
+	//Serial.println();
+
 }
 void saveTable(){
 	for(int i=0;i<11;i++){
@@ -558,7 +570,9 @@ void loadSettings(){
 		quantizeType=constrain(EEPROM.read(1),0,2);
 		cvInDestination=constrain(EEPROM.read(2),0,NUMBER_OF_CV_IN_DESTINATIONS);
 		scale=constrain(EEPROM.read(3),0,2);
-		range=constrain(EEPROM.read(4),0,2);
+		range=constrain(EEPROM.read(4),0,5);
+		if(range ==1 || range ==2 || range ==5) ;
+		else range =2;
 		major=constrain(EEPROM.read(5),0,1);
 		gateByte=EEPROM.read(6);
 		slideByte=EEPROM.read(7);
@@ -1468,17 +1482,13 @@ void renderLeds(){
 			}
 			showBiLed(0,trigAshift);
 			showBiLed(1,trigBshift);
-
 		}
-
 }
 
 
 uint16_t mapRange(uint16_t _in){
 	return _in;
 }
-
-
 
 bool gateTimeActive;
 uint32_t lastTime;
@@ -1530,14 +1540,19 @@ uint16_t renderPitch(){
 			if(cvInDestination==QUANTIZED_TRANSPOSE){
 
 				uint16_t _cv=hw.getCV(0);
+				lastQuantizedCV[0]=_cv;
+				_cv=0;
 				for(uint8_t i=0;i<5;i++){
 					_cv+=lastQuantizedCV[i];
 				}
-				_cv=_cv/6;
-				for(uint8_t i=0;i<4;i++){
-					 lastQuantizedCV[i+1]= lastQuantizedCV[i];
+				_cv=_cv/5;
+
+				for(int i=0;i<4;i++){
+					 lastQuantizedCV[4-i]=lastQuantizedCV[3-i];
 				}
-				lastQuantizedCV[0]=_cv;
+				//lastQuantizedCV[0]=_cv;
+				//for(uint8_t i=0;i<5;i++) Serial.print(lastQuantizedCV[i]), Serial.print(", ");
+				//Serial.println(_cv);
 				if(_cv<tuneIn[0] ){
 					if(_cv<=1) _in=0;
 					else{
@@ -1562,6 +1577,8 @@ uint16_t renderPitch(){
 						_cv=constrain(_cv,0,60);
 						_in-=60-_cv;
 					}
+					//Serial.print("neg");
+					//Serial.println(_in);
 				}
 				else{
 					_cv=constrain(_cv,tuneIn[0],tuneIn[10]);
@@ -1583,6 +1600,8 @@ uint16_t renderPitch(){
 					}
 					//_cv=map(_cv,tuneIn[0],tuneIn[10],0,61);
 					_in+=_cv;
+					//Serial.print("pos");
+					//Serial.println(_in);
 				}
 				_in=constrain(_in,0,60);
 			}

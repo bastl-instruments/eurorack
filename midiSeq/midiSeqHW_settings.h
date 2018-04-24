@@ -10,9 +10,9 @@
 #define ANALOGSEQHW_SETTINGS_H_
 
 // used pins
-#define SHIFTREGISTER_SER D,3
-#define SHIFTREGISTER_RCK D,4
-#define SHIFTREGISTER_SRCK D,2
+#define SHIFTREGISTER_SER B,0
+#define SHIFTREGISTER_RCK B,2
+#define SHIFTREGISTER_SRCK B,1
 
 
 
@@ -45,6 +45,6 @@ static const uint16_t updateFreq = 1500;  // because its cool dude ! - please up
 
 
 // debug Pin
-#define PIN D,8
+#define PIN D,7
 
 #endif /* ANALOGSEQHW_SETTINGS_H_ */

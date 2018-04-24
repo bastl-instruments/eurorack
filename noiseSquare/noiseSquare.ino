@@ -87,15 +87,17 @@ void loop() {
 
 
 	// Read basic knobs
-	uint8_t digiNoiseIn = hardware.getKnobValue(0);
-	uint8_t metallicIn = hardware.getKnobValue(1);
-	uint8_t cowbellIn = hardware.getKnobValue(2);
+	uint8_t digiNoiseIn = 255- hardware.getKnobValue(0);
+	uint8_t metallicIn = 255-hardware.getKnobValue(1);
+	uint8_t cowbellIn = 255-hardware.getKnobValue(2);
 
 	// Add CV
-	uint16_t tmp = cowbellIn + hardware.getCVValue(0);
-	if (tmp > 253) tmp = 253; //dirty fix: better change lookup table
-	cowbellIn = tmp;
+	//uint16_t tmp = cowbellIn;// + hardware.getCVValue(0);
+	//if (tmp > 253) tmp = 253; //dirty fix: better change lookup table
+	//cowbellIn = tmp;
 
+	if (cowbellIn > 253) cowbellIn = 253;
+/*
 	if (hardware.getSwitchState()) {
 		uint16_t tmp = digiNoiseIn + (hardware.getCVValue(1)>>1);
 		if (tmp > 255) tmp = 255;
@@ -105,7 +107,7 @@ void loop() {
 		if (tmp > 255) tmp = 255;
 		metallicIn = tmp;
 	}
-
+*/
 	digiNoise.checkForBitFlip();
 
 	//** Set metallic frequencies

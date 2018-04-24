@@ -3,21 +3,31 @@
 #include "euclid.h"
 
 void euclid::generateSequence( uint8_t fills, uint8_t steps){
+	if(numberOfSteps==steps && fills==numberOfFills){
+
+	}
+	else{
 	numberOfSteps=steps;
+	numberOfFills=fills;
 	if(fills>steps) fills=steps;
 	if(fills<=steps){
-	for(int i=0;i<32;i++) euclidianPattern[i]=false;
-		if(fills!=0){
-			euclidianPattern[0]=true;
-			float coordinate=(float)steps/(float)fills;
-			float whereFloat=0;
-			while(whereFloat<steps){
-				uint8_t where=(int)whereFloat;
-				if((whereFloat-where)>=0.5) where++;
-				euclidianPattern[where]=true;
-				whereFloat+=coordinate;
-			}
+	for(int i=0;i<32;i++){
+		if(fills==steps) euclidianPattern[i]=true;
+		else euclidianPattern[i]=false;
+	}
+	//if(fills==steps)
+	if(fills!=0){
+		euclidianPattern[0]=true;
+		float coordinate=(float)steps/(float)fills;
+		float whereFloat=0;
+		while(whereFloat<steps){
+			uint8_t where=(int)whereFloat;
+			if((whereFloat-where)>=0.5) where++;
+			euclidianPattern[where]=true;
+			whereFloat+=coordinate;
 		}
+	}
+	}
 	}
 }
 
