@@ -196,8 +196,8 @@ void  midiSeqHW::displayNumber(int _number){
   //lightNumber(_number/100,1);
   //lightNumber((_number%100)/10,2);
   lightNumber(_number%10);
-  if(_number>9) setDot(true);
-  else setDot(false);
+//  if(_number>9) setDot(true);
+//  else setDot(false);
 
 }
 void midiSeqHW::setPitchBend(uint8_t channel, int _pitchBend){

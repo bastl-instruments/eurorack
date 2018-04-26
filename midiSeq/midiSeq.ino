@@ -61,16 +61,18 @@ int main(void) {
 MIDInoteBuffer buffer;
 extern midiSeqHW hw;
 //MCPDACClass dac;
-bool noteOn[127];
+//bool noteOn[127];
 uint8_t currentPreset;
 uint8_t clockDivider;
 uint8_t priority;
+/*
 bool anyNoteOn(){
 	for(int i=0;i<128;i++){
 		if(noteOn[i]) return true;
 	}
 	return false;
 }
+*/
 void setGate(bool state){
  digitalWrite(8,state);
  digitalWrite(7,state);
@@ -111,12 +113,21 @@ uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
 
 
 void updateVoices(){
-
-	for(uint8_t i=0;i<4;i++){
-		//Serial.println(buffer.getVoiceNote(i));
-		hw.setNote(i,buffer.getVoiceNote(i)); //
-		hw.setGate(i,buffer.getVoiceGate(i));
-		hw.setLed(i,buffer.getVoiceGate(i));
+	if(buffer.getWindowPosition()==0){
+		for(uint8_t i=0;i<4;i++){
+			//Serial.println(buffer.getVoiceNote(i));
+			hw.setNote(i,buffer.getVoiceNote(i)); //
+			hw.setGate(i,buffer.getVoiceGate(i));
+			hw.setLed(i,buffer.getVoiceGate(i));
+		}
+	}
+	else{
+		for(uint8_t i=0;i<4;i++){
+			//Serial.println(buffer.getVoiceNote(i));
+			hw.setNote(i,buffer.getWindowNote(i,buffer.getWindowPosition())); //
+			hw.setGate(i,buffer.getVoiceGate(i));
+			hw.setLed(i,buffer.getVoiceGate(i));
+		}
 	}
 
 }
@@ -124,10 +135,10 @@ void updateVoices(){
 void handleNoteOn(byte channel, byte pitch, byte velocity)
 {
 	//hw.setLed(0,true);
-	hw.displayChar('o');
+	hw.setDot(true);
 	//hw.setNote(0,pitch);
 
-	noteOn[pitch]=true;
+//	noteOn[pitch]=true;
 	//hw.setGate(0,true);
 	//hw.setGate(1,false);
 
@@ -150,7 +161,7 @@ void handlePitchBend(byte channel, int bend){
 }
 void handleNoteOff(byte channel, byte pitch, byte velocity)
 {
-	hw.displayChar('f');
+	hw.setDot(false);
 	//hw.setLed(0,false);
 	//hw.setGate(0,false);
 	//hw.setGate(1,true);
@@ -480,6 +491,7 @@ char text[]="  tyyydaaatadaditaa jamtadamtydytata  jamtadamtaa                ";
 uint16_t increment=0;
 bool _flop;
 bool updateState=false;
+bool windowState=false;
 void loop()
 {
 	//if(Serial.available()) increment++, Serial.read();//hw.displayChar('o');
@@ -490,7 +502,16 @@ void loop()
 	//if(hw.getDetectState){
 	bool newUpdateState= hw.getUpdateState();
 	if(!updateState && newUpdateState) updateVoices();
+	updateState=newUpdateState;
 
+
+	bool newWindowState=(hw.getAnalogValue(0)<300);
+	if(!windowState && newWindowState){
+		buffer.increaseWindowPosition();
+		if(!hw.getDetectState()) updateVoices();
+	}
+	windowState=newWindowState;
+	hw.displayNumber(buffer.getWindowPosition());
 	//updateVoices();
 	//hw.setLed(0,hw.getDetectState());
 //	hw.setLed(1,hw.getUpdateState());

@@ -148,6 +148,40 @@ void  MIDInoteBuffer::shiftBuffer(uint8_t direction,uint8_t from){
 		  }
 	}
 }
+
+void  MIDInoteBuffer::shiftWindowBuffer(uint8_t direction,uint8_t from){
+	if(direction==LEFT_SHIFT){
+		for(int i=from;i<notesInWindowBuffer;i++){
+			windowBuffer[i]=windowBuffer[i+1];
+		 }
+	}
+	else if(direction==RIGHT_SHIFT){
+		  for(int i=notesInWindowBuffer;i>from;i--){
+			windowBuffer[i]=windowBuffer[i-1];
+		  }
+	}
+}
+
+bool MIDInoteBuffer::removeNoteFromWindowBuffer(uint8_t _note){
+
+	if(notesInWindowBuffer>0){ //midi noteOnBuffer
+		uint8_t position=findNoteInWindowBuffer(_note);
+		if(position!=255) shiftWindowBuffer(LEFT_SHIFT,position),notesInWindowBuffer--;
+	}
+	//voice alocation
+
+	if(notesInWindowBuffer>=polyphony) return 1; // signal realocate voice externaly
+	else return 0;
+
+}
+uint8_t  MIDInoteBuffer::findNoteInWindowBuffer(uint8_t note){
+	for(int i=0;i<notesInWindowBuffer;i++){
+		if(windowBuffer[i]==note) return i;
+	}
+	return 255;
+}
+
+
 uint8_t  MIDInoteBuffer::findNoteInBuffer(uint8_t note){
 	for(int i=0;i<notesInBuffer;i++){
 		if(midiBuffer[i]==note) return i;
@@ -168,6 +202,19 @@ bool MIDInoteBuffer::removeNoteFromBuffer(uint8_t _note){
 	else return 0;
 
 }
+void MIDInoteBuffer::addNoteToWindowBuffer(uint8_t _note){
+
+	removeNoteFromWindowBuffer(_note);
+	shiftWindowBuffer(RIGHT_SHIFT,0);
+
+	if(notesInWindowBuffer<BUFFER_SIZE){
+		notesInWindowBuffer++;
+	}
+
+	windowBuffer[0]=_note;
+
+}
+
 void MIDInoteBuffer::addNoteToBuffer(uint8_t _note, uint8_t _velocity){
 
 	removeNoteFromBuffer(_note);
@@ -184,42 +231,76 @@ void MIDInoteBuffer::addNoteToBuffer(uint8_t _note, uint8_t _velocity){
 }
 
 void MIDInoteBuffer::allocateVoice(uint8_t _note){
-	uint8_t voiceToUse=255;
-
-	switch(priority){
-		case HIGH_P:
-			windowBuffer[notesInWindowBuffer]=_note;
-			if(notesInBuffer<BUFFER_SIZE){
-				notesInWindowBuffer++;
-			}
-			orderWindowBuffer();
-			for(uint8_t i=0;i<polyphony;i++) activeVoice[i]=windowBuffer[notesInWindowBuffer-i];
-			break;
-		case LOW_P:
-			orderWindowBuffer();
-			for(uint8_t i=0;i<polyphony;i++) activeVoice[i]=windowBuffer[i];
-			break;
-		case ORDER_P:
-			//voice steal - steal the voice from the last played note >the the one that just came out
-			if(notesInBuffer>polyphony){
-				for(uint8_t i=0;i<polyphony;i++) if(activeVoice[i]==midiBuffer[polyphony]) voiceToUse=i;
-			}
-
-			for(uint8_t i=0;i<polyphony;i++) if(activeVoice[i]==_note) voiceToUse=i;
-			if(voiceToUse==255){ //if not find a voice with lowest number (the last used), voice with 255 is voice that is occupied
-				//
-				for(uint8_t i=0;i<polyphony;i++) if(whenReleased[i]<voiceToUse) voiceToUse=whenReleased[i]; //find the lowest value
-				for(uint8_t i=0;i<polyphony;i++) if(whenReleased[i]==voiceToUse) voiceToUse=i; //find the index of the lowest value
-
-			}
-			if(voiceToUse<polyphony) whenReleased[voiceToUse]=255,activeVoice[voiceToUse]=_note; //voice occupied
-
-			break;
+	if(notesInBuffer==1){
+		//added first note which means legato is over - reset window buffer
+		for(uint8_t i=0;i<BUFFER_SIZE;i++) windowBuffer[i]=0;
+		notesInWindowBuffer=0;
+		windowPosition=0;
 
 	}
+	addNoteToWindowBuffer(_note);
 
+	uint8_t voiceToUse=255;
+	if(priority==ORDER_P){
+		//voice steal - steal the voice from the last played note >the the one that just came out
+		if(notesInBuffer>polyphony){
+			for(uint8_t i=0;i<polyphony;i++) if(activeVoice[i]==midiBuffer[polyphony]) voiceToUse=i;
+		}
 
+		for(uint8_t i=0;i<polyphony;i++) if(activeVoice[i]==_note) voiceToUse=i;
+		if(voiceToUse==255){ //if not find a voice with lowest number (the last used), voice with 255 is voice that is occupied
+			//
+			for(uint8_t i=0;i<polyphony;i++) if(whenReleased[i]<voiceToUse) voiceToUse=whenReleased[i]; //find the lowest value
+			for(uint8_t i=0;i<polyphony;i++) if(whenReleased[i]==voiceToUse) voiceToUse=i; //find the index of the lowest value
 
+		}
+		if(voiceToUse<polyphony) whenReleased[voiceToUse]=255,activeVoice[voiceToUse]=_note; //voice occupied
+
+		for(uint8_t i=0;i<polyphony;i++) windowBuffer[i]=activeVoice[i]; //have these in the same order
+
+	}
+	else{
+
+		orderMidiBuffer();
+		orderWindowBuffer();
+		for(uint8_t i=0;i<polyphony;i++) whenReleased[i]=0;
+		if(priority==HIGH_P){
+			if(notesInBuffer==0){ //no held notes
+				if(notesInWindowBuffer>=polyphony){
+					for(uint8_t i=0;i<polyphony;i++) activeVoice[i]=windowBuffer[notesInWindowBuffer-i-1];
+				}
+
+			}
+			else if(notesInBuffer>=polyphony){ // full house
+				for(uint8_t i=0;i<polyphony;i++) activeVoice[i]=midiBuffer[notesInBuffer-i-1],whenReleased[i]=255;
+			}
+			else{ //anything in between
+				for(uint8_t i=0;i<notesInBuffer;i++) whenReleased[i]=255;
+				for(uint8_t i=0;i<notesInBuffer;i++) activeVoice[i]=midiBuffer[notesInBuffer-i-1];
+				for(uint8_t i=notesInBuffer;i<polyphony;i++) activeVoice[i]=windowBuffer[notesInWindowBuffer-i-1];
+			}
+
+			//for(uint8_t i=0;i<notesInBuffer;i++) windowBuffer[notesInWindowBuffer-i-1]=activeVoice[i];
+		}
+
+		else if(priority==LOW_P){
+			if(notesInBuffer==0){ //no held notes
+				if(notesInWindowBuffer>=polyphony){
+					for(uint8_t i=0;i<polyphony;i++) activeVoice[i]=windowBuffer[i];
+				}
+
+			}
+			else if(notesInBuffer>=polyphony){ // full house
+				for(uint8_t i=0;i<polyphony;i++) activeVoice[i]=midiBuffer[i],whenReleased[i]=255;
+			}
+			else{ //anything in between
+				for(uint8_t i=0;i<notesInBuffer;i++) whenReleased[i]=255;
+				for(uint8_t i=0;i<notesInBuffer;i++) activeVoice[i]=midiBuffer[i];
+				for(uint8_t i=notesInBuffer;i<polyphony;i++) activeVoice[i]=windowBuffer[i];
+			}
+		}
+
+	}
 
 	//activeVoiceBuffer[];
 }
@@ -230,10 +311,22 @@ void MIDInoteBuffer::deallocateVoice(uint8_t _note){
 	uint8_t _whichVoice=255;
 	switch(priority){
 		case HIGH_P:
-
+			for(uint8_t i=0;i<polyphony;i++){
+				if(activeVoice[i]==_note) _whichVoice=i; // if yes replace it with something from midi buffer, or put it to release stage
+			}
+			if(_whichVoice<polyphony){ //is the removed note active note? recalculate the buffer
+				for(uint8_t i=0;i<notesInBuffer;i++) activeVoice[i]=midiBuffer[notesInBuffer-i-1];
+			}
+			for(uint8_t i=notesInBuffer;i<polyphony;i++) whenReleased[i]=0;
 			break;
 		case LOW_P:
-
+			for(uint8_t i=0;i<polyphony;i++){
+				if(activeVoice[i]==_note) _whichVoice=i; // if yes replace it with something from midi buffer, or put it to release stage
+			}
+			if(_whichVoice<polyphony){ //is the removed note active note? recalculate the buffer
+				for(uint8_t i=0;i<notesInBuffer;i++) activeVoice[i]=midiBuffer[i];
+			}
+			for(uint8_t i=notesInBuffer;i<polyphony;i++) whenReleased[i]=0;
 			break;
 		case ORDER_P:
 			//is the note assigned to a voice?
@@ -278,6 +371,15 @@ bool MIDInoteBuffer::getVoiceGate(uint8_t _voice){
 	if(whenReleased[_voice]==255) _gate=true;
 	else _gate=false;
 	return _gate;
+}
+
+uint8_t MIDInoteBuffer::getWindowNote(uint8_t _voice,uint8_t _windowPosition){
+	if(notesInWindowBuffer<polyphony){
+		 return activeVoice[(_voice+_windowPosition)%(polyphony-1)];
+	}
+	else{
+	 return windowBuffer[(_voice+_windowPosition)%(notesInWindowBuffer-1)];
+	}
 }
 
 uint8_t MIDInoteBuffer::getVoiceNote(uint8_t _voice){
