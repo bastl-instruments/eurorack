@@ -8,10 +8,12 @@ INO_SRCS += \
 
 CPP_SRCS += \
 ../MCPDAC.cpp \
+../MIDInoteBuffer.cpp \
 ../midiSeqHW.cpp 
 
 OBJS += \
 ./MCPDAC.o \
+./MIDInoteBuffer.o \
 ./midiSeq.o \
 ./midiSeqHW.o 
 
@@ -20,6 +22,7 @@ INO_DEPS += \
 
 CPP_DEPS += \
 ./MCPDAC.d \
+./MIDInoteBuffer.d \
 ./midiSeqHW.d 
 
 

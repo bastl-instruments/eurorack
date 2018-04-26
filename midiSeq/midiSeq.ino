@@ -52,15 +52,15 @@ int main(void) {
 #include <MIDI.h>
 #include <SPI.h>
 //MIDI_CREATE_INSTANCE(HardwareSerial, Serial, MIDI) ;
-//#include <MIDInoteBuffer.h>
+#include "MIDInoteBuffer.h"
 //#include<spiShared.h>
-#include "MCPDAC.h"
+//#include "MCPDAC.h"
 #include "midiSeqHW.h"
 #define DAC_CONFIG 0x30
 #define SS_DAC B,2
-//MIDInoteBuffer buffer;
+MIDInoteBuffer buffer;
 extern midiSeqHW hw;
-MCPDACClass dac;
+//MCPDACClass dac;
 bool noteOn[127];
 uint8_t currentPreset;
 uint8_t clockDivider;
@@ -79,17 +79,17 @@ bool calibrating=false;
 uint8_t selectedNote;
 //void loa
 
-uint16_t tuneTable[22]={0,6, 12,18, 24,30, 36,42, 48,54, 60, 0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4095};
+//uint16_t tuneTable[22]={0,6, 12,18, 24,30, 36,42, 48,54, 60, 0,410, 819,1229, 1638,2048, 2458,2867, 3277,3686, 4095};
 #define TUNE_POINTS 11
 void loadTable(){
 	for(int i=0;i<22;i++){
-		tuneTable[i]=word(EEPROM.read(i*2),EEPROM.read(1+(i*2)));
+		//tuneTable[i]=word(EEPROM.read(i*2),EEPROM.read(1+(i*2)));
 	}
 }
 void saveTable(){
 	for(int i=0;i<22;i++){
-		EEPROM.write(i*2,highByte(tuneTable[i]));
-		EEPROM.write(1+(i*2),lowByte(tuneTable[i]));
+		//EEPROM.write(i*2,highByte(tuneTable[i]));
+	//	EEPROM.write(1+(i*2),lowByte(tuneTable[i]));
 	}
 }
 
@@ -110,25 +110,34 @@ uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
 }
 
 
-
+void updateVoices(){
+	for(uint8_t i=0;i<4;i++){
+		//Serial.println(buffer.getVoiceNote(i));
+		hw.setNote(i,buffer.getVoiceNote(i)); //
+		hw.setGate(i,buffer.getVoiceGate(i));
+		hw.setLed(i,buffer.getVoiceGate(i));
+	}
+}
 
 void handleNoteOn(byte channel, byte pitch, byte velocity)
 {
-	hw.setLed(0,true);
+	//hw.setLed(0,true);
 	hw.displayChar('o');
-	hw.setNote(0,pitch);
-/*
+	//hw.setNote(0,pitch);
+
 	noteOn[pitch]=true;
 	//hw.setGate(0,true);
 	//hw.setGate(1,false);
 
 	buffer.addNoteToBuffer(pitch,velocity);
+	updateVoices();
+/*
 	for(uint8_t i=0;i<4;i++){
 		uint8_t _note=buffer.getVoiceNote(i);
-		if(_note!=255) dac.setNote(i,_note), hw.setGate(i,true);
-		else  hw.setGate(i,false); // dac.setNote(i,0),
+		if(_note!=255) hw.setNote(i,_note), hw.setGate(i,true),hw.setLed(i,true);
+		else  hw.setGate(i,false),hw.setLed(i,false); // dac.setNote(i,0),
 	}
-	*/
+*/
 		//if(pitch>=36 && pitch<=96) dac.writeDAC(channel,curveMap(pitch-36,TUNE_POINTS, tuneTable));
 		//digitalWrite(8,LOW);
 	//digitalWrite(8,HIGH);
@@ -137,26 +146,32 @@ void handleNoteOn(byte channel, byte pitch, byte velocity)
 void handleNoteOff(byte channel, byte pitch, byte velocity)
 {
 	hw.displayChar('f');
-	hw.setLed(0,false);
+	//hw.setLed(0,false);
 	//hw.setGate(0,false);
 	//hw.setGate(1,true);
-	/*
+
 	buffer.removeNoteFromBuffer(pitch);
+	updateVoices();
 	//if(buffer.getNumberOfNotesInBuffer()>0) dac.writeDAC(curveMap(buffer.getNoteFromBuffer(0)-36,TUNE_POINTS, tuneTable));
 //	else setGate(false);
+/*
 	noteOn[pitch]=false;
 	for(uint8_t i=0;i<4;i++){
 		uint8_t _note=buffer.getVoiceNote(i);
 		if(_note!=255){
 			if(i==3){
-				dac.setNote(i,_note),
-				hw.setGate(i,true);
+				hw.setNote(i,_note),
+				hw.setGate(i,true),hw.setLed(i,true);
 			}
 		}
-		else  hw.setGate(i,false); // dac.setNote(i,0),
+		else  hw.setGate(i,false),hw.setLed(i,false); // dac.setNote(i,0),
 	}
-	*/
+
+*/
+
 }
+
+
 
 uint8_t mode=0;
 uint8_t parameter[4];
@@ -195,7 +210,7 @@ uint8_t divider;
 #define NUMBER_OF_PRIORITIES 3
 void tune(){
 	for(uint8_t i=0;i<4;i++){
-		dac.autoCalibrate(i);
+	//	dac.autoCalibrate(i);
 	}
 }
 void buttonCall(uint8_t number){
@@ -316,7 +331,7 @@ void setup(){
   //  loadTable();
 
 
-	//Serial.begin(57600);
+	//Serial.begin(38400);
 	//Serial.println("start");
 	for(int j=0;j<4;j++) hw.autoCalibrate(j);
 
@@ -328,9 +343,12 @@ void setup(){
 		if(hw.autoTune(i)) hw.setLed(i,true);
 		hw.setNote(i,0);
 	}
+	//hw.tuning=false;
 
 
-  //  buffer.init();
+    buffer.init();
+    buffer.setPolyphony(4);
+    buffer.setPriority(2);
     /*
     for(uint8_t i=0;i<50;i++){
     	buffer.setBuffer(i,random(255));
@@ -350,7 +368,7 @@ void setup(){
   //  buffer.testOrdering();
    // buffer.init();
     /*
-    buffer.setPolyphony(1);
+
     dac.init(10,9);
     dac.autoTuneInit();
     tune();
@@ -459,6 +477,7 @@ void loop()
 	//if(Serial.available()) increment++, Serial.read();//hw.displayChar('o');
 
 	MIDI.read();
+	if(hw.buttonState(1)) buffer.init(), updateVoices();
 	//hw.setLed(0,hw.getDetectState());
 //	hw.setLed(1,hw.getUpdateState());
 	//hw.setMask(0);
@@ -470,6 +489,7 @@ void loop()
 //	for(uint8_t i=0;i<1;i++){
 /*
 	uint8_t i=0;
+
 	if(hw.buttonState(0)){
 		hw.displayChar('t');
 		for(uint8_t i=0;i<4;i++) hw.setLed(i,false);
