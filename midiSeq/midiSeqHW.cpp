@@ -200,7 +200,10 @@ void  midiSeqHW::displayNumber(int _number){
   else setDot(false);
 
 }
-
+void midiSeqHW::setPitchBend(uint8_t channel, int _pitchBend){
+	int semitoneSize=scale[channel]/12;
+	pitchBend[channel] = map(_pitchBend,-8192,8192,-(semitoneSize*pitchBendRange),semitoneSize*pitchBendRange);
+}
 void  midiSeqHW::setDot( boolean _state){
   bitWrite(displayBuffer,7,_state);
 }
@@ -511,7 +514,7 @@ void midiSeqHW::setNote(uint8_t channel, uint8_t note){
 */
 	if(autoTuneActive[channel]){
 		uint16_t semiToneSize=(autoTuneTable[channel][tableSegment+1]-autoTuneTable[channel][tableSegment]) /6;
-		uint16_t DACoutput=autoTuneTable[channel][tableSegment]+ (semiToneSize*numberOfSemitones);
+		uint16_t DACoutput=pitchBend[channel]+autoTuneTable[channel][tableSegment]+ (semiToneSize*numberOfSemitones);
 
 		writeDAC(channel,DACoutput);
 		//Serial.println("a");

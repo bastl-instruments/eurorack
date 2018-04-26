@@ -111,12 +111,14 @@ uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
 
 
 void updateVoices(){
+
 	for(uint8_t i=0;i<4;i++){
 		//Serial.println(buffer.getVoiceNote(i));
 		hw.setNote(i,buffer.getVoiceNote(i)); //
 		hw.setGate(i,buffer.getVoiceGate(i));
 		hw.setLed(i,buffer.getVoiceGate(i));
 	}
+
 }
 
 void handleNoteOn(byte channel, byte pitch, byte velocity)
@@ -130,7 +132,7 @@ void handleNoteOn(byte channel, byte pitch, byte velocity)
 	//hw.setGate(1,false);
 
 	buffer.addNoteToBuffer(pitch,velocity);
-	updateVoices();
+	if(!hw.getDetectState()) updateVoices();
 /*
 	for(uint8_t i=0;i<4;i++){
 		uint8_t _note=buffer.getVoiceNote(i);
@@ -142,7 +144,10 @@ void handleNoteOn(byte channel, byte pitch, byte velocity)
 		//digitalWrite(8,LOW);
 	//digitalWrite(8,HIGH);
 }
-
+void handlePitchBend(byte channel, int bend){
+	for(uint8_t i=0;i<4;i++) hw.setPitchBend(i,bend);
+	if(!hw.getDetectState()) updateVoices();
+}
 void handleNoteOff(byte channel, byte pitch, byte velocity)
 {
 	hw.displayChar('f');
@@ -151,7 +156,7 @@ void handleNoteOff(byte channel, byte pitch, byte velocity)
 	//hw.setGate(1,true);
 
 	buffer.removeNoteFromBuffer(pitch);
-	updateVoices();
+	if(!hw.getDetectState()) updateVoices();
 	//if(buffer.getNumberOfNotesInBuffer()>0) dac.writeDAC(curveMap(buffer.getNoteFromBuffer(0)-36,TUNE_POINTS, tuneTable));
 //	else setGate(false);
 /*
@@ -324,8 +329,10 @@ void setup(){
 	MIDI.begin(MIDI_CHANNEL_OMNI);
     MIDI.setHandleNoteOn(handleNoteOn);
     MIDI.setHandleNoteOff(handleNoteOff);
+    MIDI.setHandlePitchBend(handlePitchBend);
 
     hw.init(&buttonCall,&clockCall);
+    hw.setPitchBendRange(7);
    // hw.displayChar('f');
     //saveTable();
   //  loadTable();
@@ -472,12 +479,19 @@ void renderDisplay(){
 char text[]="  tyyydaaatadaditaa jamtadamtydytata  jamtadamtaa                ";
 uint16_t increment=0;
 bool _flop;
+bool updateState=false;
 void loop()
 {
 	//if(Serial.available()) increment++, Serial.read();//hw.displayChar('o');
 
 	MIDI.read();
 	if(hw.buttonState(1)) buffer.init(), updateVoices();
+
+	//if(hw.getDetectState){
+	bool newUpdateState= hw.getUpdateState();
+	if(!updateState && newUpdateState) updateVoices();
+
+	//updateVoices();
 	//hw.setLed(0,hw.getDetectState());
 //	hw.setLed(1,hw.getUpdateState());
 	//hw.setMask(0);

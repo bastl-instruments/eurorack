@@ -74,6 +74,7 @@ public:
 	void setRst(bool _state);
 	bool getTuneState(uint8_t _number);
 	bool getDetectState();
+	void setPitchBend(uint8_t channel,int _pitchBend);
 	bool getUpdateState();
 	uint16_t getAnalogValue( uint8_t _number);
 	bool getMeasurement();
@@ -129,10 +130,12 @@ public:
 	bool reMakeAutoTuneTable(uint8_t channel);
 	uint8_t highestNote[4];
 	uint8_t lowestNote[4];
+	void setPitchBendRange(uint8_t _range){ pitchBendRange=_range;}
 
 private:
 	/**TIMING**/
-
+	int pitchBend[4];
+	uint8_t pitchBendRange;
 	uint8_t lowestOctave[4];
 	uint8_t readButton;
 	uint16_t bastlCycles;

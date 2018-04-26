@@ -17,7 +17,7 @@ public:
 	void setPriority(uint8_t _priority);
 	void testOrdering();
 	void orderMidiBuffer();
-	void orderVoiceBuffer();
+	void orderWindowBuffer();
 	void setBuffer(uint8_t _index,uint8_t _value);
 	uint8_t getBuffer(uint8_t _index);
 
@@ -29,12 +29,12 @@ public:
 	uint8_t getNumberOfNotesInBuffer();
 	uint8_t getNoteFromBuffer(uint8_t _note);
 	uint8_t getVelocityFromBuffer(uint8_t _note);
-	uint8_t getNoteFromVoiceBuffer(uint8_t _note);
+	uint8_t getNoteFromWindowBuffer(uint8_t _note);
 
 	bool getVoiceGate(uint8_t _voice);
 	void allocateVoice(uint8_t _note);
 	void deallocateVoice(uint8_t _note);
-
+	void copyMidiBufferToWindowBuffer();
 	bool legato;
 	//
 	void clearBuffers();
@@ -48,10 +48,10 @@ private:
 	uint8_t priority;
 	uint8_t polyphony;
 	uint8_t notesInBuffer;
-	uint8_t notesInVoiceBuffer;
+	uint8_t notesInWindowBuffer;
 	uint8_t midiBuffer[BUFFER_SIZE];
 	uint8_t velocityBuffer[BUFFER_SIZE];
-	uint8_t voiceBuffer[BUFFER_SIZE];
+	uint8_t windowBuffer[BUFFER_SIZE];
 
 	bool voiceOn[4];
 	//uint8_t voiceRotation;
