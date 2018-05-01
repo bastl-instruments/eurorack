@@ -353,20 +353,13 @@ void setup(){
 	//Serial.println("start");
 	for(int j=0;j<4;j++) hw.autoCalibrate(j);
 
-	for(uint8_t i=0;i<4;i++){
-		hw.displayChar('t');
-		hw.setLed(i,false);
-	//	Serial.print("channel ");
-	//	Serial.println(i);
-		if(hw.autoTune(i)) hw.setLed(i,true);
-		hw.setNote(i,0);
-	}
+
 	//hw.tuning=false;
 
 
     buffer.init();
     buffer.setPolyphony(4);
-    buffer.setPriority(2);
+    buffer.setPriority(0);
     /*
     for(uint8_t i=0;i<50;i++){
     	buffer.setBuffer(i,random(255));
@@ -492,6 +485,7 @@ uint16_t increment=0;
 bool _flop;
 bool updateState=false;
 bool windowState=false;
+bool tuneState=false;
 void loop()
 {
 	//if(Serial.available()) increment++, Serial.read();//hw.displayChar('o');
@@ -499,6 +493,7 @@ void loop()
 	MIDI.read();
 	if(hw.buttonState(1)) buffer.init(), updateVoices();
 
+	hw.displayChar('p');
 	//if(hw.getDetectState){
 	bool newUpdateState= hw.getUpdateState();
 	if(!updateState && newUpdateState) updateVoices();
@@ -511,7 +506,22 @@ void loop()
 		if(!hw.getDetectState()) updateVoices();
 	}
 	windowState=newWindowState;
-	hw.displayNumber(buffer.getWindowPosition());
+	bool newTuneState=hw.buttonState(0);
+	if(!tuneState && newTuneState){
+		for(uint8_t i=0;i<4;i++){
+			hw.displayChar('t');
+			hw.isr_updateDisplay();
+			hw.setLed(i,false);
+		//	Serial.print("channel ");
+		//	Serial.println(i);
+			if(hw.autoTune(i)) hw.setLed(i,true);
+			hw.setNote(i,0);
+		}
+		if(!hw.getDetectState()) updateVoices();
+	}
+	tuneState=newTuneState;
+
+	//hw.displayNumber(buffer.getWindowPosition());
 	//updateVoices();
 	//hw.setLed(0,hw.getDetectState());
 //	hw.setLed(1,hw.getUpdateState());
