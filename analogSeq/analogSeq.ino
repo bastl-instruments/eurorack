@@ -55,10 +55,15 @@ extern analogSeqHW hw;
  *	1 ready to be defined
  *	tuner, 1 done
 
-for revision fix also
+fixed:
 - active step v dual modu - cv update
 - jump v dual modu
 - trigger invert v dual modu
+
+for revision fix also
+-cv behaviour in dual mode?
+
+
 
  *
  */
@@ -91,7 +96,8 @@ uint8_t bootByte;
 bool booting=false;
 bool interaction=false;
 bool interactionS=false;
-
+bool calibrationModeActive=false;
+bool escapeCalibrationMode=false;
 //MIDInoteBuffer buffer;
 
 
@@ -100,7 +106,7 @@ uint16_t gateMap[10]={0,63,127,191,255,   10,100,500,1000,4000};
 uint16_t slideMap[10]={0,63,127,191,255,   10,100,500,1000,4000};
 #define SLIDE_MAP_POINTS 5
 #define GATE_MAP_POINTS 5
-
+uint8_t tuningPoint=0;
 uint8_t triggerLatency=2;
 bool calibrationAllowed=true;
 uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
@@ -144,6 +150,8 @@ void software_Reset() // Restarts program from beginning but does not reset the 
 {
   asm volatile ("  jmp 0");
 }
+
+
 
 uint8_t numberOfSteps=8;
 bool dual=false;
@@ -376,7 +384,7 @@ void clockCall(uint8_t number){
 	uint8_t jumpTo=255;
 	if(jump){
 		for(int i=0;i<8;i++){
-			if(hw.buttonState(i)) jumpTo=i;
+			if(hw.buttonState(i)) jumpTo=i+(((dual)&&(!master))*8);
 		}
 	}
 	if(jumpTo!=255){
@@ -450,33 +458,33 @@ void clockCall(uint8_t number){
 				offsetStep=map(constrain((int)currentCvValue+(int)(expanderOffset>>2)+(int)(bitOffset>>2),-255,255),0,256,0,numberOfSteps);
 				break;
 			case 5: //offset
-				if(cvInDestination == OFFSET) offsetStep=map(constrain((int)(expanderOffset>>2)+(int)(bitOffset>>2)+(int)currentCvValue,-255,255),0,256,0,numberOfSteps);
-				else offsetStep=map(expanderOffset+bitOffset,0,1024,0,numberOfSteps); //
+				if(cvInDestination == OFFSET) offsetStep=map(constrain((int)(expanderOffset>>2)+(int)(bitOffset>>2)+(int)currentCvValue,-255,255),0,256,0,numberOfSteps+1);
+				else offsetStep=map(expanderOffset+bitOffset,0,1024,0,numberOfSteps+1); // cv bug was here - not full range of steps
 				break;
 
 			case 30:
-				virtualStep=(0-offsetStep)%numberOfSteps;
+				virtualStep=(0-offsetStep+(((dual)&&(!master))*8))%numberOfSteps; //jump Bug dual mode was here
 				break;
 			case 31:
-				virtualStep=(1-offsetStep)%numberOfSteps;
+				virtualStep=(1-offsetStep+(((dual)&&(!master))*8))%numberOfSteps;
 				break;
 			case 32:
-				virtualStep=(2-offsetStep)%numberOfSteps;
+				virtualStep=(2-offsetStep+(((dual)&&(!master))*8))%numberOfSteps;
 				break;
 			case 33:
-				virtualStep=(3-offsetStep)%numberOfSteps;
+				virtualStep=(3-offsetStep+(((dual)&&(!master))*8))%numberOfSteps;
 				break;
 			case 34:
-				virtualStep=(4-offsetStep)%numberOfSteps;
+				virtualStep=(4-offsetStep+(((dual)&&(!master))*8))%numberOfSteps;
 				break;
 			case 35:
-				virtualStep=(5-offsetStep)%numberOfSteps;
+				virtualStep=(5-offsetStep+(((dual)&&(!master))*8))%numberOfSteps;
 				break;
 			case 36:
-				virtualStep=(6-offsetStep)%numberOfSteps;
+				virtualStep=(6-offsetStep+(((dual)&&(!master))*8))%numberOfSteps;
 				break;
 			case 37:
-				virtualStep=(7-offsetStep)%numberOfSteps;
+				virtualStep=(7-offsetStep+(((dual)&&(!master))*8))%numberOfSteps;
 				break;
 
 
@@ -615,7 +623,33 @@ void loadSettings(){
 
 uint8_t selekt;
 bool pair=false;
+void calibrationMode(){
 
+	calibrationModeActive=true;
+//	hw.pinInit();
+	//hw.init(&buttonCall,&clockCall);
+	while(1){
+		hw.setLed(0,!hw.buttonState(0));
+		hw.dimLed(0,false);
+		hw.setLed(1,!hw.buttonState(1));
+		hw.dimLed(1,true);
+		hw.setLed(2,!hw.buttonState(2));
+		hw.dimLed(2,true);
+		hw.setLed(3,!hw.buttonState(3));
+		hw.dimLed(3,false);
+		//hw.isr_updateTriggerStates();
+	//	hw.isr_updateButtons();      // ~1ms
+
+		tuningPoint=map(hw.getPotA(),0,1024,0,6);
+		if(tuningPoint>2) showBiLed(0,8), showBiLed(1,tuningPoint-2+3);
+		else  showBiLed(0,tuningPoint+4), showBiLed(1,8);
+
+		writeDAC(cvOutCalibrate[tuningPoint*2]);
+		delay(1);
+		if(escapeCalibrationMode) break;
+	}
+	calibrationModeActive=false;
+}
 
 void tuneInput(){
 	loadTable();
@@ -640,9 +674,13 @@ bool fnJump=false;
 void buttonCall(uint8_t number){
 
 	if(number==8){
+		if(calibrationModeActive) if(hw.buttonState(8)) escapeCalibrationMode=true;
+
 		if(booting){
-			if(hw.buttonState(8)) booting=false,saveSettings();
+			if(hw.buttonState(8))  booting=false,saveSettings(), hw.init(&buttonCall,&clockCall), calibrationMode();
+
 		}
+
 		if(pair){
 			if(hw.buttonState(8)){
 				if(dual){
@@ -739,33 +777,66 @@ void buttonCall(uint8_t number){
 			}
 		}
 		else if(booting){
-			if(hw.buttonState(7)){
-				//tuneInput();
-				showBiLed(0,7);
-				delay(500);
-				EEPROM.write(606,1),software_Reset(), vOctTuner=true;
-			}
-			else if(number<3){
-				switch(number){
+
+				if(hw.buttonState(7)){
+					//tuneInput();
+					showBiLed(0,7);
+					delay(500);
+					EEPROM.write(606,1),software_Reset(), vOctTuner=true;
+				}
+				else if(number<3){
+					switch(number){
+					case 0:
+						bitWrite(bootByte,0,1);
+						bitWrite(bootByte,1,0);
+						bitWrite(bootByte,2,0);
+						break;
+					case 1:
+						bitWrite(bootByte,0,0);
+						bitWrite(bootByte,1,1);
+						bitWrite(bootByte,2,0);
+						break;
+					case 2:
+						bitWrite(bootByte,0,0);
+						bitWrite(bootByte,1,0);
+						bitWrite(bootByte,2,1);
+						break;
+					}
+				}
+				else if(hw.buttonState(number)) bitWrite(bootByte,number,!bitRead(bootByte,number));
+
+		}
+		else if(calibrationModeActive){
+			switch(number){
 				case 0:
-					bitWrite(bootByte,0,1);
-					bitWrite(bootByte,1,0);
-					bitWrite(bootByte,2,0);
+					cvOutCalibrate[tuningPoint*2]=constrain(cvOutCalibrate[tuningPoint*2]+10,0,4096);
 					break;
 				case 1:
-					bitWrite(bootByte,0,0);
-					bitWrite(bootByte,1,1);
-					bitWrite(bootByte,2,0);
+					cvOutCalibrate[tuningPoint*2]=constrain(cvOutCalibrate[tuningPoint*2]+1,0,4096);
 					break;
 				case 2:
-					bitWrite(bootByte,0,0);
-					bitWrite(bootByte,1,0);
-					bitWrite(bootByte,2,1);
+					cvOutCalibrate[tuningPoint*2]=constrain(cvOutCalibrate[tuningPoint*2]-1,0,4096);
 					break;
-				}
+				case 3:
+					cvOutCalibrate[tuningPoint*2]=constrain(cvOutCalibrate[tuningPoint*2]-10,0,4096);
+					break;
 			}
-			else if(hw.buttonState(number)) bitWrite(bootByte,number,!bitRead(bootByte,number));
+
+			//calculate the midPoints
+
+			//not for lowest point
+			if(tuningPoint>0) cvOutCalibrate[(tuningPoint*2)-1]=((cvOutCalibrate[tuningPoint*2]-cvOutCalibrate[(tuningPoint*2)-2])/2)+cvOutCalibrate[(tuningPoint*2)-2];
+			//not for highest point
+			if(tuningPoint<12) cvOutCalibrate[(tuningPoint*2)+1]=((cvOutCalibrate[(tuningPoint*2)+2]-cvOutCalibrate[tuningPoint*2])/2)+cvOutCalibrate[tuningPoint*2];
+
+			//save
+			saveTable();
+
+
+
+
 		}
+
 		else{
 			if(!hw.buttonState(number) && !fnJump){
 				if(shift==false){
@@ -1099,9 +1170,12 @@ uint32_t measureResult[3]={0,0,0};
 
 
 #define NUMBER_OF_MEAUREMENTS 8
+
+
+
 void vOctTune(){
 
-
+	//calibrationMode();
 
 	hw.pinInit();
 	hw.isr_updateTriggerStates();
@@ -1511,14 +1585,39 @@ uint16_t renderPitch(){
 				_in=hw.getKnobValue(_step);
 			}
 		}
-		else{
+		else{ //bug was here
+
 			if(master){
-				if(_step<8) _in=hw.getKnobValue(_step);
-				else _in=otherKnobs[_step%8];
+				if(gatedPitch){
+					if(_step<8) {
+						if(gate[_step]) updatedIn=hw.getKnobValue(_step);
+						_in=updatedIn;
+					}
+					else{
+						if(otherGates[_step%8]) updatedIn=otherKnobs[_step%8];
+						_in=updatedIn;
+					}
+				}
+				else{
+					if(_step<8) _in=hw.getKnobValue(_step);
+					else _in=otherKnobs[_step%8];
+				}
 			}
 			else{
-				if(_step>=8) _in=hw.getKnobValue(_step%8);
-				else _in=otherKnobs[_step];
+				if(gatedPitch){
+					if(_step>=8){
+						if(gate[_step%8]) updatedIn=hw.getKnobValue(_step%8);
+						_in=updatedIn;
+					}
+					else{
+						if(otherGates[_step]) updatedIn=otherKnobs[_step];
+						_in=updatedIn;
+					}
+				}
+				else{
+					if(_step>=8) _in=hw.getKnobValue(_step%8);
+					else _in=otherKnobs[_step];
+				}
 			}
 		}
 	}
@@ -1713,7 +1812,7 @@ void renderGate(){
 
 
 	for(int i=0;i<8;i++){
-		if(i==step) hw.setGate(i,gateState);
+		if((i+(((dual)&&(!master))*8))==step) hw.setGate(i,gateState); // dual gate bug was here
 		else hw.setGate(i,false);
 	}
 }
@@ -1751,6 +1850,7 @@ void renderCTRLknobs(){
 		else trigAshift=constrain(map(potValue[0][0]+(cv[1]>>2),0,240,0,8),0,7);
 
 		if(cvInDestination==TRIG_B_SHIFT) trigBshift=constrain(map((int)potValue[1][0]+currentCvValue,0,240,0,8),0,7);
+		else if(cvInDestination==SHIFT_INVERT && currentCvGate) trigBshift=map(constrain(map(potValue[1][0],0,240,0,8),0,7),0,7,7,0);
 		else trigBshift=constrain(map(potValue[1][0],0,240,0,8),0,7);
 
 		if(trigAshift>7) trigAshift=7;
@@ -1800,7 +1900,7 @@ void renderCvIn(){
 	else currentCvGate=false;
 
 	//offset
-	if(map(hw.getCV(4),0,1024,0,8)!=map(hw.getLastCV(4),0,1024,0,8)) expanderOffset=hw.getCV(4),clockCall(5);
+	if(map(hw.getCV(4),0,1024,0,16)!=map(hw.getLastCV(4),0,1024,0,16)) expanderOffset=hw.getCV(4),clockCall(5);
 	if(!cvInExpMode){
 		bitOffset=0;
 	}
