@@ -23,6 +23,8 @@ public:
 
 
 	bool buttonState(uint8_t _but);
+	bool justPressed(uint8_t _but);
+	bool justReleased(uint8_t _but);
 
 
 	/**TIMING**/
@@ -64,6 +66,7 @@ public:
 
 //	void setLed(uint8_t _led, bool _state);
 	void setGate(uint8_t _number, bool _state);
+	void setDacGate(uint8_t _number, bool _state);
 	void setLed(uint8_t _number, bool _state);
 	void displayNumber(int _number);
 	void setDot( boolean _state);
@@ -128,13 +131,20 @@ public:
 	bool autoTune(uint8_t channel);
 	bool reAutoTune(uint8_t channel);
 	bool reMakeAutoTuneTable(uint8_t channel);
+	bool offsetAutoTuneTable(uint8_t channel,int _offset);
 	uint8_t highestNote[4];
 	uint8_t lowestNote[4];
 	void setPitchBendRange(uint8_t _range){ pitchBendRange=_range;}
-
+	bool isTuned(uint8_t channel){ return autoTuneActive[channel];}
+	void setSlew(uint16_t _slew);//{ slewRate=_slew;}
+	void setMicroTonalTable(uint8_t _note, uint8_t _value);
+	uint8_t getMicroTonalTable(uint8_t _note);
+	void calibrateInputs();
 private:
 	/**TIMING**/
+	uint16_t slewRate;
 	int pitchBend[4];
+	uint8_t currentNote[4];
 	uint8_t pitchBendRange;
 	uint8_t lowestOctave[4];
 	uint8_t readButton;
@@ -158,8 +168,10 @@ private:
 	/**TRIGGERS**/
 	uint8_t trigState;
 	uint16_t triggerCountdown[8];
-	uint16_t analogValues[3];
+	uint16_t analogValues[4];
+	uint16_t DACslewed[4];
 	uint16_t DACvoltage[4];
+	uint16_t slewIncrement[4];
 
 	uint16_t autoTuneTable[4][NUMBER_OF_TUNING_POINTS];
 	bool autoTuneActive[4];

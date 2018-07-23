@@ -61,22 +61,24 @@ const uint8_t buttonPin[4]={BUTTON_SET,BUTTON_TUNE,BUTTON_UP,BUTTON_DOWN};
 #define SEG_P 7
 
 
-#define DETECT_PIN C,2
+//#define DETECT_PIN C,2 -olderHW
+#define DETECT_PIN D,6
+
 #define TUNE_PIN_A D,2
 #define TUNE_PIN_B D,3
 #define TUNE_PIN_C D,4
 #define TUNE_PIN_D D,5
 
 
-
-#define UPDATE_PIN D,6
+//#define UPDATE_PIN D,6 -olderHW
+#define UPDATE_PIN C,2
 
 #define CALIBRATION_PIN_A C,0
 #define CALIBRATION_PIN_B C,1
 
 
 
-const uint8_t analogPin[3]={3,4,5};
+const uint8_t analogPin[4]={3,4,5,2};
 
 
 void midiSeqHW::isr_updateDisplay(){
@@ -223,6 +225,12 @@ void midiSeqHW::setRst(bool _state){
 void midiSeqHW::setGate(uint8_t _number, bool _state){
 	bitWrite(gateHash,_number,_state); //to synchronise cv and gate update - updates only when DAC gets updated
 }
+#define HIGH_VOLTAGE 3000
+#define LOW_VOLTAGE 100
+void midiSeqHW::setDacGate(uint8_t _number, bool _state){
+	if(_state) setVoltage(_number,HIGH_VOLTAGE);
+	else setVoltage(_number,LOW_VOLTAGE);
+}
 
 
 void midiSeqHW::setLed(uint8_t _number, bool _state){
@@ -234,7 +242,7 @@ bool midiSeqHW::getDetectState(){
 }
 
 bool midiSeqHW::getUpdateState(){
-	return !bit_read_in(UPDATE_PIN);
+	return analogValues[3]<350;// !bit_read_in(UPDATE_PIN);
 }
 
 bool midiSeqHW::getTuneState(uint8_t _number){
@@ -294,15 +302,55 @@ void midiSeqHW::setPCMask(uint8_t _number) {
 
 void  midiSeqHW::setVoltage(uint8_t channel, uint16_t voltage)
 {
-	if(channel<4 && voltage<4096) DACvoltage[channel]=voltage;
+	if(channel<4 && voltage<4096){
+		DACvoltage[channel]=voltage;
+		uint16_t difference=abs((int)DACslewed[updatedDAC]-(int)DACvoltage[updatedDAC]);
+		slewIncrement[channel]=((difference)<<5)/slewRate;
+		if(slewIncrement[channel]>>5==0) slewIncrement[channel]+=1<<5;
+		//if(slewIncrement[channel]=((difference)<<5)/slewRate;)
+	}
 }
+
+void midiSeqHW::setSlew(uint16_t _slew){
+	slewRate=_slew;
+	uint16_t difference=abs((int)DACslewed[updatedDAC]-(int)DACvoltage[updatedDAC]);
+	for(uint8_t i=0;i<4;i++){
+		slewIncrement[i]=((difference)<<5)/slewRate;
+		if(slewIncrement[i]>>5==0) slewIncrement[i]+=1<<5;
+	}
+
+}
+
 const uint8_t updateSequence[4]={0,2,1,3};
 
 void  midiSeqHW::isr_updateDAC()
 {
 
 	uint16_t voltage=0;
-	voltage=DACvoltage[updatedDAC];
+
+
+	if((DACslewed[updatedDAC]!=DACvoltage[updatedDAC]) && slewIncrement[updatedDAC]==0){ //voltage moved - establish new increment
+
+		//map(,DACslewed[updatedDAC],DACvoltage[updatedDAC],0,slewRate)
+	}
+	uint16_t difference=abs((int)DACslewed[updatedDAC]-(int)DACvoltage[updatedDAC]);
+	//if(difference<<5slewRate)
+	//slewIncrement[updatedDAC]=((difference)<<3)/slewRate;
+
+	if(DACslewed[updatedDAC]==DACvoltage[updatedDAC]) ;// slewIncrement[updatedDAC]=0;
+
+	else if(DACslewed[updatedDAC]>DACvoltage[updatedDAC]){
+		if((slewIncrement[updatedDAC]>>5)>=difference) DACslewed[updatedDAC]=DACvoltage[updatedDAC];//, slewIncrement[updatedDAC]=0;
+		else DACslewed[updatedDAC]-=(slewIncrement[updatedDAC]>>5);
+	}
+	else if(DACslewed[updatedDAC]<DACvoltage[updatedDAC]){
+		if((slewIncrement[updatedDAC]>>5)>=difference) DACslewed[updatedDAC]=DACvoltage[updatedDAC];//, slewIncrement[updatedDAC]=0;
+		else DACslewed[updatedDAC]+=(slewIncrement[updatedDAC]>>5);
+	}
+
+	voltage=DACslewed[updatedDAC];
+
+	//voltage=DACvoltage[updatedDAC];
 
 	uint16_t command=0;
 	if((updatedDAC%2==0)) command = 0x0000;
@@ -337,6 +385,17 @@ void  midiSeqHW::isr_updateDAC()
 	else{
 		bitWrite(buffer595[BUT_CS],CSpin[0],0);
 		bitWrite(buffer595[BUT_CS],CSpin[1],1);
+	}
+}
+
+uint16_t inputCalibrationTable[4][12];
+void  midiSeqHW::calibrateInputs(){
+	for(uint8_t j=0;j<12;j++){
+		for(uint8_t i=0;i<4;i++) writeDAC(i,calibrationTable[i][j]);
+
+		for(uint8_t i=0;i<12;i++) isr_updateAnalogInputs(), delay(1);
+
+		for(uint8_t i=0;i<4;i++) inputCalibrationTable[i][j]=getAnalogValue(i);
 	}
 }
 
@@ -381,8 +440,17 @@ const uint8_t channelUsedToCalibrate[4]={3,3,3,0};
 const uint16_t tuningVoltage[9]={0,500,1000,1500,2000,2500,3000,3500,4000};
 const uint16_t defaultCalibration[15]={40, 300, 600, 900, 1200, 1500, 1800, 2100, 2400, 2700, 3000, 3300, 3600, 3900, 4200};
 
-#define COMPARTOR_PIN  B,0
 
+
+uint8_t microTonalTable[12]={127,127,127,127,127 ,127,127,127,127,127,127,127};
+
+#define COMPARTOR_PIN  B,0
+void midiSeqHW::setMicroTonalTable(uint8_t _note, uint8_t _value){
+	microTonalTable[_note]=_value;
+}
+uint8_t midiSeqHW::getMicroTonalTable(uint8_t _note){
+	return microTonalTable[_note];
+}
 void midiSeqHW::allDACLow(){
 	for(uint8_t i=0;i<4;i++) writeDAC(i,0);
 }
@@ -465,6 +533,19 @@ bool midiSeqHW::makeAutoTuneTable(uint8_t channel){
 	return _success;
 }
 
+bool midiSeqHW::offsetAutoTuneTable(uint8_t channel,int _offset){
+	bool _success=true;
+	offset[channel]+=_offset;
+	for(uint8_t i=1;i<15;i++){
+		if(autoTuneTable[channel][i]+_offset>0) autoTuneTable[channel][i]+=_offset;
+		else _success=false;
+	//	if() negative ?
+		//Serial.print(autoTuneTable[channel][i]);
+		//Serial.print(", ");
+	}
+	autoTuneActive[channel]=true;
+	return _success;
+}
 bool midiSeqHW::reMakeAutoTuneTable(uint8_t channel){
 	bool _success=true;
 	int _difference=offset[channel]-autoTuneTable[channel][0];
@@ -497,40 +578,28 @@ void midiSeqHW::setNote(uint8_t channel, uint8_t note){
 
 	uint8_t tableSegment=note/6;
 	uint8_t numberOfSemitones=note%6;
-//	if(notelowestNote[channel])
-//do the octave reaction thing
-		/*
-	while(note<lowestNote[channel]){ // similar to lowestNote
-		note+=12;
-		Serial.print("lowestNote: ");
-		Serial.println(lowestNote[channel]);
-	}
 
-	while(note>highestNote[channel]){ // similar to lowestNote
-		note-=12;
-		Serial.print("highestnote: ");
-		Serial.println(highestNote[channel]);
-	}
-*/
+	currentNote[channel]=note;
+
 	if(autoTuneActive[channel]){
-		uint16_t semiToneSize=(autoTuneTable[channel][tableSegment+1]-autoTuneTable[channel][tableSegment]) /6;
-		uint16_t DACoutput=pitchBend[channel]+autoTuneTable[channel][tableSegment]+ (semiToneSize*numberOfSemitones);
+		int semiToneSize=(autoTuneTable[channel][tableSegment+1]-autoTuneTable[channel][tableSegment]) /6;
+		uint16_t DACoutput=pitchBend[channel]+autoTuneTable[channel][tableSegment]+ (semiToneSize*numberOfSemitones)+map( microTonalTable[note%12],0,255,-semiToneSize,+semiToneSize) ;
 
 		writeDAC(channel,DACoutput);
 		//Serial.println("a");
 	}
 	else if(scaleOffset[channel]){
-		uint16_t semiToneSize=scale[channel]/12;
+		int semiToneSize=scale[channel]/12;
 		uint8_t _octave=note/12;
 		//uint16_t DACoutput=offset[channel]+_octave*offset[channel]+(note%12)*semiToneSize;
-		uint16_t DACoutput=offset[channel]+note*semiToneSize;
+		uint16_t DACoutput=offset[channel]+note*semiToneSize+map( microTonalTable[note%12],0,255,-semiToneSize,+semiToneSize);
 		setVoltage(channel,DACoutput);
 	//	Serial.println("s");
 	}
 
 	else{
-		uint16_t semiToneSize=(calibrationTable[channel][tableSegment+1]-calibrationTable[channel][tableSegment]) /6;
-		uint16_t DACoutput=calibrationTable[channel][tableSegment]+ (semiToneSize*numberOfSemitones);
+		int semiToneSize=(calibrationTable[channel][tableSegment+1]-calibrationTable[channel][tableSegment]) /6;
+		uint16_t DACoutput=calibrationTable[channel][tableSegment]+ (semiToneSize*numberOfSemitones)+map( microTonalTable[note%12],0,255,-semiToneSize,+semiToneSize);
 		setVoltage(channel,DACoutput);
 		//Serial.println("n");
 	}
@@ -662,6 +731,15 @@ bool midiSeqHW::reAutoTune(uint8_t channel){
 	bool _success=true;
 	if(autoTuneActive[channel]){
 
+		//
+		uint16_t previousNoteVoltage=DACvoltage[channel];
+
+		uint16_t _valueDAC = getToNote(channel, currentNote[channel]);
+
+		if(_valueDAC!=0) offsetAutoTuneTable(channel,(int)_valueDAC-previousNoteVoltage);
+		else _success=false;
+/*
+
 		//1 volt measurement informs us a lot
 		writeDAC(channel,calibrationTable[channel][HIGH_POINT]);
 		delay(1);
@@ -688,10 +766,11 @@ bool midiSeqHW::reAutoTune(uint8_t channel){
 			if(!getOffset(channel)) autoTune(channel);
 			if(abs(offset[channel]-oldOffset)>1) reMakeAutoTuneTable(channel);
 		}
-
+ */
 
 		//getOffset(channel);
 	}
+
 	else _success=autoTune( channel);
 	return _success;
 }
@@ -990,7 +1069,12 @@ bool midiSeqHW::buttonState(uint8_t _but){
 	return bitRead(buttonHash,_but);//buttonBit[_but]);
 }
 
-
+bool midiSeqHW::justPressed(uint8_t _but){
+	return bitRead(buttonHash,_but) && !bitRead(lastButtonHash,_but);//buttonBit[_but]);
+}
+bool midiSeqHW::justReleased(uint8_t _but){
+	return !bitRead(buttonHash,_but) && bitRead(lastButtonHash,_but);//buttonBit[_but]);
+}
 
 void midiSeqHW::isr_updateShiftRegisters(){
 
@@ -1025,7 +1109,7 @@ void midiSeqHW::isr_updateAnalogInputs(){
 		analogValues[currentAnalogChannel]=fastAnalogRead::getConversionResult();
 
 		currentAnalogChannel++;
-		if(currentAnalogChannel>2) currentAnalogChannel=0;
+		if(currentAnalogChannel>3) currentAnalogChannel=0;
 
 		fastAnalogRead::connectChannel(analogPin[currentAnalogChannel]);
 		fastAnalogRead::startConversion();

@@ -18,6 +18,10 @@ void MIDInoteBuffer::init(){
 #define LOW_P 0
 #define HIGH_P 1
 #define ORDER_P 2
+
+bool MIDInoteBuffer::isNoteInBuffer(uint8_t note){
+ return findNoteInBuffer(note)!=255;
+}
 void MIDInoteBuffer::handlePriority(){
 	//uint8_t a;
 	// unsigned char nextOne=255;

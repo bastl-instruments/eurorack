@@ -127,9 +127,12 @@ uint32_t curveMap(uint8_t value, uint8_t numberOfPoints, uint16_t * tableMap){
 //uint16_t tuneIn[15]={480, 503, 525, 548, 571, 594, 617, 640, 662, 685, 708, 0, 0,0,0 }
 uint16_t tuneInNeg[15]={480, 503, 525, 548, 571, 594, 617, 640, 662, 685, 708, 0, 0,0,0 };
 
-uint16_t cvOutCalibrate[15]={85, 456, 837, 1214, 1593, 1974, 2346, 2717, 3093, 3484, 3848, 0, 0, 0,0}; //valentinos popcorn <3
-uint16_t tuneIn[15]={482, 530, 578, 627, 675, 723, 771, 818, 866, 916, 962, 0, 0, 0,0}; //valentinos popcorn <3
+//uint16_t cvOutCalibrate[15]={85, 456, 837, 1214, 1593, 1974, 2346, 2717, 3093, 3484, 3848, 0, 0, 0,0}; //valentinos popcorn <3
+//uint16_t tuneIn[15]={482, 530, 578, 627, 675, 723, 771, 818, 866, 916, 962, 0, 0, 0,0}; //valentinos popcorn <3
 
+
+uint16_t cvOutCalibrate[13]={80, 455, 831, 1208, 1585, 1961, 2338, 2714, 3090, 3435, 3780, 0, 0, }; // manually calibrated with spectrum
+uint16_t tuneIn[13]={479, 526, 574, 621, 668, 715, 763, 810, 858, 901, 944, 0, 0, }; // manually calibrated with spectrum
 
 
 uint32_t dualTableCurveMap(uint16_t value, uint8_t numberOfPoints, uint16_t * tableMap,uint16_t * tableMap2){
@@ -623,33 +626,6 @@ void loadSettings(){
 
 uint8_t selekt;
 bool pair=false;
-void calibrationMode(){
-
-	calibrationModeActive=true;
-//	hw.pinInit();
-	//hw.init(&buttonCall,&clockCall);
-	while(1){
-		hw.setLed(0,!hw.buttonState(0));
-		hw.dimLed(0,false);
-		hw.setLed(1,!hw.buttonState(1));
-		hw.dimLed(1,true);
-		hw.setLed(2,!hw.buttonState(2));
-		hw.dimLed(2,true);
-		hw.setLed(3,!hw.buttonState(3));
-		hw.dimLed(3,false);
-		//hw.isr_updateTriggerStates();
-	//	hw.isr_updateButtons();      // ~1ms
-
-		tuningPoint=map(hw.getPotA(),0,1024,0,6);
-		if(tuningPoint>2) showBiLed(0,8), showBiLed(1,tuningPoint-2+3);
-		else  showBiLed(0,tuningPoint+4), showBiLed(1,8);
-
-		writeDAC(cvOutCalibrate[tuningPoint*2]);
-		delay(1);
-		if(escapeCalibrationMode) break;
-	}
-	calibrationModeActive=false;
-}
 
 void tuneInput(){
 	loadTable();
@@ -669,6 +645,55 @@ void tuneInput(){
 	showBiLed(0,7);
 
 }
+
+void calibrationMode(){
+
+	calibrationModeActive=true;
+//	hw.pinInit();
+	//hw.init(&buttonCall,&clockCall);
+	while(1){
+
+		hw.setLed(0,!hw.buttonState(0));
+		hw.dimLed(0,false);
+		hw.setLed(1,!hw.buttonState(1));
+		hw.dimLed(1,true);
+		hw.setLed(2,!hw.buttonState(2));
+		hw.dimLed(2,true);
+		hw.setLed(3,!hw.buttonState(3));
+		hw.dimLed(3,false);
+		//hw.isr_updateTriggerStates();
+	//	hw.isr_updateButtons();      // ~1ms
+
+		tuningPoint=map(hw.getPotA(),0,1024,0,6);
+		if(tuningPoint>2) showBiLed(0,8), showBiLed(1,tuningPoint-2+3);
+		else  showBiLed(0,tuningPoint+4), showBiLed(1,8);
+
+		writeDAC(cvOutCalibrate[tuningPoint*2]);
+		delay(1);
+		if(escapeCalibrationMode) break;
+	}
+
+	escapeCalibrationMode=false;
+
+	while(!hw.buttonState(3)){
+		showBiLed(0,0);
+		delay(200);
+		hw.allLedsOff();
+		delay(200);
+		if(escapeCalibrationMode) break;
+	}
+
+	if(!escapeCalibrationMode){
+		tuneInput();
+		showBiLed(0,7);
+		delay(500);
+	}
+
+
+	calibrationModeActive=false;
+}
+
+
 bool vOctTuner=false;
 bool fnJump=false;
 void buttonCall(uint8_t number){
@@ -677,7 +702,7 @@ void buttonCall(uint8_t number){
 		if(calibrationModeActive) if(hw.buttonState(8)) escapeCalibrationMode=true;
 
 		if(booting){
-			if(hw.buttonState(8))  booting=false,saveSettings(), hw.init(&buttonCall,&clockCall), calibrationMode();
+			if(hw.buttonState(8))  booting=false, saveSettings(), EEPROM.write(8,bootByte), hw.init(&buttonCall,&clockCall);
 
 		}
 
@@ -827,7 +852,7 @@ void buttonCall(uint8_t number){
 			//not for lowest point
 			if(tuningPoint>0) cvOutCalibrate[(tuningPoint*2)-1]=((cvOutCalibrate[tuningPoint*2]-cvOutCalibrate[(tuningPoint*2)-2])/2)+cvOutCalibrate[(tuningPoint*2)-2];
 			//not for highest point
-			if(tuningPoint<12) cvOutCalibrate[(tuningPoint*2)+1]=((cvOutCalibrate[(tuningPoint*2)+2]-cvOutCalibrate[tuningPoint*2])/2)+cvOutCalibrate[tuningPoint*2];
+			if(tuningPoint<10) cvOutCalibrate[(tuningPoint*2)+1]=((cvOutCalibrate[(tuningPoint*2)+2]-cvOutCalibrate[tuningPoint*2])/2)+cvOutCalibrate[tuningPoint*2];
 
 			//save
 			saveTable();
@@ -1318,6 +1343,9 @@ void setup(){
 		booting=true,bootMenu();
 		hw.unfreezeKnob(0),hw.unfreezeKnob(1);
 	}
+	if(hw.buttonState(0) && hw.buttonState(3)){
+		calibrationMode();
+	}
 	if(!hw.buttonState(8)) hw.unfreezeKnob(0),hw.unfreezeKnob(1);
 
 	if(bitRead(bootByte,4)) triggerLatency=2;
@@ -1328,17 +1356,18 @@ void setup(){
 	else cvInExpMode=false;
 	if(bitRead(bootByte,3)) gatedPitch=true;
 	else gatedPitch=false;
-	/*
+/*
 	Serial.print("cvOutCalibrate[13]={");
 	for(int i=0;i<13;i++) Serial.print(cvOutCalibrate[i]),Serial.print(", ");
 	Serial.println("};");
 	Serial.print("tuneIn[13]={");
 		for(int i=0;i<13;i++) Serial.print(tuneIn[i]),Serial.print(", ");
 		Serial.println("};");
+
 	for(int i=0;i<11;i++){
 		//Serial.println(tuneIn[i]);
 	}
-	*/
+*/
 	numberOfSteps=8;
 }
 bool mode=true;

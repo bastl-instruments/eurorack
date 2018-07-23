@@ -5,7 +5,7 @@
 #include <basic.h>
 #include <Arduino.h>
 
-#define BUFFER_SIZE 64
+#define BUFFER_SIZE 40
 class MIDInoteBuffer {
 
 public:
@@ -44,6 +44,7 @@ public:
 	bool legato;
 	//
 	void clearBuffers();
+	bool isNoteInBuffer(uint8_t note);
 
 
 
